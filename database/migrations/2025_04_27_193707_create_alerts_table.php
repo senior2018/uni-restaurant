@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('order_id')->constrained('orders');
             $table->text('reason');
-            $table->foreignId('staff_id')->constrained('users')->nullable();
+            $table->foreignId('staff_id')->nullable()->constrained('users');
             $table->text('staff_response')->nullable();
             $table->timestamp('responded_at')->nullable();
             $table->boolean('resolved')->default(false);

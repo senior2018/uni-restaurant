@@ -4,20 +4,18 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
- */
 class MealCategoryFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    // Common Tanzanian university meal categories
+    protected $categories = [
+        'Starches', 'Proteins', 'Vegetables',
+        'Breakfast', 'Beverages', 'Specials'
+    ];
+
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->unique()->randomElement($this->categories),
         ];
     }
 }
