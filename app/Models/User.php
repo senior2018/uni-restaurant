@@ -8,11 +8,28 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Models\OtpVerification;
+use App\Models\Order;
+use App\Models\Rating;
+use App\Models\Alert;
+
 
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+
+    public function hasVerifiedEmail(): bool
+    {
+        return !is_null($this->email_verified_at);
+    }
+
+    public function markEmailAsVerified(): bool
+    {
+        return $this->forceFill([
+            'email_verified_at' => $this->freshTimestamp(),
+        ])->save();
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -57,8 +74,9 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**********************************************
-     * ADD THESE NEW METHODS INSIDE THE USER CLASS *
+     * RELATIONSHIPS *
      **********************************************/
+
 
     /**
      * Get all orders placed by this user.
@@ -93,6 +111,32 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Get all OTP verification records for this user.
+     * @return HasMany<OtpVerification>
+     */
+    public function otpVerifications(): HasMany
+    {
+        return $this->hasMany(OtpVerification::class);
+    }
+
+    /**
+     * Get the active email OTP verification.
+     * @return HasOne<OtpVerification>
+     */
+    public function activeEmailOtp(): HasOne
+    {
+        return $this->hasOne(OtpVerification::class)
+            ->valid()       // Defined in OtpVerification model
+            ->emailType()   // Defined in OtpVerification model
+            ->latest();
+    }
+
+    /**********************************************
+     * ROLE METHODS *
+     **********************************************/
+
+
+    /**
      * Check if user is an admin.
      */
     public function isAdmin(): bool
@@ -108,9 +152,25 @@ class User extends Authenticatable implements MustVerifyEmail
         return in_array($this->role, ['staff', 'admin']);
     }
 
-    // 4. HANDLED ALERTS: A user (staff) can resolve many alerts
+    /**********************************************
+     * ALERT MANAGEMENT *
+     **********************************************/
+
+    /**
+     * Get alerts handled by this staff member.
+     * @return HasMany<Alert>
+     */
     public function handledAlerts(): HasMany
     {
         return $this->hasMany(Alert::class, 'staff_id');
     }
+
+    /**********************************************
+     * EMAIL VERIFICATION *
+     **********************************************/
+    /**
+     * Mark the user's email as verified.
+     */
+
+    // Updated verification method
 }

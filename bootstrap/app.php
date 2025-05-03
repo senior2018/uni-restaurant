@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -21,3 +22,18 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
+
+    $app->middleware([
+        \Illuminate\Cookie\Middleware\EncryptCookies::class,
+        \Illuminate\Session\Middleware\StartSession::class,
+    ]);
+
+    $app->routeMiddleware([
+        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
+        'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
+    ]);
+
+    // Rate limiting configuration
+    \Illuminate\Support\Facades\RateLimiter::for('login', function (Request $request) {
+        return \Illuminate\Cache\RateLimiting\Limit::perMinute(3)->by($request->ip());
+    });

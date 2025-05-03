@@ -3,25 +3,47 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\OtpVerification;
+use App\Models\User;
 use Illuminate\Auth\Events\Verified;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 class VerifyEmailController extends Controller
 {
     /**
-     * Mark the authenticated user's email address as verified.
+     * Mark the authenticated user's email address as verified using OTP.
      */
-    public function __invoke(EmailVerificationRequest $request): RedirectResponse
-    {
-        if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->intended(route('dashboard', absolute: false).'?verified=1');
-        }
+    public function __invoke(Request $request): RedirectResponse
+{
+    $request->validate([
+        'otp' => ['required', 'string', 'digits:6']
+    ]);
 
-        if ($request->user()->markEmailAsVerified()) {
-            event(new Verified($request->user()));
-        }
+    /** @var User $user */
+    $user = $request->user();
 
-        return redirect()->intended(route('dashboard', absolute: false).'?verified=1');
+    if ($user->hasVerifiedEmail()) {
+        return redirect()->intended(route('dashboard').'?verified=1');
     }
+
+    // Get latest valid OTP record
+    $otpRecord = OtpVerification::where('user_id', $user->id)
+        ->where('otp_type', 'email')
+        ->where('expires_at', '>', now())
+        ->whereNull('verified_at')
+        ->latest()
+        ->first();
+
+    if (!$otpRecord || $otpRecord->otp !== $request->otp) {
+        return back()->withErrors(['otp' => __('auth.invalid_otp')]);
+    }
+
+    // Update verification status
+    $otpRecord->update(['verified_at' => now()]);
+    $user->markEmailAsVerified();
+
+    return redirect()->route('dashboard')
+        ->with('status', __('auth.verified'));
+}
 }
