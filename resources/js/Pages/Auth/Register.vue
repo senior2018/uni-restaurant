@@ -9,6 +9,8 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 const form = useForm({
     name: '',
     email: '',
+    phone: '',
+    permanent_location: '',
     password: '',
     password_confirmation: '',
 });
@@ -22,12 +24,12 @@ const submit = () => {
 
 <template>
     <GuestLayout>
-        <Head title="Register" />
+        <Head title="Create Account" />
 
-        <form @submit.prevent="submit">
+        <form @submit.prevent="submit" class="space-y-6">
+            <!-- Name Field -->
             <div>
-                <InputLabel for="name" value="Name" />
-
+                <InputLabel for="name" value="Full Name" />
                 <TextInput
                     id="name"
                     type="text"
@@ -37,75 +39,96 @@ const submit = () => {
                     autofocus
                     autocomplete="name"
                 />
-
                 <InputError class="mt-2" :message="form.errors.name" />
             </div>
 
-            <div class="mt-4">
-                <InputLabel for="email" value="Email" />
-
+            <!-- Email Field -->
+            <div>
+                <InputLabel for="email" value="University Email" />
                 <TextInput
                     id="email"
                     type="email"
                     class="mt-1 block w-full"
                     v-model="form.email"
                     required
-                    autocomplete="username"
+                    autocomplete="email"
                 />
-
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
+            <!-- Phone Number Field -->
+            <div>
+                <InputLabel for="phone" value="Phone Number" />
                 <TextInput
-                    id="password"
-                    type="password"
+                    id="phone"
+                    type="tel"
                     class="mt-1 block w-full"
-                    v-model="form.password"
+                    v-model="form.phone"
                     required
-                    autocomplete="new-password"
+                    placeholder="+255700000000"
+                    autocomplete="tel"
                 />
-
-                <InputError class="mt-2" :message="form.errors.password" />
+                <InputError class="mt-2" :message="form.errors.phone" />
             </div>
 
-            <div class="mt-4">
-                <InputLabel
-                    for="password_confirmation"
-                    value="Confirm Password"
-                />
-
+            <!-- Permanent Location Field -->
+            <div>
+                <InputLabel for="permanent_location" value="Campus Location" />
                 <TextInput
-                    id="password_confirmation"
-                    type="password"
+                    id="permanent_location"
+                    type="text"
                     class="mt-1 block w-full"
-                    v-model="form.password_confirmation"
+                    v-model="form.permanent_location"
                     required
-                    autocomplete="new-password"
+                    placeholder="e.g., Hostel Block C, Room 12"
+                    autocomplete="address-line1"
                 />
-
-                <InputError
-                    class="mt-2"
-                    :message="form.errors.password_confirmation"
-                />
+                <InputError class="mt-2" :message="form.errors.permanent_location" />
             </div>
 
-            <div class="mt-4 flex items-center justify-end">
+            <!-- Password Fields -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <InputLabel for="password" value="Password" />
+                    <TextInput
+                        id="password"
+                        type="password"
+                        class="mt-1 block w-full"
+                        v-model="form.password"
+                        required
+                        autocomplete="new-password"
+                    />
+                    <InputError class="mt-2" :message="form.errors.password" />
+                </div>
+
+                <div>
+                    <InputLabel for="password_confirmation" value="Confirm Password" />
+                    <TextInput
+                        id="password_confirmation"
+                        type="password"
+                        class="mt-1 block w-full"
+                        v-model="form.password_confirmation"
+                        required
+                        autocomplete="new-password"
+                    />
+                    <InputError class="mt-2" :message="form.errors.password_confirmation" />
+                </div>
+            </div>
+
+            <div class="mt-6 flex items-center justify-between">
                 <Link
                     :href="route('login')"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    class="text-sm text-green-600 hover:text-green-800 font-medium"
                 >
-                    Already registered?
+                    Already have an account? Login here
                 </Link>
 
                 <PrimaryButton
                     class="ms-4"
-                    :class="{ 'opacity-25': form.processing }"
+                    :class="{ 'opacity-50': form.processing }"
                     :disabled="form.processing"
                 >
-                    Register
+                    Create Account
                 </PrimaryButton>
             </div>
         </form>

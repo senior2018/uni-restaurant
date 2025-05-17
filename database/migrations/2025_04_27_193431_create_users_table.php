@@ -22,6 +22,7 @@ return new class extends Migration
             $table->enum('role', ['customer', 'staff', 'admin'])->default('customer');
             $table->integer('failed_login_attempts')->default(0);
             $table->timestamp('last_failed_attempt')->nullable();
+            $table->timestamp('locked_at')->nullable()->after('last_failed_attempt');
             $table->rememberToken();
             $table->softDeletes();
             $table->timestamps();

@@ -13,9 +13,10 @@ class OtpVerification extends Model
     protected $fillable = [
         'user_id',
         'otp_type',
-        'recipient', // email or future phone number
+        'recipient', 
         'otp',
         'expires_at',
+        'used',
         'verified_at'
     ];
 
@@ -41,5 +42,5 @@ class OtpVerification extends Model
     {
         return $query->where('otp_type', 'email');
     }
-    
+
 }

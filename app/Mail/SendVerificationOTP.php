@@ -42,10 +42,15 @@ class SendVerificationOTP extends Mailable
         $this->plainOtp = $plainOtp;
         $this->name = $user->name;
 
-        // Prevent error if null
-        $this->expires = $user->email_verification_otp_expires_at
-            ? $user->email_verification_otp_expires_at->diffForHumans()
-            : 'soon'; // or a fallback string
+        // Get expiration from latest OTP verification record
+        $latestOtp = $user->otpVerifications()
+            ->where('otp_type', 'email')
+            ->latest()
+            ->first();
+
+        $this->expires = $latestOtp?->expires_at
+            ? $latestOtp->expires_at->diffForHumans()
+            : '15 minutes';
     }
 
     /**
@@ -61,10 +66,10 @@ class SendVerificationOTP extends Mailable
     /**
      * Get the message content definition.
      */
-    public function content(): Content
+    public function content(): content
     {
         return new Content(
-            view: 'emails.verification-otp',
+            view: 'auth.email.verification-plain',
             with: [
                 'otp' => $this->plainOtp,
                 'expires' => $this->expires,

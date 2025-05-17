@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\EmailVerificationNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -42,7 +43,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'phone',
         'password',
         'permanent_location',
-        'role'
+        'role',
+        'last_failed_attempt',
+        'failed_login_attempts',
+        'locked_at'
     ];
 
     /**
@@ -165,12 +169,79 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Alert::class, 'staff_id');
     }
 
-    /**********************************************
-     * EMAIL VERIFICATION *
-     **********************************************/
-    /**
-     * Mark the user's email as verified.
-     */
+    public function sendEmailVerificationNotification()
+    {
+        $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        $this->notify(new EmailVerificationNotification($otp));
+    }
 
-    // Updated verification method
+    /**********************************************
+     * PASSWORD RESET OTP FUNCTIONALITY *
+     **********************************************/
+
+    /**
+     * Send password reset OTP notification
+     */
+    // public function sendPasswordResetNotification($token)
+    // {
+    //     $this->notify(new \App\Notifications\PasswordResetOtpNotification());
+    // }
+
+    public function sendPasswordResetOtp()
+    {
+        $plainOtp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        $this->notify(new \App\Notifications\PasswordResetOtpNotification($plainOtp));
+    }
+
+    /**
+     * Lock the user account
+     */
+    public function lockAccount(): void
+    {
+        $this->update([
+            'locked_at' => now(),
+            'failed_login_attempts' => 0 // Reset attempts after lock
+        ]);
+    }
+
+    /**
+     * Unlock the user account
+     */
+    public function unlockAccount(): void
+    {
+        $this->update([
+            'locked_at' => null,
+            'failed_login_attempts' => 0,
+            'last_failed_attempt' => null
+        ]);
+    }
+
+    /**
+     * Check if account is locked
+     */
+    public function isLocked(): bool
+    {
+        return !is_null($this->locked_at);
+    }
+
+    /**
+     * Increment failed login attempts
+     */
+    public function recordFailedAttempt(): void
+    {
+        $this->increment('failed_login_attempts');
+        $this->update(['last_failed_attempt' => now()]);
+    }
+
+    /**
+     * Get active password reset OTP
+     */
+    public function activePasswordResetOtp(): HasOne
+    {
+        return $this->hasOne(OtpVerification::class)
+            ->where('otp_type', 'password_reset')
+            ->whereNull('verified_at')
+            ->where('expires_at', '>', now())
+            ->latest();
+    }
 }

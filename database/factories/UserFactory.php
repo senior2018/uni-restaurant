@@ -32,6 +32,8 @@ class UserFactory extends Factory
             'permanent_location' => $this->faker->address(),
             'role' => 'customer',
             'failed_login_attempts' => 0,
+            'last_failed_attempt' => null,
+            'locked_at' => null,
             'remember_token' => Str::random(10),
         ];
     }
@@ -60,6 +62,14 @@ class UserFactory extends Factory
     {
         return $this->state([
             'email_verified_at' => null,
+        ]);
+    }
+
+    public function locked(): static
+    {
+        return $this->state([
+            'locked_at' => now(),
+            'failed_login_attempts' => 3,
         ]);
     }
 }

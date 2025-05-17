@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -27,68 +26,65 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Handle an incoming authentication request with enhanced security
+     * Handle an incoming authentication request.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(LoginRequest $request): RedirectResponse
     {
-        // First validate basic credentials
-        $credentials = $request->validate([
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
-        ]);
+        //Get validated credentials
+        $credentials = $request->validated();
 
+        //check if user exists and is locked
         $user = User::where('email', $credentials['email'])->first();
 
-        // Check account lock status
-        if ($user && $user->failed_login_attempts >= 3) {
-            $lockMinutes = 15;
-
-            // Calculate remaining lock time
-            if ($user->last_failed_attempt && $user->last_failed_attempt->addMinutes($lockMinutes)->isFuture()) {
-                throw ValidationException::withMessages([
-                    'email' => __('Your account is locked. Please try again in :minutes minutes.', [
-                        'minutes' => $lockMinutes - $user->last_failed_attempt->diffInMinutes(now())
-                    ]),
-                ]);
-            } else {
-                // Reset attempts if lock period has expired
-                $user->update([
-                    'failed_login_attempts' => 0,
-                    'last_failed_attempt' => null
-                ]);
-            }
+        if ($user && $user->locked_at) {
+            // Redirect to locked account OTP handler
+            return redirect()->route('account.locked');
         }
 
-        // Attempt authentication
+        // If user exists but email not verified
+        if ($user && !$user->hasVerifiedEmail()) {
+            // Send OTP for email verification
+            $user->sendOtp('email');
+
+            return redirect()->route('verify.email', [
+                'email' => $user->email,
+                'context' => 'login_unverified',
+            ]);
+        }
+
+        // Try to login
         if (!Auth::attempt($credentials, $request->boolean('remember'))) {
-            // Update failed attempts
+            // If user exists, track failed attempt
             if ($user) {
-                $user->increment('failed_login_attempts');
-                $user->update(['last_failed_attempt' => now()]);
+                $user->recordFailedAttempt();
+
+                if ($user->failed_login_attempts >= 3) {
+                    $user->lockAccount();
+
+                    return redirect()->route('account.locked');
+                }
             }
 
-            throw ValidationException::withMessages([
-                'email' => __('These credentials do not match our records.'),
+                return back()->withErrors([
+                'email' => 'These credentials do not match our records.',
             ]);
         }
 
-        // Check if email is verified
-        if (!$request->user()->hasVerifiedEmail()) {
-            Auth::logout();
-            throw ValidationException::withMessages([
-                'email' => __('You need to verify your email address before logging in.'),
-            ]);
-        }
-
-        // Reset security counters on successful login
+        // Reset on successful login
         $request->user()->update([
             'failed_login_attempts' => 0,
-            'last_failed_attempt' => null
+            'last_failed_attempt' => null,
+            'locked_at' => null,
         ]);
 
         $request->session()->regenerate();
 
         return redirect()->intended(route('dashboard', absolute: false));
+    }
+
+    public function showLockedAccount()
+    {
+        return Inertia::render('Auth/LockedAccount');
     }
 
     /**
@@ -105,3 +101,4 @@ class AuthenticatedSessionController extends Controller
         return redirect('/');
     }
 }
+
