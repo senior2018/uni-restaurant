@@ -17,7 +17,8 @@ class UserSeeder extends Seeder
     User::create([
         'name' => 'Admin User',
         'email' => 'admin@university.com',
-        'password' => Hash::make('AdminPassword123!'),
+        'email_verified_at' => now(),
+        'password' => Hash::make('password'),
         'phone' => '+255700000000',
         'permanent_location' => 'Administration Block',
         'role' => 'admin'
@@ -28,6 +29,7 @@ class UserSeeder extends Seeder
         User::create([
             'name' => "Staff Member $i",
             'email' => "staff$i@university.com",
+            'email_verified_at' => now(),
             'password' => Hash::make('password'),
             'phone' => '+25570000000' . $i,
             'permanent_location' => 'Staff Quarters',
