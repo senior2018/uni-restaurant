@@ -8,23 +8,33 @@ import TextInput from '@/Components/TextInput.vue';
 import { ref } from 'vue';
 
 // Try to get props via Inertia first
-let props;
-try {
+// let props;
+// try {
 
-    props = defineProps({
-        email: String,
-        context: String,
-        user_id: Number,
-        status: String
-    });
-} catch (e) {
-    props = {};
-}
+//     props = defineProps({
+//         email: String,
+//         context: String,
+//         user_id: Number,
+//         status: String
+//     });
+// } catch (e) {
+//     props = {};
+// }
+const props = defineProps({
+    email: String,
+    context: String,
+    user_id: Number,
+    status: String
+});
+
+    // console.log(props);
 
 // Fallback to query parameters if needed
 const urlParams = new URLSearchParams(window.location.search);
 const email = props.email ?? urlParams.get('email') ?? '';
 const context = props.context ?? urlParams.get('context') ?? 'register';
+// console.log(context);
+
 const user_id = props.user_id ?? null;
 
 // 👇 Normalize context
@@ -45,12 +55,17 @@ const normalizeContext = (ctx) => {
 
 const normalizedContext = normalizeContext(context);
 
+// console.log(normalizedContext);
+
 // Setup form
 const form = useForm({
     email,
     otp: '',
     context: normalizedContext,
 });
+
+// console.log(form);
+
 
 const otpResent = ref(false);
 
@@ -61,6 +76,9 @@ const submit = () => {
             form.reset('otp');
         },
     });
+
+    // console.log(form);
+
 };
 
 const resendOtp = () => {

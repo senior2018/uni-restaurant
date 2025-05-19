@@ -32,6 +32,8 @@ class VerifyEmailController extends Controller
      */
     public function verify(Request $request): RedirectResponse
     {
+
+
         $request->validate([
             'otp' => 'required|digits:6',
             'context' => 'required|string',
@@ -46,17 +48,23 @@ class VerifyEmailController extends Controller
             return back()->withErrors(['otp' => 'User not found. Please try again.']);
         }
 
+        // dd($user);
+
         $otpRecord = OtpVerification::where('user_id', $user->id)
+            ->where('otp', $request->input('otp'))
             ->where('otp_type', $context)
-            ->whereNull('verified_at')
+            // ->whereNull('verified_at')
             ->latest()
             ->first();
+
+        //
 
         if (
             !$otpRecord ||
             $otpRecord->expires_at < now() ||
             $otpRecord->otp !== $request->otp
         ) {
+
             return back()->withErrors(['otp' => 'Invalid or expired OTP']);
         }
 
@@ -64,6 +72,8 @@ class VerifyEmailController extends Controller
         $otpRecord->update(['verified_at' => now()]);
 
         switch ($context) {
+
+
             case 'email':
                 if (!$user->hasVerifiedEmail()) {
                     $user->markEmailAsVerified();
@@ -74,12 +84,14 @@ class VerifyEmailController extends Controller
                 return redirect()->route('dashboard')->with('verified', true);
 
             case 'forgot_password':
+
                 return redirect()->route('password.reset.form', [
                     'user_id' => $user->id,
                     'verified' => true
                 ]);
 
             case 'locked_account':
+                // dd($otpRecord);
                 return redirect()->route('locked.reset.form', [
                     'user_id' => $user->id,
                     'verified' => true

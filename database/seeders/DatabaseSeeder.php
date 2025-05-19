@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             OrderItemSeeder::class,
             RatingSeeder::class,
             AlertSeeder::class,
-            OtpVerificationSeeder::class,
+            OtpVerificationsSeeder::class,
         ]);
     }
 }

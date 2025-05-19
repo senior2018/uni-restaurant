@@ -67,12 +67,15 @@ class PasswordResetController extends Controller
 
         Mail::to($user->email)->send(new SendPasswordResetOTP($otp, $user));
 
+        // dd($type);
         return Inertia::render('Auth/VerifyOtp', [
             'email' => $user->email,
             'context' => $type,
             'user_id' => $user->id,
             'status' => 'OTP sent successfully'
         ]);
+
+
     }
 
     // Show OTP verification form

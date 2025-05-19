@@ -13,17 +13,17 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create 1 admin (fixed credentials)
+        // Create 1 admin
     User::create([
         'name' => 'Admin User',
         'email' => 'admin@university.com',
-        'password' => Hash::make('password'),
+        'password' => Hash::make('AdminPassword123!'),
         'phone' => '+255700000000',
         'permanent_location' => 'Administration Block',
         'role' => 'admin'
     ]);
 
-    // Create 3 staff members (fixed credentials)
+    // Create 3 staff members
     foreach (range(1, 3) as $i) {
         User::create([
             'name' => "Staff Member $i",
@@ -40,7 +40,7 @@ class UserSeeder extends Seeder
         ->count(50)
         ->create([
             'role' => 'customer',
-            'password' => Hash::make('password') // Uniform password
+            'password' => Hash::make('password')
         ]);
     }
 }
