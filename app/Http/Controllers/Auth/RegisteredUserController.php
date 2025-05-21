@@ -56,8 +56,6 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        // event(new Registered($user));
-
         Auth::login($user);
 
         $otp = random_int(100000, 999999);
@@ -81,7 +79,5 @@ class RegisteredUserController extends Controller
             'email' => $user->email,
             'context' => 'register',
         ])->with('status', 'OTP sent to your email address');
-
-        // return redirect(route('dashboard', absolute: false));
     }
 }

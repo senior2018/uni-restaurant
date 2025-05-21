@@ -43,9 +43,7 @@ class AuthenticatedSessionController extends Controller
 
         // If user exists but email not verified
         if ($user && !$user->hasVerifiedEmail()) {
-            // // Send OTP for email verification
-            // $user->sendOtp('email');
-
+            
             // Generate new OTP
             $otp = random_int(100000, 999999);
 

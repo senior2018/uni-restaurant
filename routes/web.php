@@ -19,6 +19,14 @@ Route::get('/verify/email', function (Request $request) {
     ]);
 })->name('verify.email');
 
+Route::get('/email/verify-otp', function (Request $request) {
+    return Inertia::render('Auth/VerifyOtp', [
+        'email' => $request->query('email'),
+        'context' => $request->query('context'),
+    ]);
+})->name('otp.verify.form');
+
+
     Route::post('/email/verify', [VerifyEmailController::class, 'verify'])
         ->name('verification.verify');
 

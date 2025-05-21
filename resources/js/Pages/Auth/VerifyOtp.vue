@@ -100,19 +100,28 @@ const resendOtp = () => {
 const contextMessages = {
     register: {
         heading: 'Verify Your Email',
-        message: email => `Thanks for signing up! A 6-digit OTP has been sent to <strong>${email}</strong>. Please enter it to complete your registration.`,
+        message: email => `Welcome! To activate your account, please verify your email address. We've sent a <strong>verification code</strong> to <strong>${email}</strong>.
+        Please check your inbox (and spam folder). If you haven’t received the email, we’ll gladly send you a new one.
+        <br><br>
+        Enter the code below to complete your registration.`,
     },
     login_unverified: {
         heading: 'Account Not Verified',
-        message: email => `Your account <strong>${email}</strong> is not yet verified. Please enter the 6-digit OTP sent to your email.`,
+        message: email => `Welcome back! To proceed, please verify your account. We've sent a <strong>6-digit OTP</strong> to <strong>${email}</strong>.
+        <br><br>
+        Enter the code below to complete your verification and log in.`,
     },
     forgot_password: {
         heading: 'Reset Your Password',
-        message: email => `We've sent a 6-digit OTP to <strong>${email}</strong>. Enter it below to reset your password.`,
+        message: email => `We’ve sent a <strong>6-digit verification code</strong> to <strong>${email}</strong>.
+        <br><br>
+        Enter the code below to reset your password and regain access to your account.`,
     },
     locked_account: {
-        heading: 'Account Locked',
-        message: email => `Your account <strong>${email}</strong> is locked. Enter the OTP we emailed you to unlock and reset your password.`,
+        heading: 'Account Temporarily Locked',
+        message: email => `<strong>Account Temporarily Locked.</strong> For your security, the account associated with <strong>${email}</strong> has been temporarily locked.
+        <br><br>
+        To regain access and set a new password, we’ve sent a one-time verification code to your email. Please enter it below to proceed.`,
     },
 };
 </script>
@@ -126,9 +135,12 @@ const contextMessages = {
         <!-- Context-based heading and instruction -->
         <div class="mb-4 text-sm text-gray-600">
             <h2 class="font-semibold text-lg mb-2">
-                {{ contextMessages[normalizedContext]?.heading || 'Verify OTP' }}
+                {{ contextMessages[normalizedContext]?.heading || 'Verify Your Email' }}
             </h2>
-            <span v-html="contextMessages[normalizedContext]?.message(props.email) || `Enter the OTP sent to <strong>${props.email}</strong>`" />
+            <span v-html="contextMessages[normalizedContext]?.message(props.email) || `Welcome! To activate your account, please verify your email address. We've sent a <strong>verification code</strong> to <strong>${email}</strong>.
+                Please check your inbox (and spam folder). If you haven’t received the email, we’ll gladly send you a new one.
+                <br><br>
+                Enter the code below to complete your registration.`" />
         </div>
 
         <!-- Green success message after OTP resend -->

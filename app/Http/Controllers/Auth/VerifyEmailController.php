@@ -57,8 +57,6 @@ class VerifyEmailController extends Controller
             ->latest()
             ->first();
 
-        //
-
         if (
             !$otpRecord ||
             $otpRecord->expires_at < now() ||
@@ -72,8 +70,6 @@ class VerifyEmailController extends Controller
         $otpRecord->update(['verified_at' => now()]);
 
         switch ($context) {
-
-
             case 'email':
                 if (!$user->hasVerifiedEmail()) {
                     $user->markEmailAsVerified();
@@ -99,7 +95,6 @@ class VerifyEmailController extends Controller
 
             default:
                 return back()->withErrors(['otp' => 'Unknown OTP context.']);
-
             }
     }
 
