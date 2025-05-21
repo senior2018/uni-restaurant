@@ -8,14 +8,9 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
-
-// Home Route
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-    ]);
-});
+use App\Models\User;
+use App\Models\Order;
+use App\Models\Alert;
 
 Route::get('/verify/email', function (Request $request) {
     return Inertia::render('Auth/VerifyOtp', [
@@ -23,12 +18,6 @@ Route::get('/verify/email', function (Request $request) {
         'context' => $request->query('context'),
     ]);
 })->name('verify.email');
-
-// Email verification routes
-Route::middleware(['auth'])->group(function () {
-    Route::get('/email/verify-otp', fn () => Inertia::render('Auth/VerifyOtp'))
-        ->name('otp.verify.form');
-    });
 
     Route::post('/email/verify', [VerifyEmailController::class, 'verify'])
         ->name('verification.verify');
@@ -88,9 +77,15 @@ Route::controller(PasswordResetController::class)->group(function () {
         ->name('password.reset.otp');
 });
 
-// Authenticated Routes
-Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::middleware(['auth'])->get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+
+// Guest (public) routes
+Route::get('/', function () {
+    return Inertia::render('Guest/Home',[
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+    ]);
 });
 
 // Profile Management

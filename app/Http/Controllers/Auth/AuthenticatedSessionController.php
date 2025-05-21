@@ -43,13 +43,30 @@ class AuthenticatedSessionController extends Controller
 
         // If user exists but email not verified
         if ($user && !$user->hasVerifiedEmail()) {
-            // Send OTP for email verification
-            $user->sendOtp('email');
+            // // Send OTP for email verification
+            // $user->sendOtp('email');
 
-            return redirect()->route('verify.email', [
+            // Generate new OTP
+            $otp = random_int(100000, 999999);
+
+             // Save or update OTP in database
+            \App\Models\OtpVerification::updateOrCreate(
+                ['user_id' => $user->id, 'otp_type' => 'email'],
+                [
+                    'recipient' => $user->email,
+                    'otp' => $otp,
+                    'expires_at' => now()->addMinutes(10),
+                ]
+            );
+
+            // Send the OTP to email
+            $user->notify(new \App\Notifications\EmailVerificationNotification($otp));
+
+            // Redirect to OTP verification screen
+            return redirect()->route('verify.otp.form', [
                 'email' => $user->email,
                 'context' => 'login_unverified',
-            ]);
+            ])->with('status', 'Please verify your email to log in. OTP sent.');
         }
 
         // Try to login
@@ -79,7 +96,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->route('dashboard')->with('success', 'Welcome back!');
     }
 
     public function showLockedAccount()

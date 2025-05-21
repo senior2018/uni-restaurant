@@ -68,13 +68,10 @@ class PasswordResetController extends Controller
         Mail::to($user->email)->send(new SendPasswordResetOTP($otp, $user));
 
         // dd($type);
-        return Inertia::render('Auth/VerifyOtp', [
+        return redirect()->route('verify.email', [
             'email' => $user->email,
-            'context' => $type,
-            'user_id' => $user->id,
-            'status' => 'OTP sent successfully'
-        ]);
-
+            'context' => 'forgot_password',
+        ])->with('status', 'OTP sent successfully to your email.');
 
     }
 
@@ -114,10 +111,23 @@ class PasswordResetController extends Controller
     {
         $request->validate([
             'user_id' => 'required|integer',
-            'password' => 'required|confirmed|min:8',
+            'password' => [
+                'required',
+                'confirmed',
+                'min:8',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/'
+            ],
+        ], [
+            'password.regex' => 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
         ]);
 
         $user = User::findOrFail($request->input('user_id'));
+
+        if (Hash::check($request->password, $user->password)) {
+            return back()->withErrors([
+                'password' => 'You cannot reuse your old password.',
+            ]);
+        }
 
         $user->update([
             'password' => Hash::make($request->password),

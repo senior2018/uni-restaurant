@@ -35,7 +35,7 @@ const verificationLinkSent = computed(
             class="mb-4 text-sm font-medium text-green-600"
             v-if="verificationLinkSent"
         >
-            A new verification link has been sent to the email address you
+            A new verification otp has been sent to the email address you
             provided during registration.
         </div>
 

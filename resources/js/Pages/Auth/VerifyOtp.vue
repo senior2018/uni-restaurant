@@ -43,6 +43,7 @@ const normalizeContext = (ctx) => {
         case 'register':
         case 'login_unverified':
             return 'email';
+        case 'forgot_password':
         case 'password_reset':
             return 'forgot_password';
         case 'locked':

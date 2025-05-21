@@ -13,7 +13,7 @@ class Order extends Model
 {
     use HasFactory, SoftDeletes;
 
-    
+
 
     /**
      * The attributes that are mass assignable.
@@ -75,5 +75,15 @@ class Order extends Model
     public function alerts(): HasMany
     {
         return $this->hasMany(Alert::class);
+    }
+
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
+    }
+
+    public function scopeCompleted($query)
+    {
+        return $query->where('status', 'completed');
     }
 }
