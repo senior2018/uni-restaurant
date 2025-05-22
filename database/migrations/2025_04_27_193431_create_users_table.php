@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('google_id')->nullable()->unique()->after('email');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('phone')->unique();
+            $table->string('phone')->nullable()->unique();
             $table->string('permanent_location')->nullable();
             $table->enum('role', ['customer', 'staff', 'admin'])->default('customer');
             $table->integer('failed_login_attempts')->default(0);

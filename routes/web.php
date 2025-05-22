@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\SocialLoginController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\ResendOtpController;
@@ -25,6 +26,16 @@ Route::get('/email/verify-otp', function (Request $request) {
         'context' => $request->query('context'),
     ]);
 })->name('otp.verify.form');
+
+// Social Register
+Route::get('/auth/google/redirect', [SocialLoginController::class, 'redirectToGoogle'])->name('google.redirect');
+Route::get('/auth/google/callback', [SocialLoginController::class, 'handleGoogleCallback'])->name('google.callback');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/complete-profile', [\App\Http\Controllers\Auth\CompleteProfileController::class, 'edit'])->name('complete-profile');
+    Route::post('/complete-profile', [\App\Http\Controllers\Auth\CompleteProfileController::class, 'update'])->name('complete-profile.update');
+});
+
 
 
     Route::post('/email/verify', [VerifyEmailController::class, 'verify'])
@@ -57,8 +68,6 @@ Route::get('/email/verify-otp', function (Request $request) {
     // Locked account - show new password form
     Route::get('/locked-account-reset-form', [PasswordResetController::class, 'showResetForm'])
         ->name('locked.reset.form');
-
-
 
 // Password Reset Routes (Cleaned, No Duplicates)
 Route::controller(PasswordResetController::class)->group(function () {
