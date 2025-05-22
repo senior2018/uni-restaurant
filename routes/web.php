@@ -36,38 +36,36 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/complete-profile', [\App\Http\Controllers\Auth\CompleteProfileController::class, 'update'])->name('complete-profile.update');
 });
 
+Route::post('/email/verify', [VerifyEmailController::class, 'verify'])
+    ->name('verification.verify');
 
+//Otp Verification - Registration
+Route::post('/otp/verify', [VerifyEmailController::class, 'verify'])
+    ->name('otp.verify');
 
-    Route::post('/email/verify', [VerifyEmailController::class, 'verify'])
-        ->name('verification.verify');
+//OTP Verification -Password Reser
+Route::post('/password-reset/verify-otp', [PasswordResetController::class, 'verifyOtp'])
+    ->name('otp.verify.password_reset');
 
-    //Otp Verification - Registration
-    Route::post('/otp/verify', [VerifyEmailController::class, 'verify'])
-        ->name('otp.verify');
+// Show the OTP form after registration
+Route::get('/verify-otp', [VerifyEmailController::class, 'showForm'])
+    ->name('verify.otp.form');
 
-    //OTP Verification -Password Reser
-    Route::post('/password-reset/verify-otp', [PasswordResetController::class, 'verifyOtp'])
-        ->name('otp.verify.password_reset');
+// Handle OTP submission
+Route::post('/verify-otp', [VerifyEmailController::class, 'verify'])
+    ->name('verify.otp.submit');
 
-    // Show the OTP form after registration
-    Route::get('/verify-otp', [VerifyEmailController::class, 'showForm'])
-        ->name('verify.otp.form');
+// Resend OTP
+Route::post('/resend-otp', [ResendOtpController::class, 'resend'])
+    ->name('verify.otp.resend');
 
-    // Handle OTP submission
-    Route::post('/verify-otp', [VerifyEmailController::class, 'verify'])
-        ->name('verify.otp.submit');
+// Forgot password - show new password form
+Route::get('/reset-password-form', [PasswordResetController::class, 'showResetForm'])
+    ->name('password.reset.form');
 
-    // Resend OTP
-    Route::post('/resend-otp', [ResendOtpController::class, 'resend'])
-        ->name('verify.otp.resend');
-
-    // Forgot password - show new password form
-    Route::get('/reset-password-form', [PasswordResetController::class, 'showResetForm'])
-        ->name('password.reset.form');
-
-    // Locked account - show new password form
-    Route::get('/locked-account-reset-form', [PasswordResetController::class, 'showResetForm'])
-        ->name('locked.reset.form');
+// Locked account - show new password form
+Route::get('/locked-account-reset-form', [PasswordResetController::class, 'showResetForm'])
+    ->name('locked.reset.form');
 
 // Password Reset Routes (Cleaned, No Duplicates)
 Route::controller(PasswordResetController::class)->group(function () {
@@ -94,9 +92,6 @@ Route::controller(PasswordResetController::class)->group(function () {
         ->name('password.reset.otp');
 });
 
-Route::middleware(['auth'])->get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-
 // Guest (public) routes
 Route::get('/', function () {
     return Inertia::render('Guest/Home',[
@@ -104,6 +99,8 @@ Route::get('/', function () {
         'canRegister' => Route::has('register'),
     ]);
 });
+
+Route::middleware(['auth'])->get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 // Profile Management
 Route::middleware('auth')->group(function () {
