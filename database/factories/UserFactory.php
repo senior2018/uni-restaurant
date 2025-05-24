@@ -38,6 +38,15 @@ class UserFactory extends Factory
         ];
     }
 
+    //State for Super Admin
+    public function superAdmin(): static
+    {
+        return $this->state([
+            'role' => 'super_admin',
+            'email' => 'super@university.edu',
+        ]);
+    }
+
     //State for admin user
     public function admin(): static
     {

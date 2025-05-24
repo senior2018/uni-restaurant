@@ -139,14 +139,20 @@ class User extends Authenticatable implements MustVerifyEmail
     /**********************************************
      * ROLE METHODS *
      **********************************************/
-
+    /**
+     * Check if user is a super admin
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'super_admin';
+    }
 
     /**
      * Check if user is an admin.
      */
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return in_array($this->role, ['admin', 'super_admin']);
     }
 
     /**
@@ -154,7 +160,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function isStaff(): bool
     {
-        return in_array($this->role, ['staff', 'admin']);
+        return in_array($this->role, ['staff', 'admin', 'super_admin']);
     }
 
     /**********************************************
@@ -183,11 +189,6 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Send password reset OTP notification
      */
-    // public function sendPasswordResetNotification($token)
-    // {
-    //     $this->notify(new \App\Notifications\PasswordResetOtpNotification());
-    // }
-
     public function sendPasswordResetOtp()
     {
         $plainOtp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);

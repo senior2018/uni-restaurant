@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('phone')->nullable()->unique();
             $table->string('permanent_location')->nullable();
-            $table->enum('role', ['customer', 'staff', 'admin'])->default('customer');
+            $table->enum('role', ['customer', 'staff', 'admin', 'super_admin'])->default('customer');
             $table->integer('failed_login_attempts')->default(0);
             $table->timestamp('last_failed_attempt')->nullable();
             $table->timestamp('locked_at')->nullable()->after('last_failed_attempt');

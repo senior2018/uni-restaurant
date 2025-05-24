@@ -100,7 +100,17 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware(['auth'])->get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::middleware(['auth'])->get('/dashboard', [DashboardController::class, 'index'])
+    ->name('dashboard');
+
+Route::middleware(['auth', 'super_admin'])->group(function () {
+    Route::get('/super-admin/dashboard', [DashboardController::class, 'index'])
+        ->name('superadmin.dashboard');
+});
+
+Route::middleware(['auth', 'super_admin'])->group(function () {
+    Route::get('/super-admin/admins', [DashboardController::class, 'listAdmins'])->name('admin.list');
+});
 
 // Profile Management
 Route::middleware('auth')->group(function () {
