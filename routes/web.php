@@ -12,6 +12,9 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Alert;
+use App\Http\Controllers\Admin\MealController;
+use App\Http\Controllers\Admin\MealCategoryController;
+
 
 Route::get('/verify/email', function (Request $request) {
     return Inertia::render('Auth/VerifyOtp', [
@@ -118,5 +121,18 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
+    // Meals
+    Route::get('/meals', [MealController::class, 'index'])->name('meals.index');
+    Route::post('/meals', [MealController::class, 'store'])->name('meals.store');
+    Route::put('/meals/{meal}', [MealController::class, 'update'])->name('meals.update');
+    Route::post('/meals/{meal}/toggle', [MealController::class, 'toggleAvailability'])->name('meals.toggle');
+    Route::delete('/meals/{meal}', [MealController::class, 'destroy'])->name('meals.destroy');
+
+    // Categories
+    Route::resource('meal-categories', MealCategoryController::class)->except(['show']);
+});
+
 
 require __DIR__.'/auth.php';

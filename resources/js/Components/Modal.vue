@@ -1,4 +1,40 @@
+<template>
+    <Teleport to="body">
+        <Transition name="fade">
+            <div v-if="show" class="fixed inset-0 flex items-center justify-center z-50">
+                <div class="fixed inset-0 bg-black bg-opacity-50" @click="$emit('close')"></div>
+
+                <div class="bg-white rounded-lg shadow-lg z-10 w-full max-w-md p-6">
+                    <slot />
+                </div>
+            </div>
+        </Transition>
+    </Teleport>
+</template>
+
 <script setup>
+defineProps({
+    show: Boolean
+});
+
+defineEmits(['close']);
+</script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.3s;
+}
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+</style>
+
+
+
+
+<!-- <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 
 const props = defineProps({
@@ -120,4 +156,4 @@ const maxWidthClass = computed(() => {
             </Transition>
         </div>
     </dialog>
-</template>
+</template> -->
