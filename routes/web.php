@@ -132,6 +132,16 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
 
     // Categories
     Route::resource('meal-categories', MealCategoryController::class)->except(['show']);
+
+    // routes for trash functionality
+    Route::get('meal-categories-with-trashed', [MealCategoryController::class, 'indexWithTrashed'])
+        ->name('meal-categories.with-trashed');
+    Route::get('meal-categories-trashed', [MealCategoryController::class, 'trashedOnly'])
+        ->name('meal-categories.trashed');
+    Route::post('meal-categories/{id}/restore', [MealCategoryController::class, 'restore'])
+        ->name('meal-categories.restore');
+    Route::delete('meal-categories/{id}/force-delete', [MealCategoryController::class, 'forceDelete'])
+        ->name('meal-categories.force-delete');
 });
 
 

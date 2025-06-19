@@ -32,7 +32,7 @@ class Meal extends Model
      */
     public function category(): BelongsTo
     {
-        return $this->belongsTo(MealCategory::class);
+        return $this->belongsTo(MealCategory::class, 'category_id');
     }
 
     /**

@@ -16,8 +16,54 @@ class MealCategoryController extends Controller
     {
         $this->authorize('viewAny', MealCategory::class);
 
+        // Load categories with their meals and meal counts
+        $categories = MealCategory::with(['meals' => function($query) {
+                $query->orderBy('name'); // Order meals by name
+            }])
+            ->withCount('meals') // This gives us meals_count
+            ->orderBy('name')
+            ->get();
+
         return Inertia::render('Admin/MealCategories/Index', [
-            'categories' => MealCategory::orderBy('name')->get(),
+            'categories' => $categories
+        ]);
+    }
+
+    // Show categories with trashed ones
+    public function indexWithTrashed()
+    {
+        $this->authorize('viewAny', MealCategory::class);
+
+        $categories = MealCategory::withTrashed()
+            ->with(['meals' => function($query) {
+                $query->orderBy('name');
+            }])
+            ->withCount('meals')
+            ->orderBy('name')
+            ->get();
+
+        return Inertia::render('Admin/MealCategories/Index', [
+            'categories' => $categories,
+            'showingTrashed' => true
+        ]);
+    }
+
+    // Show only trashed categories
+    public function trashedOnly()
+    {
+        $this->authorize('viewAny', MealCategory::class);
+
+        $categories = MealCategory::onlyTrashed()
+            ->with(['meals' => function($query) {
+                $query->orderBy('name');
+            }])
+            ->withCount('meals')
+            ->orderBy('name')
+            ->get();
+
+        return Inertia::render('Admin/MealCategories/Index', [
+            'categories' => $categories,
+            'trashedOnly' => true
         ]);
     }
 
@@ -47,22 +93,14 @@ class MealCategoryController extends Controller
         return redirect()->back()->with('success', 'Category updated!');
     }
 
-
-    // public function destroy(MealCategory $mealCategory)
-    // {
-    //     $this->authorize('delete', $mealCategory);
-
-    //     try {
-    //         $mealCategory->delete();
-    //         return redirect()->back()->with('success', 'Category deleted successfully.');
-    //     } catch (\Illuminate\Database\QueryException $e) {
-    //         return redirect()->back()->with('error', 'Cannot delete this category. It is in use.');
-    //     }
-    // }
-
     public function destroy(MealCategory $mealCategory)
     {
         $this->authorize('delete', $mealCategory);
+
+        // Check if category has meals before allowing deletion
+        if ($mealCategory->meals()->count() > 0) {
+            return redirect()->back()->with('error', 'Cannot delete category. It has associated meals.');
+        }
 
         try {
             $mealCategory->delete();
@@ -74,5 +112,34 @@ class MealCategoryController extends Controller
             // dd(session()->all()); // This will show you what's in the session
             return redirect()->back();
         }
+    }
+
+    // NEW: Restore a soft-deleted category
+    public function restore($id)
+    {
+        $category = MealCategory::withTrashed()->findOrFail($id);
+        $this->authorize('update', $category); // Use update permission for restore
+
+        if (!$category->trashed()) {
+            return redirect()->back()->with('error', 'Category is not deleted.');
+        }
+
+        $category->restore();
+        return redirect()->back()->with('success', 'Category restored successfully!');
+    }
+
+    // NEW: Permanently delete a category
+    public function forceDelete($id)
+    {
+        $category = MealCategory::withTrashed()->findOrFail($id);
+        $this->authorize('delete', $category);
+
+        // Check if it has meals even when soft deleted
+        if ($category->meals()->count() > 0) {
+            return redirect()->back()->with('error', 'Cannot permanently delete category. It still has associated meals.');
+        }
+
+        $category->forceDelete(); // Permanently delete
+        return redirect()->back()->with('success', 'Category permanently deleted.');
     }
 }

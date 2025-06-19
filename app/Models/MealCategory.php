@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MealCategory extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -26,6 +26,6 @@ class MealCategory extends Model
      */
     public function meals(): HasMany
     {
-        return $this->hasMany(Meal::class);
+        return $this->hasMany(Meal::class, 'category_id');
     }
 }
