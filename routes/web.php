@@ -103,9 +103,10 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware(['auth'])->get('/dashboard', [DashboardController::class, 'index'])
-    ->name('dashboard');
+// SINGLE DASHBOARD ROUTE FOR ALL ROLES
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+// SUPER ADMIN ROUTES
 Route::middleware(['auth', 'super_admin'])->group(function () {
     Route::get('/super-admin/dashboard', [DashboardController::class, 'index'])
         ->name('superadmin.dashboard');
@@ -122,6 +123,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+//ADMIN & STAFF
+Route::middleware(['auth', 'verified'])->group(function () {
+    // Shared toggle route for both admin and staff
+    // Route::post('/meals/{meal}/toggle', [MealController::class, 'toggleAvailability'])
+    //     ->name('meals.toggle')
+    //     ->middleware('can:toggle,meal');
+});
+
+// ADMIN ROUTES
 Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     // Meals
     Route::get('/meals', [MealController::class, 'index'])->name('meals.index');
@@ -129,6 +139,10 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::put('/meals/{meal}', [MealController::class, 'update'])->name('meals.update');
     Route::post('/meals/{meal}/toggle', [MealController::class, 'toggleAvailability'])->name('meals.toggle');
     Route::delete('/meals/{meal}', [MealController::class, 'destroy'])->name('meals.destroy');
+
+    // Soft delete operations
+    Route::post('/meals/{meal}/restore', [MealController::class, 'restore'])->name('meals.restore');
+    Route::delete('/meals/{meal}/force', [MealController::class, 'forceDelete'])->name('meals.force-delete');
 
     // Categories
     Route::resource('meal-categories', MealCategoryController::class)->except(['show']);
@@ -144,5 +158,44 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
         ->name('meal-categories.force-delete');
 });
 
+//STAFF ROUTES
+Route::middleware(['auth', 'verified'])->prefix('staff')->name('staff.')->group(function () {
+    // Staff meals index page - only toggle functionality
+    Route::get('/meals', [MealController::class, 'staffIndex'])
+        ->name('meals.index')
+        ->middleware('can:viewAny,App\Models\Meal');
+    Route::post('/meals/{meal}/toggle', [MealController::class, 'toggleAvailability'])->name('meals.toggle');
+});
 
+// CUSTOMER ROUTES (if needed)
+Route::middleware(['auth', 'verified', 'role:customer'])->group(function () {
+    Route::get('/menu', [MealController::class, 'customerIndex'])->name('menu.index');
+});
+
+// Public menu browsing route
+Route::get('/menu', [\App\Http\Controllers\CustomerMenuController::class, 'index'])->name('menu.public');
+
+// Customer cart page (must be logged in)
+Route::middleware(['auth', 'verified'])->get('/cart', function () {
+    return Inertia::render('Customer/Cart', [
+        'user' => request()->user(),
+    ]);
+})->name('cart');
+
+// Customer checkout page (must be logged in)
+Route::middleware(['auth', 'verified'])->get('/checkout', function () {
+    return Inertia::render('Customer/Checkout', [
+        'user' => request()->user(),
+    ]);
+})->name('checkout');
+
+// Customer order placement (POST)
+Route::middleware(['auth', 'verified'])->post('/checkout', [\App\Http\Controllers\CustomerOrderController::class, 'store'])->name('checkout.store');
+
+// Customer order tracking (My Orders)
+Route::middleware(['auth', 'verified'])->get('/my-orders', [\App\Http\Controllers\CustomerOrderController::class, 'index'])->name('customer.orders');
+// Customer cancel order (POST)
+Route::middleware(['auth', 'verified'])->post('/my-orders/{order}/cancel', [\App\Http\Controllers\CustomerOrderController::class, 'cancel'])->name('customer.orders.cancel');
+// Customer update order (POST)
+Route::middleware(['auth', 'verified'])->post('/my-orders/{order}/edit', [\App\Http\Controllers\CustomerOrderController::class, 'update'])->name('customer.orders.update');
 require __DIR__.'/auth.php';

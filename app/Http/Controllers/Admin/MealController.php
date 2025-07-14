@@ -20,9 +20,39 @@ class MealController extends Controller
     public function index()
     {
         $this->authorize('viewAny', Meal::class);
+
+        $meals = Meal::withTrashed()
+            ->with('category')
+            ->orderByRaw('deleted_at IS NULL DESC') // Non-deleted first
+            ->orderByRaw('is_available DESC') // Available first within non-deleted
+            ->orderBy('created_at', 'desc') // Most recent first within each group
+            ->get();
+
         return Inertia::render('Admin/Meals/Index', [
-            'meals' => Meal::with('category')->get(),
+            'meals' => $meals,
             'categories' => \App\Models\MealCategory::orderBy('name')->get()
+        ]);
+    }
+
+    public function staffIndex()
+    {
+        $this->authorize('viewAny', Meal::class);
+
+        $meals = Meal::with('category')
+            ->orderByRaw('is_available DESC') // Available first
+            ->orderBy('created_at', 'desc') // Most recent first
+            ->get(); // Only non-trashed meals
+
+        $categories = \App\Models\MealCategory::orderBy('name')->get();
+
+        return Inertia::render('Staff/Meals/Index', [
+            'meals' => $meals,
+            'categories' => $categories,
+            'user' => auth()->user(),
+            'userRole' => auth()->user()->role,
+            'permissions' => [
+                'canToggle' => auth()->user()->can('toggleAvailability', new Meal()),
+            ]
         ]);
     }
 
@@ -108,13 +138,50 @@ class MealController extends Controller
 
         $meal->delete();
 
-        return redirect()->back()->with('success', 'Meal deleted!');
+        return redirect()->back()->with('success', 'Meal moved to trash!');
     }
+
+    /**
+     * Restore a soft deleted meal.
+     */
+    public function restore($id)
+    {
+        $meal = Meal::withTrashed()->findOrFail($id);
+
+        $this->authorize('restore', $meal);
+
+        $meal->restore();
+
+        return redirect()->back()->with('success', 'Meal restored successfully!');
+    }
+
+    /**
+     * Permanently delete the specified resource.
+     */
+    public function forceDelete($id)
+    {
+        $meal = Meal::withTrashed()->findOrFail($id);
+
+        $this->authorize('forceDelete', $meal);
+
+        // Delete the image file if exists
+        if ($meal->image_url) {
+            $imagePath = str_replace('/storage/', '', $meal->image_url);
+            \Storage::disk('public')->delete($imagePath);
+        }
+
+        $meal->forceDelete();
+
+        return redirect()->back()->with('success', 'Meal permanently deleted!');
+    }
+
 
     public function toggleAvailability(Meal $meal)
     {
         $this->authorize('toggleAvailability', $meal);
+
         $meal->update(['is_available' => !$meal->is_available]);
+
         return redirect()->back()->with('success', 'Meal availability updated!');
     }
 }

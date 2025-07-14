@@ -13,7 +13,8 @@ class MealPolicy
      */
     public function viewAny(User $user): bool
     {
-        return true; //All user can view meal
+        // Admin and staff can manage meals, customers can view for ordering
+        return in_array($user->role, ['admin', 'staff', 'customer']);
     }
 
     /**
@@ -69,6 +70,6 @@ class MealPolicy
      */
     public function forceDelete(User $user, Meal $meal): bool
     {
-        return in_array($user->role, ['super_admin']);
+        return in_array($user->role, ['super_admin', 'admin']);
     }
 }

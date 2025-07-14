@@ -6,9 +6,7 @@ import { Link, usePage } from "@inertiajs/vue3";
 
 const page = usePage();
 
-const flash = computed(() => {
-    return page.props.flash || {};
-});
+const flash = computed(() => page.props.flash || {});
 </script>
 
 <template>

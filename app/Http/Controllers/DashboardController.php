@@ -10,9 +10,14 @@ use App\Models\Alert;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $user = auth()->user();
+        $user = $request->user();
+
+        if (!$user) {
+            // Show guest dashboard or home
+            return Inertia::render('Guest/Home');
+        }
 
         switch ($user->role) {
             case 'super_admin':
@@ -41,13 +46,14 @@ class DashboardController extends Controller
             case 'staff':
                 return Inertia::render('Staff/Dashboard', [
                     'user' => $user,
-                    'recentOrders' => Order::orderByDesc('created_at')->take(10)->get(),
+                    'unassignedOrders' => Order::whereNull('staff_id')->where('status', '!=', 'cancelled')->orderByDesc('created_at')->take(20)->get(),
+                    'myOrders' => Order::where('staff_id', $user->id)->where('status', '!=', 'cancelled')->orderByDesc('created_at')->take(20)->get(),
                 ]);
 
             case 'customer':
                 return Inertia::render('Customer/Dashboard', [
                     'user' => $user,
-                    'recentOrders' => Order::where('user_id', $user->id)
+                    'orders' => Order::where('user_id', $user->id)
                         ->orderByDesc('created_at')
                         ->take(10)
                         ->get(),

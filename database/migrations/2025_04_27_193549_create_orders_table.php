@@ -16,8 +16,9 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('staff_id')->nullable()->constrained('users');
             $table->decimal('total_price', 10, 2);
-            $table->enum('status', ['pending', 'preparing', 'delivered'])->default('pending');
+            $table->enum('status', ['pending', 'preparing', 'delivered', 'cancelled'])->default('pending');
             $table->enum('payment_method', ['cash', 'mobile_money', 'card']);
             $table->text('delivery_location');
             $table->text('staff_notes')->nullable();
@@ -26,6 +27,7 @@ return new class extends Migration
 
             $table->index('status'); // Faster status filtering
             $table->index('created_at'); // For order history sorting
+            $table->index('staff_id');
         });
     }
 

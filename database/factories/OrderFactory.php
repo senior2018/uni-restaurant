@@ -21,8 +21,9 @@ class OrderFactory extends Factory
 
         return [
             'user_id' => $this->faker->randomElement($customerIds), // Create a new user for the order
+            'staff_id' => $this->faker->optional(0.5)->randomElement($staffIds->isEmpty() ? [null] : $staffIds), // 50% assigned, 50% unassigned
             'total_price' => 0, // Set to 0 initially, will be updated after creating order items
-            'status'=> $this->faker->randomElement(['pending', 'preparing', 'delivered']),
+            'status'=> $this->faker->randomElement(['pending', 'preparing', 'delivered', 'cancelled']),
             'payment_method' => $this->faker->randomElement(['cash', 'mobile_money', 'card']),
             'delivery_location' => $this-> faker->address(),
             'staff_notes' => $this->faker->optional(0.3)->sentence(),

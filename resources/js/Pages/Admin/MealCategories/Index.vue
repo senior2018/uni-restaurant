@@ -202,9 +202,20 @@
                         <div class="grid gap-4">
                             <div v-for="meal in categoryMeals" :key="meal.id"
                                     class="flex items-center p-4 border rounded-lg hover:bg-gray-50">
-                                <div class="flex-shrink-0 w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center mr-4">
+                                <!-- <div class="flex-shrink-0 w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center mr-4">
                                     <i v-if="meal.image_url" class="fas fa-image text-gray-500"></i>
                                     <i v-else class="fas fa-utensils text-gray-500"></i>
+                                </div> -->
+
+                                <div class="flex-shrink-0 w-12 h-12 bg-gray-200 rounded-lg overflow-hidden mr-4">
+                                    <img v-if="meal.image_url"
+                                        :src="meal.image_url"
+                                        :alt="meal.name"
+                                        class="w-full h-full object-cover"
+                                        @error="handleImageError($event)">
+                                    <div v-else class="w-full h-full flex items-center justify-center">
+                                        <i class="fas fa-utensils text-gray-500"></i>
+                                    </div>
                                 </div>
                                 <div class="flex-1">
                                     <h4 class="font-medium text-gray-900">{{ meal.name }}</h4>
