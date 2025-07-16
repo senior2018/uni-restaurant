@@ -84,12 +84,36 @@ class CustomerOrderController extends Controller
     public function cancel(Request $request, $orderId)
     {
         $order = $request->user()->orders()->where('id', $orderId)->firstOrFail();
-        if ($order->status !== 'pending') {
-            return redirect()->back()->with('error', 'Only pending orders can be cancelled.');
+        if ($order->status === 'pending') {
+            $order->status = 'cancelled';
+            $order->cancellation_reason = $request->input('reason');
+            $order->cancelled_by = 'customer';
+            $order->save();
+            return redirect()->back()->with('success', 'Order cancelled successfully.');
         }
-        $order->status = 'cancelled';
-        $order->save();
-        return redirect()->back()->with('success', 'Order cancelled successfully.');
+        if ($order->status === 'preparing') {
+            if ($order->cancellation_requested) {
+                return redirect()->back()->with('error', 'Cancellation already requested for this order.');
+            }
+            $request->validate(['reason' => 'required|string|min:5']);
+            $order->cancellation_requested = true;
+            $order->cancellation_reason = $request->input('reason');
+            $order->save();
+            return redirect()->back()->with('success', 'Cancellation request submitted. Staff or admin will review it.');
+        }
+        return redirect()->back()->with('error', 'Only pending orders can be cancelled directly. For preparing orders, you may request cancellation.');
+    }
+
+    public function cancelRequest(Request $request, $orderId)
+    {
+        $order = $request->user()->orders()->where('id', $orderId)->firstOrFail();
+        if ($order->cancellation_requested && $order->status === 'preparing') {
+            $order->cancellation_requested = false;
+            $order->cancellation_reason = null;
+            $order->save();
+            return redirect()->back()->with('success', 'Cancellation request withdrawn.');
+        }
+        return redirect()->back()->with('error', 'No pending cancellation request to withdraw.');
     }
 
     public function update(Request $request, $orderId)

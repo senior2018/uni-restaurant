@@ -22,6 +22,10 @@ return new class extends Migration
             $table->enum('payment_method', ['cash', 'mobile_money', 'card']);
             $table->text('delivery_location');
             $table->text('staff_notes')->nullable();
+            $table->boolean('cancellation_requested')->default(false);
+            $table->boolean('cancellation_request_seen')->default(false);
+            $table->text('cancellation_reason')->nullable();
+            $table->string('cancelled_by')->nullable();
             $table->softDeletes();
             $table->timestamps();
 

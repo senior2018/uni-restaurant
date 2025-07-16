@@ -35,3 +35,8 @@ defineProps({
         </div>
     </AdminLayout>
 </template>
+
+<style scoped>
+.dashboard-cards { margin-top: 2rem; }
+.dashboard-card { min-height: 120px; cursor: pointer; }
+</style>

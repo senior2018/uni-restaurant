@@ -158,13 +158,33 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
         ->name('meal-categories.force-delete');
 });
 
+// Admin Order Management
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/orders', [\App\Http\Controllers\Admin\AdminOrderController::class, 'index'])->name('orders.index');
+    Route::post('/orders/{order}/assign-staff', [\App\Http\Controllers\Admin\AdminOrderController::class, 'assignStaff'])->name('orders.assignStaff');
+    Route::get('/orders/{order}', [\App\Http\Controllers\Admin\AdminOrderController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{order}/approve-cancellation', [\App\Http\Controllers\Admin\AdminOrderController::class, 'approveCancellation'])->name('orders.approveCancellation');
+    Route::post('/orders/{order}/reject-cancellation', [\App\Http\Controllers\Admin\AdminOrderController::class, 'rejectCancellation'])->name('orders.rejectCancellation');
+    Route::post('/orders/mark-cancellation-seen', [\App\Http\Controllers\Admin\AdminOrderController::class, 'markCancellationSeen'])->name('orders.markCancellationSeen');
+});
+
 //STAFF ROUTES
 Route::middleware(['auth', 'verified'])->prefix('staff')->name('staff.')->group(function () {
     // Staff meals index page - only toggle functionality
     Route::get('/meals', [MealController::class, 'staffIndex'])
         ->name('meals.index')
-        ->middleware('can:viewAny,App\Models\Meal');
+        ->middleware('can:viewAny,App\\Models\\Meal');
     Route::post('/meals/{meal}/toggle', [MealController::class, 'toggleAvailability'])->name('meals.toggle');
+
+    // Staff order management
+    Route::post('/orders/{order}/claim', [\App\Http\Controllers\StaffOrderController::class, 'claim'])->name('orders.claim');
+    Route::post('/orders/{order}/status', [\App\Http\Controllers\StaffOrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    Route::get('/my-orders', [\App\Http\Controllers\StaffOrderController::class, 'myOrders'])->name('myOrders');
+    Route::get('/unassigned-orders', [\App\Http\Controllers\StaffOrderController::class, 'unassignedOrders'])->name('unassignedOrders');
+    Route::post('/orders/{order}/approve-cancellation', [\App\Http\Controllers\StaffOrderController::class, 'approveCancellation'])->name('orders.approveCancellation');
+    Route::post('/orders/{order}/reject-cancellation', [\App\Http\Controllers\StaffOrderController::class, 'rejectCancellation'])->name('orders.rejectCancellation');
+    Route::post('/orders/mark-cancellation-seen', [\App\Http\Controllers\StaffOrderController::class, 'markCancellationSeen'])->name('orders.markCancellationSeen');
+    Route::get('/pending-cancellations', [\App\Http\Controllers\StaffOrderController::class, 'pendingCancellations'])->name('pendingCancellations');
 });
 
 // CUSTOMER ROUTES (if needed)
@@ -192,10 +212,12 @@ Route::middleware(['auth', 'verified'])->get('/checkout', function () {
 // Customer order placement (POST)
 Route::middleware(['auth', 'verified'])->post('/checkout', [\App\Http\Controllers\CustomerOrderController::class, 'store'])->name('checkout.store');
 
+// Customer order cancel (POST with reason)
+Route::middleware(['auth', 'verified'])->post('/orders/{order}/cancel', [\App\Http\Controllers\CustomerOrderController::class, 'cancel'])->name('customer.orders.cancel');
 // Customer order tracking (My Orders)
 Route::middleware(['auth', 'verified'])->get('/my-orders', [\App\Http\Controllers\CustomerOrderController::class, 'index'])->name('customer.orders');
-// Customer cancel order (POST)
-Route::middleware(['auth', 'verified'])->post('/my-orders/{order}/cancel', [\App\Http\Controllers\CustomerOrderController::class, 'cancel'])->name('customer.orders.cancel');
 // Customer update order (POST)
 Route::middleware(['auth', 'verified'])->post('/my-orders/{order}/edit', [\App\Http\Controllers\CustomerOrderController::class, 'update'])->name('customer.orders.update');
+// Customer withdraw cancellation request (POST)
+Route::middleware(['auth', 'verified'])->post('/orders/{order}/cancel-request', [\App\Http\Controllers\CustomerOrderController::class, 'cancelRequest'])->name('customer.orders.cancelRequest');
 require __DIR__.'/auth.php';

@@ -46,8 +46,16 @@ class DashboardController extends Controller
             case 'staff':
                 return Inertia::render('Staff/Dashboard', [
                     'user' => $user,
-                    'unassignedOrders' => Order::whereNull('staff_id')->where('status', '!=', 'cancelled')->orderByDesc('created_at')->take(20)->get(),
-                    'myOrders' => Order::where('staff_id', $user->id)->where('status', '!=', 'cancelled')->orderByDesc('created_at')->take(20)->get(),
+                    'unassignedOrders' => Order::whereNull('staff_id')
+                        ->where('status', 'pending')
+                        ->orderByDesc('created_at')
+                        ->take(20)
+                        ->get(),
+                    'myOrders' => Order::where('staff_id', $user->id)
+                        ->where('status', '!=', 'cancelled')
+                        ->orderByDesc('created_at')
+                        ->take(20)
+                        ->get(),
                 ]);
 
             case 'customer':

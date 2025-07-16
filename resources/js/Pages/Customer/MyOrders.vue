@@ -2,6 +2,7 @@
 import CustomerLayout from './Layout.vue';
 import { ref, computed } from 'vue';
 import { router, usePage } from '@inertiajs/vue3';
+import Modal from '../../Components/Modal.vue';
 
 const props = defineProps({
     orders: Array,
@@ -93,11 +94,36 @@ function updateOrder(orderId) {
     });
 }
 
-function cancelOrder(orderId) {
-    if (!confirm('Are you sure you want to cancel this order?')) return;
-    router.post(route('customer.orders.cancel', orderId), {}, {
+const showCancelModal = ref(false);
+const cancelOrderId = ref(null);
+const cancelReason = ref('');
+const cancelOrderStatus = ref('pending');
+
+function openCancelModal(order) {
+    cancelOrderId.value = order.id;
+    cancelOrderStatus.value = order.status;
+    cancelReason.value = '';
+    showCancelModal.value = true;
+}
+function closeCancelModal() {
+    showCancelModal.value = false;
+    cancelOrderId.value = null;
+    cancelReason.value = '';
+}
+function submitCancelOrder() {
+    if (!cancelReason.value.trim()) return;
+    router.post(route('customer.orders.cancel', cancelOrderId.value), { reason: cancelReason.value }, {
         preserveScroll: true,
-        onSuccess: () => {}
+        onSuccess: () => closeCancelModal(),
+        onError: () => {},
+    });
+}
+
+function cancelCancellationRequest(orderId) {
+    router.post(route('customer.orders.cancelRequest', orderId), {}, {
+        preserveScroll: true,
+        onSuccess: () => {},
+        onError: () => {},
     });
 }
 </script>
@@ -181,14 +207,26 @@ function cancelOrder(orderId) {
                                     <span class="mr-4">Delivery: <span class="font-medium text-gray-800">{{ order.delivery_location }}</span></span>
                                     <span class="mr-4">Payment: <span class="font-medium text-gray-800">{{ order.payment_method.replace('_', ' ').toUpperCase() }}</span></span>
                                 </div>
-                                <div v-if="order.status === 'pending'" class="mt-4 flex gap-4 flex-wrap">
-                                    <button @click="startEdit(order)" class="px-4 py-2 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors">
+                                <div v-if="order.status === 'pending' || order.status === 'preparing'" class="mt-4 flex gap-4 flex-wrap">
+                                    <button v-if="order.status === 'pending'" @click="startEdit(order)" class="px-4 py-2 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors">
                                         Edit
                                     </button>
-                                    <button @click="cancelOrder(order.id)" class="px-4 py-2 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition-colors">
+                                    <button v-if="order.status === 'pending'" @click="openCancelModal(order)" class="px-4 py-2 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition-colors">
                                         Cancel Order
                                     </button>
+                                    <template v-if="order.status === 'preparing'">
+                                        <button v-if="!order.cancellation_requested" @click="openCancelModal(order)" class="px-4 py-2 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition-colors">
+                                            Request Cancellation
+                                        </button>
+                                        <div v-else class="flex items-center gap-2">
+                                            <button disabled class="px-4 py-2 bg-yellow-400 text-white rounded-lg font-semibold">Request Submitted</button>
+                                            <button @click="cancelCancellationRequest(order.id)" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg font-semibold hover:bg-gray-400">Cancel Request</button>
+                                        </div>
+                                    </template>
                                 </div>
+                                <!-- Show status if cancelled or rejected -->
+                                <div v-if="order.status === 'cancelled'" class="mt-4 text-red-700 font-semibold">Order Cancelled</div>
+                                <div v-else-if="order.status === 'preparing' && !order.cancellation_requested && order.cancellation_reason && page.props.flash?.error" class="mt-4 text-red-700 font-semibold">Request Rejected</div>
                             </div>
                             <div v-if="editingOrderId === order.id" class="mt-4 bg-gray-50 p-4 rounded-lg border">
                                 <form @submit.prevent="updateOrder(order.id)" class="space-y-4">
@@ -223,6 +261,20 @@ function cancelOrder(orderId) {
                 </div>
             </div>
         </div>
+        <!-- Cancel/Request Modal -->
+        <Modal :show="showCancelModal" @close="closeCancelModal">
+            <div class="p-6">
+                <h2 class="text-lg font-bold mb-2">{{ cancelOrderStatus === 'pending' ? 'Cancel Order' : 'Request Cancellation' }}</h2>
+                <p class="mb-2 text-gray-600">Please provide a reason for {{ cancelOrderStatus === 'pending' ? 'cancelling' : 'requesting cancellation of' }} this order:</p>
+                <textarea v-model="cancelReason" class="w-full border rounded p-2 mb-4" rows="3" placeholder="Reason (required)"></textarea>
+                <div class="flex justify-end gap-2">
+                    <button @click="closeCancelModal" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Close</button>
+                    <button :disabled="!cancelReason.trim()" @click="submitCancelOrder" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
+                        {{ cancelOrderStatus === 'pending' ? 'Cancel Order' : 'Request Cancellation' }}
+                    </button>
+                </div>
+            </div>
+        </Modal>
     </CustomerLayout>
 </template>
 

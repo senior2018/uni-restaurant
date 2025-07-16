@@ -78,6 +78,11 @@ class Order extends Model
         return $this->hasMany(Alert::class);
     }
 
+    public function staff(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'staff_id');
+    }
+
     public function scopePending($query)
     {
         return $query->where('status', 'pending');

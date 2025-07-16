@@ -19,14 +19,32 @@ class OrderFactory extends Factory
         $customerIds = \App\Models\User::where('role', 'customer')->pluck('id');
         $staffIds = \App\Models\User::where('role', 'staff')->pluck('id');
 
+        $staffId = $this->faker->optional(0.5)->randomElement($staffIds->isEmpty() ? [null] : $staffIds);
+        $status = $staffId ? $this->faker->randomElement(['pending', 'preparing', 'delivered', 'cancelled']) : $this->faker->randomElement(['pending', 'cancelled']);
+        $isCancelled = $status === 'cancelled';
+        $cancelledBy = $isCancelled ? $this->faker->randomElement(['customer', 'staff', 'admin']) : null;
+        $cancellationReason = $isCancelled ? $this->faker->sentence() : null;
+        $cancellationRequested = false;
+        $cancellationRequestSeen = true;
+        if ($isCancelled) {
+            $cancellationRequested = false;
+            $cancellationRequestSeen = true;
+        } else if ($this->faker->boolean(10)) { // 10% chance to have a pending request
+            $cancellationRequested = true;
+            $cancellationRequestSeen = false;
+        }
         return [
-            'user_id' => $this->faker->randomElement($customerIds), // Create a new user for the order
-            'staff_id' => $this->faker->optional(0.5)->randomElement($staffIds->isEmpty() ? [null] : $staffIds), // 50% assigned, 50% unassigned
-            'total_price' => 0, // Set to 0 initially, will be updated after creating order items
-            'status'=> $this->faker->randomElement(['pending', 'preparing', 'delivered', 'cancelled']),
+            'user_id' => $this->faker->randomElement($customerIds),
+            'staff_id' => $staffId,
+            'total_price' => 0,
+            'status'=> $status,
             'payment_method' => $this->faker->randomElement(['cash', 'mobile_money', 'card']),
-            'delivery_location' => $this-> faker->address(),
+            'delivery_location' => $this->faker->address(),
             'staff_notes' => $this->faker->optional(0.3)->sentence(),
+            'cancellation_requested' => $cancellationRequested,
+            'cancellation_reason' => $cancellationReason,
+            'cancelled_by' => $cancelledBy,
+            'cancellation_request_seen' => $cancellationRequestSeen,
         ];
     }
 

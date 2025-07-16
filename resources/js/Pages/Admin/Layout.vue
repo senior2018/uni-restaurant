@@ -3,70 +3,23 @@ import { computed } from 'vue';
 import BaseLayout from "../Shared/BaseLayout.vue";
 import NavLink from "@/Components/NavLink.vue";
 import { Link, usePage } from "@inertiajs/vue3";
+import TopNavBar from '@/Components/TopNavBar.vue';
 
 const page = usePage();
 
 const flash = computed(() => page.props.flash || {});
+
+const navLinks = [
+    { name: 'Dashboard', route: route('dashboard'), icon: 'fas fa-user-shield' },
+    { name: 'Meal Management', route: route('meals.index'), icon: 'fas fa-utensils' },
+    { name: 'Meal Categories', route: route('meal-categories.index'), icon: 'fas fa-list' },
+    { name: 'Orders', route: route('admin.orders.index'), icon: 'fas fa-receipt' },
+];
 </script>
 
 <template>
     <BaseLayout title="Admin Dashboard">
-        <!-- Navigation -->
-        <nav class="bg-white shadow">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16 items-center">
-                    <!-- Left Side: Navigation Links -->
-                    <div class="flex items-center space-x-4">
-                        <!-- Dashboard Link -->
-                        <NavLink
-                            :href="route('dashboard')"
-                            :active="route().current('dashboard')"
-                        >
-                            <i
-                                class="fas fa-user-shield text-purple-600 mr-2"
-                            ></i>
-                            Dashboard
-                        </NavLink>
-
-                        <!-- Meal Management Link -->
-                        <NavLink
-                            :href="route('meals.index')"
-                            :active="route().current('meals.index')"
-                        >
-                            <i class="fas fa-utensils text-green-600 mr-2"></i>
-                            Meal Management
-                        </NavLink>
-
-                        <!-- Meal Categories Link -->
-                        <NavLink
-                            :href="route('meal-categories.index')"
-                            :active="route().current('meal-categories.index')"
-                        >
-                            <i class="fas fa-list text-blue-600 mr-2"></i>
-                            Meal Categories
-                        </NavLink>
-                    </div>
-
-                    <!-- Right Side: Profile + Logout -->
-                    <div class="flex items-center space-x-6">
-                        <Link
-                            :href="route('profile.edit')"
-                            class="text-gray-600 hover:text-green-600"
-                        >
-                            Profile
-                        </Link>
-                        <Link
-                            :href="route('logout')"
-                            method="post"
-                            class="text-red-600 hover:text-red-800"
-                        >
-                            Logout
-                        </Link>
-                    </div>
-                </div>
-            </div>
-        </nav>
-
+        <TopNavBar :links="navLinks" :user="page.props.user" role="admin" brand="Admin Panel" />
         <!-- Flash Message + Main Content -->
         <main class="py-8">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

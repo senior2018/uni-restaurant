@@ -34,13 +34,13 @@ const recentOrders = computed(() => props.orders.slice(0, 5));
                     <i class="fas fa-check-circle text-2xl text-green-500 mb-2"></i>
                     <div class="text-sm text-gray-500">Completed</div>
                     <div class="text-2xl font-bold text-gray-800">{{ completedOrders }}</div>
-                </div>
+                                </div>
                 <div class="bg-white p-6 rounded-xl shadow flex flex-col items-center">
                     <i class="fas fa-times-circle text-2xl text-red-500 mb-2"></i>
                     <div class="text-sm text-gray-500">Cancelled</div>
                     <div class="text-2xl font-bold text-gray-800">{{ cancelledOrders }}</div>
-                </div>
-            </div>
+                            </div>
+                        </div>
             <div class="flex flex-wrap gap-4 mb-8">
                 <Link :href="route('menu.public')" class="px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center gap-2">
                     <i class="fas fa-utensils"></i> Menu
@@ -51,7 +51,7 @@ const recentOrders = computed(() => props.orders.slice(0, 5));
                 <Link :href="route('customer.orders')" class="px-6 py-3 bg-blue-100 text-blue-700 rounded-lg font-semibold hover:bg-blue-200 transition-colors flex items-center gap-2">
                     <i class="fas fa-receipt"></i> My Orders
                 </Link>
-            </div>
+                    </div>
             <div class="bg-white rounded-xl shadow p-6">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">Recent Orders</h2>
                 <div v-if="recentOrders.length === 0" class="text-gray-500">No recent orders yet.</div>
