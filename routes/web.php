@@ -101,7 +101,21 @@ Route::get('/', function () {
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
     ]);
-});
+})->name('home');
+
+Route::get('/login', function () {
+    return Inertia::render('Auth/Login', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+    ]);
+})->name('login');
+
+Route::get('/register', function () {
+    return Inertia::render('Auth/Register', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+    ]);
+})->name('register');
 
 // SINGLE DASHBOARD ROUTE FOR ALL ROLES
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -166,6 +180,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/orders/{order}/approve-cancellation', [\App\Http\Controllers\Admin\AdminOrderController::class, 'approveCancellation'])->name('orders.approveCancellation');
     Route::post('/orders/{order}/reject-cancellation', [\App\Http\Controllers\Admin\AdminOrderController::class, 'rejectCancellation'])->name('orders.rejectCancellation');
     Route::post('/orders/mark-cancellation-seen', [\App\Http\Controllers\Admin\AdminOrderController::class, 'markCancellationSeen'])->name('orders.markCancellationSeen');
+    Route::get('/pending-cancellations', [\App\Http\Controllers\Admin\AdminOrderController::class, 'pendingCancellations'])->name('pendingCancellations');
+    Route::post('/orders/{order}/status', [\App\Http\Controllers\Admin\AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
 });
 
 //STAFF ROUTES
@@ -185,6 +201,9 @@ Route::middleware(['auth', 'verified'])->prefix('staff')->name('staff.')->group(
     Route::post('/orders/{order}/reject-cancellation', [\App\Http\Controllers\StaffOrderController::class, 'rejectCancellation'])->name('orders.rejectCancellation');
     Route::post('/orders/mark-cancellation-seen', [\App\Http\Controllers\StaffOrderController::class, 'markCancellationSeen'])->name('orders.markCancellationSeen');
     Route::get('/pending-cancellations', [\App\Http\Controllers\StaffOrderController::class, 'pendingCancellations'])->name('pendingCancellations');
+    Route::get('/report-issue', [\App\Http\Controllers\Staff\ReportIssueController::class, 'create'])->name('report-issue');
+    Route::post('/report-issue', [\App\Http\Controllers\SupportTicketController::class, 'store'])->name('report-issue.store');
+    Route::get('/my-support-tickets', [\App\Http\Controllers\SupportTicketController::class, 'myTickets'])->name('support-tickets.mine');
 });
 
 // CUSTOMER ROUTES (if needed)
@@ -221,3 +240,68 @@ Route::middleware(['auth', 'verified'])->post('/my-orders/{order}/edit', [\App\H
 // Customer withdraw cancellation request (POST)
 Route::middleware(['auth', 'verified'])->post('/orders/{order}/cancel-request', [\App\Http\Controllers\CustomerOrderController::class, 'cancelRequest'])->name('customer.orders.cancelRequest');
 require __DIR__.'/auth.php';
+
+// Ratings & Alerts (Customer)
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::post('/ratings', [\App\Http\Controllers\RatingController::class, 'store'])->name('ratings.store');
+    Route::post('/alerts', [\App\Http\Controllers\AlertController::class, 'store'])->name('alerts.store');
+});
+
+// Ratings & Alerts (Admin/Staff)
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/ratings', [\App\Http\Controllers\RatingController::class, 'index'])->name('ratings.index');
+    Route::get('/ratings/{rating}', [\App\Http\Controllers\RatingController::class, 'show'])->name('ratings.show');
+    Route::patch('/ratings/{rating}/respond', [\App\Http\Controllers\RatingController::class, 'respond'])->name('ratings.respond');
+
+    Route::get('/alerts', [\App\Http\Controllers\AlertController::class, 'index'])->name('alerts.index');
+    Route::get('/alerts/{alert}', [\App\Http\Controllers\AlertController::class, 'show'])->name('alerts.show');
+    Route::patch('/alerts/{alert}/respond', [\App\Http\Controllers\AlertController::class, 'respond'])->name('alerts.respond');
+    Route::patch('/alerts/{alert}/resolve', [\App\Http\Controllers\AlertController::class, 'resolve'])->name('alerts.resolve');
+});
+
+// Admin alerts management
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/alerts', [\App\Http\Controllers\AlertController::class, 'adminIndex'])
+        ->name('admin.alerts.index')
+        ->middleware('can:viewAny,App\\Models\\Alert');
+    Route::patch('/admin/alerts/{alert}/respond', [\App\Http\Controllers\AlertController::class, 'respond'])
+        ->name('admin.alerts.respond')
+        ->middleware('can:viewAny,App\\Models\\Alert');
+    Route::patch('/admin/alerts/{alert}/resolve', [\App\Http\Controllers\AlertController::class, 'resolve'])
+        ->name('admin.alerts.resolve')
+        ->middleware('can:viewAny,App\\Models\\Alert');
+    Route::delete('/admin/alerts/bulk-destroy', [\App\Http\Controllers\AlertController::class, 'bulkDestroy'])
+        ->name('admin.alerts.bulkDestroy')
+        ->middleware('can:viewAny,App\\Models\\Alert');
+    Route::delete('/admin/alerts/{alert}', [\App\Http\Controllers\AlertController::class, 'destroy'])
+        ->name('admin.alerts.destroy')
+        ->middleware('can:delete,alert');
+});
+// Staff alerts management
+Route::middleware(['auth'])->group(function () {
+    Route::get('/staff/alerts', [\App\Http\Controllers\AlertController::class, 'staffIndex'])
+        ->name('staff.alerts.index')
+        ->middleware('can:viewAny,App\\Models\\Alert');
+    Route::patch('/staff/alerts/{alert}/respond', [\App\Http\Controllers\AlertController::class, 'respond'])
+        ->name('staff.alerts.respond')
+        ->middleware('can:viewAny,App\\Models\\Alert');
+    // No resolve route for staff
+});
+
+// Notification mark as read
+Route::middleware(['auth', 'verified'])->post('/notifications/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.read');
+Route::middleware(['auth', 'verified'])->post('/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead']);
+
+// Support ticket/contact routes
+Route::post('/contact', [\App\Http\Controllers\SupportTicketController::class, 'store'])->name('contact.store');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/support-tickets', [\App\Http\Controllers\SupportTicketController::class, 'index'])->name('admin.support-tickets.index');
+    Route::patch('/support-tickets/{ticket}/respond', [\App\Http\Controllers\SupportTicketController::class, 'adminRespond'])->name('support-tickets.respond');
+});
+
+Route::get('/contact', function () {
+    return Inertia::render('Guest/Contact', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+    ]);
+})->name('contact');

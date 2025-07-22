@@ -8,6 +8,8 @@ use App\Policies\MealPolicy;
 use App\Policies\MealCategoryPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 // use Illuminate\Support\ServiceProvider;
+use App\Models\SupportTicket;
+use App\Policies\SupportTicketPolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         Meal::class => MealPolicy::class,
         MealCategory::class => MealCategoryPolicy::class,
+        SupportTicket::class => SupportTicketPolicy::class,
     ];
 
     /**

@@ -22,6 +22,10 @@ defineProps({
                         </span>
                     </div>
                     <div class="flex items-center space-x-4">
+                        <Link :href="route('contact')"
+                            class="px-4 py-2 border-2 border-blue-600 text-blue-600 rounded hover:bg-blue-50 transition flex items-center gap-2">
+                            <i class="fas fa-headset"></i> Contact Support
+                        </Link>
                         <Link v-if="canLogin"
                             :href="route('login')"
                             class="px-4 py-2 text-green-600 hover:text-green-800 transition">
@@ -55,6 +59,10 @@ defineProps({
                     <Link :href="route('register')"
                         class="px-6 py-3 border-2 border-green-600 text-green-600 rounded-lg hover:bg-green-50 transition">
                         Create Account
+                    </Link>
+                    <Link :href="route('contact')"
+                        class="px-6 py-3 border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition flex items-center gap-2">
+                        <i class="fas fa-headset"></i> Contact Support
                     </Link>
                 </div>
             </div>

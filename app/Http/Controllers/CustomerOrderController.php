@@ -9,12 +9,13 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+use App\Notifications\NewOrderPlacedNotification;
+use App\Models\User;
 
 class CustomerOrderController extends Controller
 {
     public function store(Request $request)
     {
-        Log::error('Test log entry from CustomerOrderController@store');
         $validated = $request->validate([
             'cart' => 'required|array|min:1',
             'cart.*.id' => 'required|integer|exists:meals,id',
@@ -28,18 +29,44 @@ class CustomerOrderController extends Controller
 
         DB::beginTransaction();
         try {
-            Log::error('Cart data for order: ' . json_encode($validated['cart']));
             $total = collect($validated['cart'])->sum(function ($item) {
                 return $item['quantity'] * (float)($item['price'] ?? 0);
             });
-            Log::error('Calculated total: ' . $total);
-            $order = Order::create([
+            // Auto-assign staff with <5 pending and <5 preparing orders, prefer similarity
+            $orderMealIds = collect($validated['cart'])->pluck('id')->unique()->toArray();
+            $staffCandidates = \App\Models\User::where('role', 'staff')
+                ->with(['orders' => function($q) {
+                    $q->whereIn('status', ['pending', 'preparing']);
+                }])
+                ->get()
+                ->filter(function($staff) {
+                    $pending = $staff->orders->where('status', 'pending')->count();
+                    $preparing = $staff->orders->where('status', 'preparing')->count();
+                    return $pending < 5 && $preparing < 5;
+                });
+            $staffToAssign = null;
+            $maxSimilarity = -1;
+            foreach ($staffCandidates as $staff) {
+                $staffMealIds = $staff->orders->flatMap(function($order) {
+                    return $order->items->pluck('meal_id');
+                })->unique()->toArray();
+                $similarity = count(array_intersect($orderMealIds, $staffMealIds));
+                if ($similarity > $maxSimilarity) {
+                    $maxSimilarity = $similarity;
+                    $staffToAssign = $staff;
+                }
+            }
+            $orderData = [
                 'user_id' => $user->id,
                 'delivery_location' => $validated['delivery_location'],
                 'payment_method' => $validated['payment_method'],
                 'status' => 'pending',
                 'total_price' => $total,
-            ]);
+            ];
+            if ($staffToAssign) {
+                $orderData['staff_id'] = $staffToAssign->id;
+            }
+            $order = Order::create($orderData);
 
             foreach ($validated['cart'] as $item) {
                 OrderItem::create([
@@ -51,6 +78,11 @@ class CustomerOrderController extends Controller
             }
 
             DB::commit();
+            // Notify all staff and admins
+            $staffAndAdmins = User::whereIn('role', ['staff', 'admin'])->get();
+            foreach ($staffAndAdmins as $recipient) {
+                $recipient->notify(new NewOrderPlacedNotification($order, $user->name));
+            }
             // Redirect to My Orders with success flash message
             return redirect()->route('customer.orders')->with('success', 'Order placed successfully!');
         } catch (\Exception $e) {

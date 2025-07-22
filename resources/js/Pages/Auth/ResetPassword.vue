@@ -26,6 +26,7 @@ const submit = () => {
 
 <template>
     <GuestLayout>
+        <template #header />
         <Head title="Reset Password" />
 
         <form @submit.prevent="submit" class="max-w-md mx-auto mt-6">
@@ -71,5 +72,6 @@ const submit = () => {
                 </PrimaryButton>
             </div>
         </form>
+        <template #footer />
     </GuestLayout>
 </template>

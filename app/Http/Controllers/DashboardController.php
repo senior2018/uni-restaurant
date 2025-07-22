@@ -38,7 +38,12 @@ class DashboardController extends Controller
                     'user' => $user,
                     'stats' => [
                         'total_users' => User::count(),
-                        'active_orders' => Order::where('status', '!=', 'delivered')->count(),
+                        'pending_orders' => Order::where('status', 'pending')->count(),
+                        'preparing_orders' => Order::where('status', 'preparing')->count(),
+                        'delivered_orders' => Order::where('status', 'delivered')->count(),
+                        'cancelled_orders' => Order::where('status', 'cancelled')->count(),
+                        'pending_cancellation_count' => Order::where('status', 'preparing')->where('cancellation_requested', true)->count(),
+                        'unseen_cancellation_count' => Order::where('status', 'preparing')->where('cancellation_requested', true)->where('cancellation_request_seen', false)->count(),
                     ],
                     'pendingAlerts' => Alert::where('resolved', false)->get(),
                 ]);

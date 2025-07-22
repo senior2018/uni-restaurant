@@ -3,8 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Alert;
+use App\Models\Order;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Notifications\Notification;
 
 class DatabaseSeeder extends Seeder
 {
@@ -24,6 +27,20 @@ class DatabaseSeeder extends Seeder
             RatingSeeder::class,
             AlertSeeder::class,
             OtpVerificationsSeeder::class,
+            NotificationSeeder::class,
         ]);
+
+        // Seed notifications for testing
+        $user = User::first();
+        $order = Order::first();
+        if ($user && $order) {
+            $alert = Alert::create([
+                'user_id' => $user->id,
+                'order_id' => $order->id,
+                'reason' => 'Test alert seeded',
+                'resolved' => false,
+            ]);
+            $user->notify(new \App\Notifications\NewAlertNotification($alert));
+        }
     }
 }

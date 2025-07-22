@@ -1,6 +1,6 @@
 <script setup>
 import StaffLayout from './Layout.vue';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { router } from '@inertiajs/vue3';
 import Modal from '../../Components/Modal.vue';
 import axios from 'axios';
@@ -8,12 +8,40 @@ import axios from 'axios';
 const props = defineProps({
     user: Object,
     orders: Object, // paginated
-    filters: Object
+    filters: Object,
+    suggestedOrders: Array
 });
 
 const search = ref(props.filters.search || '');
 const showModal = ref(false);
 const selectedOrder = ref(null);
+const showSimilarModal = ref(false);
+const similarOrders = ref([]);
+const baseOrder = ref(null);
+const similarSort = ref('similarity_desc');
+
+const sortedSimilarOrders = computed(() => {
+    if (!similarOrders.value) return [];
+    let arr = [...similarOrders.value];
+    if (similarSort.value === 'similarity_desc') {
+        arr.sort((a, b) => b.similarity_score - a.similarity_score);
+    } else if (similarSort.value === 'similarity_asc') {
+        arr.sort((a, b) => a.similarity_score - b.similarity_score);
+    } else if (similarSort.value === 'date_desc') {
+        arr.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    } else if (similarSort.value === 'date_asc') {
+        arr.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    }
+    return arr;
+});
+
+const hasActiveFilters = computed(() => {
+    return search.value;
+});
+const clearAllFilters = () => {
+    search.value = '';
+    applyFilters();
+};
 
 function applyFilters() {
     router.get(route('staff.unassignedOrders'), {
@@ -28,6 +56,17 @@ function openModal(order) {
 function closeModal() {
     showModal.value = false;
     selectedOrder.value = null;
+}
+
+function openSimilarModal(order) {
+    similarOrders.value = order.similar_orders || [];
+    baseOrder.value = order;
+    showSimilarModal.value = true;
+}
+function closeSimilarModal() {
+    showSimilarModal.value = false;
+    similarOrders.value = [];
+    baseOrder.value = null;
 }
 
 function claimOrder(orderId) {
@@ -49,7 +88,40 @@ function claimOrder(orderId) {
                     <label class="block text-sm font-medium">Search</label>
                     <input type="text" v-model="search" @keyup.enter="applyFilters" placeholder="Order ID or Customer" class="border rounded px-2 py-1" />
                 </div>
-                <button @click="applyFilters" class="px-4 py-2 bg-yellow-600 text-white rounded">Apply</button>
+                <!-- Removed Apply button; filters now apply automatically on change/enter -->
+            </div>
+            <!-- Active Filters Display -->
+            <div v-if="hasActiveFilters" class="mb-4 flex flex-wrap gap-2">
+                <span class="text-sm text-gray-600">Active filters:</span>
+                <span v-if="search" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    Search: "{{ search }}"
+                    <button @click="search = ''; applyFilters()" class="ml-1 text-blue-600 hover:text-blue-800">×</button>
+                </span>
+                <button @click="clearAllFilters" class="px-4 py-1 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 flex items-center gap-2 shadow ml-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    Clear Filters
+                </button>
+            </div>
+            <!-- Suggested for you -->
+            <div v-if="suggestedOrders && suggestedOrders.length" class="mb-8">
+                <h3 class="text-lg font-semibold text-blue-700 mb-2 flex items-center gap-2">
+                    <i class="fas fa-lightbulb"></i> Suggested for you
+                </h3>
+                <div class="space-y-2">
+                    <div v-for="order in suggestedOrders" :key="order.id" class="p-4 border-2 border-blue-300 bg-blue-50 rounded-lg flex justify-between items-center hover:bg-blue-100 transition-colors mb-1">
+                        <div>
+                            <span class="font-medium">Order #{{ order.id }}</span>
+                            <span class="text-sm text-gray-500 ml-2">{{ order.created_at }}</span>
+                            <span class="ml-4 px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">Pending</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button @click="openModal(order)" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">View Details</button>
+                            <button @click="claimOrder(order.id)" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Claim</button>
+                        </div>
+                    </div>
+                </div>
             </div>
             <!-- Order List -->
             <div v-if="orders.data.length === 0" class="text-gray-500">No unassigned orders.</div>
@@ -58,7 +130,19 @@ function claimOrder(orderId) {
                     <div>
                         <span class="font-medium">Order #{{ order.id }}</span>
                         <span class="text-sm text-gray-500 ml-2">{{ order.created_at }}</span>
-                        <span class="ml-4 px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">{{ order.status }}</span>
+                        <span class="ml-4 px-3 py-1 rounded-full text-xs font-semibold"
+                              :class="{
+                                'bg-orange-100 text-orange-700': order.status === 'preparing' && order.cancellation_requested,
+                                'bg-yellow-100 text-yellow-700': order.status === 'pending',
+                                'bg-blue-100 text-blue-700': order.status === 'preparing' && !order.cancellation_requested,
+                                'bg-green-100 text-green-700': order.status === 'delivered',
+                                'bg-red-100 text-red-700': order.status === 'cancelled',
+                              }">
+                            {{ order.status === 'preparing' && order.cancellation_requested ? 'Preparing (Cancellation Requested)' : order.status.charAt(0).toUpperCase() + order.status.slice(1) }}
+                        </span>
+                        <button v-if="order.similar_orders && order.similar_orders.length" @click="openSimilarModal(order)" class="ml-2 px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-200 text-blue-800 hover:bg-blue-300 transition">
+                            {{ order.similar_orders.length }} similar order{{ order.similar_orders.length > 1 ? 's' : '' }}
+                        </button>
                     </div>
                     <div class="flex gap-2">
                         <button @click="openModal(order)" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">View Details</button>
@@ -78,7 +162,16 @@ function claimOrder(orderId) {
                     <div class="flex items-center gap-2 mb-4">
                         <span class="font-bold">Order #{{ selectedOrder?.id }}</span>
                         <span class="text-xs text-gray-500">{{ selectedOrder?.created_at }}</span>
-                        <span class="ml-2 px-2 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">{{ selectedOrder?.status }}</span>
+                        <span class="ml-2 px-2 py-0.5 rounded-full text-xs font-semibold"
+                              :class="{
+                                'bg-orange-100 text-orange-700': selectedOrder?.status === 'preparing' && selectedOrder?.cancellation_requested,
+                                'bg-yellow-100 text-yellow-700': selectedOrder?.status === 'pending',
+                                'bg-blue-100 text-blue-700': selectedOrder?.status === 'preparing' && !selectedOrder?.cancellation_requested,
+                                'bg-green-100 text-green-700': selectedOrder?.status === 'delivered',
+                                'bg-red-100 text-red-700': selectedOrder?.status === 'cancelled',
+                              }">
+                            {{ selectedOrder?.status === 'preparing' && selectedOrder?.cancellation_requested ? 'Preparing (Cancellation Requested)' : selectedOrder?.status?.charAt(0).toUpperCase() + selectedOrder?.status?.slice(1) }}
+                        </span>
                     </div>
                     <div class="mb-4">
                         <div class="font-medium">Customer: <span class="text-gray-700">{{ selectedOrder?.user?.name || 'N/A' }}</span></div>
@@ -108,6 +201,64 @@ function claimOrder(orderId) {
                     </div>
                     <div class="mt-6 flex justify-end">
                         <button @click="closeModal" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Close</button>
+                    </div>
+                </div>
+            </Modal>
+            <!-- Similar Orders Modal -->
+            <Modal :show="showSimilarModal" @close="closeSimilarModal">
+                <div class="p-6 max-w-2xl w-full mx-auto">
+                    <h3 class="text-lg font-bold mb-4">Similar Orders to #{{ baseOrder?.id }}</h3>
+                    <div class="flex items-center gap-4 mb-4">
+                        <label class="text-sm font-medium">Sort by:</label>
+                        <select v-model="similarSort" class="border rounded px-2 py-1 text-sm">
+                            <option value="similarity_desc">Similarity (High to Low)</option>
+                            <option value="similarity_asc">Similarity (Low to High)</option>
+                            <option value="date_desc">Newest First</option>
+                            <option value="date_asc">Oldest First</option>
+                        </select>
+                    </div>
+                    <div v-if="sortedSimilarOrders.length === 0" class="text-gray-500">No similar orders found.</div>
+                    <div v-else class="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
+                        <div v-for="order in sortedSimilarOrders" :key="order.id" class="border rounded p-4 bg-blue-50">
+                            <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-2 gap-2">
+                                <div>
+                                    <span class="font-medium">Order #{{ order.id }}</span>
+                                    <span class="text-sm text-gray-500 ml-2">{{ order.created_at }}</span>
+                                    <span class="ml-2 px-2 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">Pending</span>
+                                    <span class="ml-2 px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-200 text-blue-800">{{ order.similarity_score }} similar meal{{ order.similarity_score > 1 ? 's' : '' }}</span>
+                                </div>
+                                <button @click="claimOrder(order.id)" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Claim</button>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-700 mb-2">
+                                <div>Customer: {{ order.user?.name || 'N/A' }}</div>
+                                <div>Delivery: {{ order.delivery_location }}</div>
+                                <div>Payment: {{ order.payment_method }}</div>
+                                <div>Total: {{ order.total_price }}</div>
+                            </div>
+                            <div class="overflow-x-auto mt-2">
+                                <table class="min-w-full text-xs border">
+                                    <thead>
+                                        <tr class="bg-gray-100">
+                                            <th class="px-2 py-1 text-left">Meal</th>
+                                            <th class="px-2 py-1 text-left">Qty</th>
+                                            <th class="px-2 py-1 text-left">Unit Price</th>
+                                            <th class="px-2 py-1 text-left">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="meal in order.meals" :key="meal.id" class="border-t">
+                                            <td class="px-2 py-1 whitespace-nowrap">{{ meal.name }}</td>
+                                            <td class="px-2 py-1">{{ meal.quantity }}</td>
+                                            <td class="px-2 py-1">{{ meal.price }}</td>
+                                            <td class="px-2 py-1">{{ (meal.price * meal.quantity).toFixed(2) }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-end">
+                        <button @click="closeSimilarModal" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Close</button>
                     </div>
                 </div>
             </Modal>

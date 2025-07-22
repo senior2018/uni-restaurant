@@ -1,8 +1,10 @@
 <script setup>
 import CustomerLayout from './Layout.vue';
-import { ref, computed } from 'vue';
+import { ref, computed, reactive } from 'vue';
 import { router, usePage } from '@inertiajs/vue3';
 import Modal from '../../Components/Modal.vue';
+import StarRating from '../../Components/StarRating.vue';
+import { onMounted, nextTick } from 'vue';
 
 const props = defineProps({
     orders: Array,
@@ -126,6 +128,73 @@ function cancelCancellationRequest(orderId) {
         onError: () => {},
     });
 }
+
+// --- Rating Modal State ---
+const showRatingModal = ref(false);
+const ratingOrder = ref(null); // The order being rated
+const orderRating = ref(0); // 1-5 stars
+const orderComment = ref(""); // Single comment for the whole order
+const ratedOrderIds = computed(() => props.orders.filter(o => o.rating).map(o => o.id));
+
+function openRatingModal(order) {
+    ratingOrder.value = order;
+    orderRating.value = 0;
+    orderComment.value = "";
+    showRatingModal.value = true;
+}
+function closeRatingModal() {
+    showRatingModal.value = false;
+    ratingOrder.value = null;
+    orderRating.value = 0;
+    orderComment.value = "";
+}
+function submitOrderRating() {
+    if (!orderRating.value) return;
+    router.post(route('ratings.store'), {
+        order_id: ratingOrder.value.id,
+        rating: orderRating.value,
+        comment: orderComment.value,
+    }, {
+        preserveScroll: true,
+        onSuccess: () => closeRatingModal(),
+    });
+}
+// Auto-open modal for most recent delivered, unrated order
+onMounted(() => {
+    nextTick(() => {
+        const deliveredUnrated = props.orders.filter(o => o.status === 'delivered' && !o.rating);
+        if (deliveredUnrated.length > 0) {
+            openRatingModal(deliveredUnrated[0]);
+        }
+    });
+});
+
+// --- Alert Modal State ---
+const showAlertModal = ref(false);
+const alertOrder = ref(null);
+const alertReason = ref('');
+
+function openAlertModal(order) {
+    alertOrder.value = order;
+    alertReason.value = '';
+    showAlertModal.value = true;
+}
+function closeAlertModal() {
+    showAlertModal.value = false;
+    alertOrder.value = null;
+    alertReason.value = '';
+}
+async function submitAlert() {
+    if (!alertReason.value.trim()) return;
+    await router.post(route('alerts.store'), {
+        order_id: alertOrder.value.id,
+        reason: alertReason.value,
+    }, {
+        preserveScroll: true,
+        onSuccess: () => closeAlertModal(),
+        onError: () => {},
+    });
+}
 </script>
 
 <template>
@@ -141,7 +210,7 @@ function cancelCancellationRequest(orderId) {
                 <span><i class="fas fa-exclamation-circle mr-2"></i>{{ page.props.flash.error }}</span>
             </div>
         </div>
-        <div class="min-h-screen bg-gray-50 p-6 max-w-4xl mx-auto">
+        <div class="min-h-screen bg-gray-50 p-6 w-full px-4">
             <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">My Orders</h1>
             <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
                 <div class="flex items-center gap-2">
@@ -172,8 +241,16 @@ function cancelCancellationRequest(orderId) {
                             <span class="text-sm text-gray-500">{{ formatDate(order.created_at) }}</span>
                         </div>
                         <div class="flex items-center gap-2 mt-2 md:mt-0">
-                            <span class="px-3 py-1 rounded-full text-xs font-semibold" :class="statusBadgeClass(order.status)">
-                                {{ order.status.charAt(0).toUpperCase() + order.status.slice(1) }}
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold"
+                                  :class="{
+                                    'bg-orange-100 text-orange-700': order.status === 'preparing' && order.cancellation_requested,
+                                    'bg-yellow-100 text-yellow-700': order.status === 'pending',
+                                    'bg-blue-100 text-blue-700': order.status === 'preparing' && !order.cancellation_requested,
+                                    'bg-green-100 text-green-700': order.status === 'completed',
+                                    'bg-red-100 text-red-700': order.status === 'cancelled',
+                                    'bg-gray-100 text-gray-700': !['pending','preparing','completed','cancelled'].includes(order.status),
+                                  }">
+                                {{ order.status === 'preparing' && order.cancellation_requested ? 'Preparing (Cancellation Requested)' : order.status.charAt(0).toUpperCase() + order.status.slice(1) }}
                             </span>
                             <span class="font-bold text-green-700 ml-2">{{ formatPrice(order.total_price) }}</span>
                             <button @click="toggleOrder(order.id)" class="ml-4 text-green-600 hover:underline text-xs">
@@ -227,6 +304,34 @@ function cancelCancellationRequest(orderId) {
                                 <!-- Show status if cancelled or rejected -->
                                 <div v-if="order.status === 'cancelled'" class="mt-4 text-red-700 font-semibold">Order Cancelled</div>
                                 <div v-else-if="order.status === 'preparing' && !order.cancellation_requested && order.cancellation_reason && page.props.flash?.error" class="mt-4 text-red-700 font-semibold">Request Rejected</div>
+                                <div v-if="order.status === 'delivered'" class="mt-4 flex gap-4 flex-wrap">
+                                    <button v-if="!order.ratings || order.ratings.length < order.items.length" @click="openRatingModal(order)" class="px-4 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-primary-dark transition-colors">
+                                        Rate Order
+                                    </button>
+                                    <div v-else class="flex flex-col gap-2">
+                                        <div v-for="rating in order.ratings" :key="rating.id" class="flex items-center gap-2">
+                                            <span class="font-medium text-green-700">{{ rating.meal?.name || 'Meal' }}:</span>
+                                            <span class="flex items-center">
+                                                <i v-for="n in 5" :key="n" class="fas fa-star" :class="n <= rating.rating ? 'text-yellow-400' : 'text-gray-300'"></i>
+                                            </span>
+                                            <span v-if="rating.comment" class="text-gray-600 ml-2 italic">"{{ rating.comment }}"</span>
+                                            <span v-if="rating.response_comment" class="ml-4 px-2 py-1 rounded bg-green-100 text-green-800 text-xs">Staff: {{ rating.response_comment }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-4 flex gap-4 flex-wrap">
+                                    <button @click="openAlertModal(order)" class="px-4 py-2 bg-accent-yellow text-gray-900 rounded-lg font-semibold hover:bg-yellow-300 transition-colors">
+                                        Report Issue
+                                    </button>
+                                </div>
+                                <div v-if="order.alerts && order.alerts.length" class="mt-4 flex flex-col gap-2">
+                                    <div v-for="alert in order.alerts" :key="alert.id" class="p-3 rounded border border-yellow-200 bg-yellow-50">
+                                        <div class="font-medium text-yellow-800">Alert: {{ alert.reason }}</div>
+                                        <div v-if="alert.resolved" class="text-green-700 text-xs mt-1">Resolved</div>
+                                        <div v-else-if="alert.staff_response" class="text-blue-700 text-xs mt-1">Staff: {{ alert.staff_response }}</div>
+                                        <div v-else class="text-yellow-700 text-xs mt-1">Pending</div>
+                                    </div>
+                                </div>
                             </div>
                             <div v-if="editingOrderId === order.id" class="mt-4 bg-gray-50 p-4 rounded-lg border">
                                 <form @submit.prevent="updateOrder(order.id)" class="space-y-4">
@@ -271,6 +376,33 @@ function cancelCancellationRequest(orderId) {
                     <button @click="closeCancelModal" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Close</button>
                     <button :disabled="!cancelReason.trim()" @click="submitCancelOrder" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
                         {{ cancelOrderStatus === 'pending' ? 'Cancel Order' : 'Request Cancellation' }}
+                    </button>
+                </div>
+            </div>
+        </Modal>
+        <!-- Rating Modal -->
+        <Modal :show="showRatingModal" @close="closeRatingModal">
+            <div class="p-6">
+                <h2 class="text-xl font-bold mb-4">Rate Your Order</h2>
+                <div class="flex flex-col items-center mb-4">
+                    <StarRating v-model="orderRating" :max="5" />
+                </div>
+                <textarea v-model="orderComment" class="w-full border rounded p-2 mb-4" rows="3" placeholder="Leave a comment (optional)"></textarea>
+                <div class="flex justify-end gap-2">
+                    <button @click="closeRatingModal" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Cancel</button>
+                    <button @click="submitOrderRating" :disabled="!orderRating" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50">Submit</button>
+                </div>
+            </div>
+        </Modal>
+        <!-- Alert Modal -->
+        <Modal :show="showAlertModal" @close="closeAlertModal">
+            <div class="p-6 max-w-lg mx-auto">
+                <h2 class="text-lg font-bold mb-4">Report an Issue</h2>
+                <textarea v-model="alertReason" class="w-full border rounded p-2 mb-4" rows="3" placeholder="Describe the issue (required)"></textarea>
+                <div class="flex justify-end gap-2">
+                    <button @click="closeAlertModal" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Close</button>
+                    <button :disabled="!alertReason.trim()" @click="submitAlert" class="px-4 py-2 bg-accent-yellow text-gray-900 rounded hover:bg-yellow-300">
+                        Submit Alert
                     </button>
                 </div>
             </div>

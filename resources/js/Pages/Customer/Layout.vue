@@ -13,6 +13,7 @@ const navLinks = [
     { name: 'Menu', route: route('menu.public'), icon: 'fas fa-utensils' },
     { name: 'My Plate', route: route('cart'), icon: 'fas fa-plate-wheat' },
     { name: 'My Orders', route: route('customer.orders'), icon: 'fas fa-receipt' },
+    { name: 'Contact Support', route: route('contact'), icon: 'fas fa-headset' },
 ];
 
 const isActive = (href) => {
@@ -43,23 +44,21 @@ watchEffect(() => {
     <BaseLayout>
         <TopNavBar :links="navLinks" :user="user" role="customer" brand="Uni Restaurant" />
         <!-- Flash Messages -->
-        <div v-if="page.props.flash?.success" class="max-w-2xl mx-auto mt-4">
+        <div v-if="page.props.flash?.success" class="w-full px-4 mt-4">
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 flex items-center justify-between">
                 <span><i class="fas fa-check-circle mr-2"></i>{{ page.props.flash.success }}</span>
                 <button @click="page.props.flash.success = null" class="text-green-700 hover:text-green-900">&times;</button>
             </div>
         </div>
-        <div v-if="page.props.flash?.error" class="max-w-2xl mx-auto mt-4">
+        <div v-if="page.props.flash?.error" class="w-full px-4 mt-4">
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 flex items-center justify-between">
                 <span><i class="fas fa-exclamation-circle mr-2"></i>{{ page.props.flash.error }}</span>
                 <button @click="page.props.flash.error = null" class="text-red-700 hover:text-red-900">&times;</button>
             </div>
         </div>
         <!-- Main Content -->
-        <main class="py-8 bg-gray-50 min-h-screen">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <slot />
-            </div>
+        <main class="py-8 bg-gray-50 min-h-screen w-full px-4">
+            <slot />
         </main>
     </BaseLayout>
 </template>

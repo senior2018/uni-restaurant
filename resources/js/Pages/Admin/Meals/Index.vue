@@ -21,73 +21,75 @@
 
             <!-- Search and Filter Section -->
             <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
-                <div class="flex flex-col md:flex-row gap-4">
-                    <!-- Search Bar -->
-                    <div class="flex-1">
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                </svg>
+                <div class="flex flex-col md:flex-row md:items-end md:space-x-6 gap-4">
+                    <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Search Bar -->
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Search</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    </svg>
+                                </div>
+                                <input
+                                    v-model="searchQuery"
+                                    type="text"
+                                    placeholder="Search meals by name or category..."
+                                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                />
+                                <!-- Clear Search Button -->
+                                <button
+                                    v-if="searchQuery"
+                                    @click="searchQuery = ''"
+                                    class="absolute inset-y-0 right-0 pr-3 flex items-center"
+                                >
+                                    <svg class="h-4 w-4 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
                             </div>
-                            <input
-                                v-model="searchQuery"
-                                type="text"
-                                placeholder="Search meals by name or category..."
-                                class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                            />
-                            <!-- Clear Search Button -->
-                            <button
-                                v-if="searchQuery"
-                                @click="searchQuery = ''"
-                                class="absolute inset-y-0 right-0 pr-3 flex items-center"
+                        </div>
+                        <!-- Status Filter -->
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Status</label>
+                            <select
+                                v-model="statusFilter"
+                                class="block w-full px-3 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                             >
-                                <svg class="h-4 w-4 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>
+                                <option value="all">All Items</option>
+                                <option value="available">Available Only</option>
+                                <option value="unavailable">Unavailable Only</option>
+                                <option value="deleted">Deleted Only</option>
+                            </select>
+                        </div>
+                        <!-- Category Filter -->
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Category</label>
+                            <select
+                                v-model="categoryFilter"
+                                class="block w-full px-3 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                                <option value="all">All Categories</option>
+                                <option v-for="category in categories" :key="category.id" :value="category.id">
+                                    {{ category.name }}
+                                </option>
+                            </select>
                         </div>
                     </div>
-
-                    <!-- Status Filter (Updated) -->
-                    <div class="flex-shrink-0">
-                        <select
-                            v-model="statusFilter"
-                            class="block w-full px-3 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    <div class="flex-1 flex justify-end mt-4 md:mt-0">
+                        <button
+                            v-if="searchQuery || statusFilter !== 'all' || categoryFilter !== 'all'"
+                            @click="clearAllFilters"
+                            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 flex items-center gap-2 shadow"
                         >
-                            <option value="all">All Items</option>
-                            <option value="available">Available Only</option>
-                            <option value="unavailable">Unavailable Only</option>
-                            <option value="deleted">Deleted Only</option>
-                        </select>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                            Clear Filters
+                        </button>
                     </div>
-
-                    <!-- Category Filter -->
-                    <div class="flex-shrink-0">
-                        <select
-                            v-model="categoryFilter"
-                            class="block w-full px-3 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                        >
-                            <option value="all">All Categories</option>
-                            <option v-for="category in categories" :key="category.id" :value="category.id">
-                                {{ category.name }}
-                            </option>
-                        </select>
-                    </div>
-
-                    <!-- Clear Filters Button -->
-                    <button
-                        v-if="searchQuery || statusFilter !== 'all' || categoryFilter !== 'all'"
-                        @click="clearAllFilters"
-                        class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 flex items-center gap-2"
-                    >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                        </svg>
-                        Clear Filters
-                    </button>
                 </div>
-
                 <!-- Active Filters Display -->
                 <div v-if="hasActiveFilters" class="mt-4 flex flex-wrap gap-2">
                     <span class="text-sm text-gray-600">Active filters:</span>
@@ -107,7 +109,7 @@
             </div>
 
             <!-- Card Grid Layout -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
                 <div
                     v-for="meal in filteredMeals"
                     :key="meal.id"
@@ -123,7 +125,7 @@
                         <img
                             :src="meal.image_url || '/placeholder.jpg'"
                             :alt="meal.name"
-                            class="w-full h-48 object-cover"
+                            class="w-full h-32 object-cover"
                             :class="{ 'grayscale': meal.deleted_at }"
                         />
                         <!-- Status Badge -->
@@ -149,38 +151,29 @@
                     </div>
 
                     <!-- Card Content -->
-                    <div class="p-5">
+                    <div class="p-3">
                         <!-- Meal Name -->
-                        <h3 class="font-bold text-lg text-gray-800 mb-2 line-clamp-2">
+                        <h3 class="font-bold text-base text-gray-800 mb-1 line-clamp-2">
                             {{ meal.name }}
-                            <span v-if="meal.deleted_at" class="text-red-500 text-sm font-normal">(Deleted)</span>
+                            <span v-if="meal.deleted_at" class="text-red-500 text-xs font-normal">(Deleted)</span>
                         </h3>
-
                         <!-- Category -->
-                        <p class="text-gray-600 text-sm mb-3 flex items-center">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <p class="text-gray-600 text-xs mb-2 flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
                             </svg>
                             {{ meal.category.name }}
                         </p>
-
-                        <!-- Price -->
-                        <!-- <div class="mb-4">
-                            <span class="text-2xl font-bold text-green-600">
-                                ${{ Number(meal.price).toFixed(2) }}
-                            </span>
-                        </div> -->
-                        <div class="mb-4">
-                            <span class="text-2xl font-bold text-green-600">
+                        <div class="mb-2">
+                            <span class="text-lg font-bold text-green-600">
                                 {{ Number(meal.price).toLocaleString('sw-TZ', {
                                     style: 'currency',
                                     currency: 'TZS'
                                 }) }}
                             </span>
                         </div>
-
                         <!-- Action Buttons -->
-                        <div class="flex gap-2">
+                        <div class="flex gap-1">
                             <!-- Normal meal actions (not deleted) -->
                             <template v-if="!meal.deleted_at">
                                 <!-- Toggle Button -->
@@ -189,11 +182,10 @@
                                     :class="meal.is_available
                                         ? 'bg-orange-100 text-orange-700 hover:bg-orange-200'
                                         : 'bg-green-100 text-green-700 hover:bg-green-200'"
-                                    class="flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors duration-200"
+                                    class="flex-1 py-1 px-2 rounded-lg text-xs font-medium transition-colors duration-200"
                                 >
                                     {{ meal.is_available ? 'Make Unavailable' : 'Make Available' }}
                                 </button>
-
                                 <!-- Edit Button -->
                                 <div class="flex-shrink-0">
                                     <MealForm
@@ -202,39 +194,34 @@
                                         @refresh="fetchMeals"
                                     />
                                 </div>
-
                                 <!-- Delete Button -->
                                 <button
                                     @click="deleteMeal(meal)"
-                                    class="bg-red-100 text-red-600 hover:bg-red-200 p-2 rounded-lg transition-colors duration-200 flex-shrink-0"
                                     title="Move to Trash"
                                 >
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                     </svg>
                                 </button>
                             </template>
-
                             <!-- Deleted meal actions -->
                             <template v-else>
                                 <!-- Restore Button -->
                                 <button
                                     @click="restoreMeal(meal)"
-                                    class="flex-1 py-2 px-3 rounded-lg text-sm font-medium bg-green-100 text-green-700 hover:bg-green-200 transition-colors duration-200 flex items-center justify-center gap-2"
+                                    class="flex-1 py-1 px-2 rounded-lg text-xs font-medium bg-green-100 text-green-700 hover:bg-green-200 transition-colors duration-200 flex items-center justify-center gap-1"
                                 >
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                                     </svg>
                                     Restore
                                 </button>
-
                                 <!-- Permanent Delete Button -->
                                 <button
                                     @click="permanentDelete(meal)"
-                                    class="bg-red-500 text-white hover:bg-red-600 p-2 rounded-lg transition-colors duration-200 flex-shrink-0"
                                     title="Delete Forever"
                                 >
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                     </svg>
                                 </button>
@@ -409,10 +396,10 @@ const deleteMeal = (meal) => {
     router.delete(route('meals.destroy', meal.id), {
         preserveScroll: true,
         onSuccess: () => {
-            console.log('Meal moved to trash successfully');
+            // console.log('Meal moved to trash successfully');
         },
         onError: (errors) => {
-            console.error('Error moving meal to trash:', errors);
+            // console.error('Error moving meal to trash:', errors);
             alert('An error occurred while moving the meal to trash. Please try again.');
         }
     });
@@ -426,10 +413,10 @@ const restoreMeal = (meal) => {
     router.post(route('meals.restore', meal.id), {}, {
         preserveScroll: true,
         onSuccess: () => {
-            console.log('Meal restored successfully');
+            // console.log('Meal restored successfully');
         },
         onError: (errors) => {
-            console.error('Error restoring meal:', errors);
+            // console.error('Error restoring meal:', errors);
             alert('An error occurred while restoring the meal. Please try again.');
         }
     });
@@ -443,10 +430,10 @@ const permanentDelete = (meal) => {
     router.delete(route('meals.force-delete', meal.id), {
         preserveScroll: true,
         onSuccess: () => {
-            console.log('Meal permanently deleted');
+            // console.log('Meal permanently deleted');
         },
         onError: (errors) => {
-            console.error('Error permanently deleting meal:', errors);
+            // console.error('Error permanently deleting meal:', errors);
             alert('An error occurred while permanently deleting the meal. Please try again.');
         }
     });

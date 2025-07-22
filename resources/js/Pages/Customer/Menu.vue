@@ -1,6 +1,6 @@
 <template>
     <CustomerLayout :user="user">
-        <div class="min-h-screen bg-gray-50 p-6">
+        <div class="min-h-screen bg-gray-50 p-6 w-full px-4">
             <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Menu</h1>
             <div v-if="meals.length === 0" class="text-center py-12">
                 <div class="text-gray-400 text-6xl mb-4">

@@ -7,19 +7,6 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { ref } from 'vue';
 
-// Try to get props via Inertia first
-// let props;
-// try {
-
-//     props = defineProps({
-//         email: String,
-//         context: String,
-//         user_id: Number,
-//         status: String
-//     });
-// } catch (e) {
-//     props = {};
-// }
 const props = defineProps({
     email: String,
     context: String,
@@ -129,52 +116,47 @@ const contextMessages = {
 
 
 <template>
-    <GuestLayout>
-        <Head title="Verify OTP" />
-
-        <!-- Context-based heading and instruction -->
-        <div class="mb-4 text-sm text-gray-600">
-            <h2 class="font-semibold text-lg mb-2">
-                {{ contextMessages[normalizedContext]?.heading || 'Verify Your Email' }}
-            </h2>
-            <span v-html="contextMessages[normalizedContext]?.message(props.email) || `Welcome! To activate your account, please verify your email address. We've sent a <strong>verification code</strong> to <strong>${email}</strong>.
-                Please check your inbox (and spam folder). If you haven’t received the email, we’ll gladly send you a new one.
-                <br><br>
-                Enter the code below to complete your registration.`" />
-        </div>
-
-        <!-- Green success message after OTP resend -->
-        <div v-if="otpResent" class="mb-4 text-sm font-medium text-green-600">
-            A new OTP has been sent to the email address you provided.
-        </div>
-
-        <form @submit.prevent="submit" class="space-y-4">
-            <div>
-                <InputLabel for="otp" value="Verification Code" />
-                <TextInput
-                    id="otp"
-                    type="text"
-                    inputmode="numeric"
-                    pattern="\d{6}"
-                    class="mt-1 block w-full text-center text-xl tracking-[0.5em]"
-                    v-model="form.otp"
-                    required
-                    autofocus
-                />
-                <InputError class="mt-2" :message="form.errors.otp" />
-            </div>
-
-            <div class="flex items-center justify-between">
-                <PrimaryButton :disabled="form.processing">Verify OTP</PrimaryButton>
-
-                <button
-                    type="button"
-                    @click="resendOtp"
-                    class="text-sm text-green-600 hover:text-green-800 ml-4"
-                >
-                    Didn't get the code? Resend
-                </button>
-            </div>
-        </form>
-    </GuestLayout>
+  <GuestLayout>
+    <template #header />
+    <Head title="Verify OTP" />
+    <div class="mb-4 text-sm text-gray-600">
+      <h2 class="font-semibold text-lg mb-2">
+        {{ contextMessages[normalizedContext]?.heading || 'Verify Your Email' }}
+      </h2>
+      <span v-html="contextMessages[normalizedContext]?.message(props.email) || `Welcome! To activate your account, please verify your email address. We've sent a <strong>verification code</strong> to <strong>${email}</strong>.
+        Please check your inbox (and spam folder). If you haven’t received the email, we’ll gladly send you a new one.
+        <br><br>
+        Enter the code below to complete your registration.`" />
+    </div>
+    <div v-if="otpResent" class="mb-4 text-sm font-medium text-green-600">
+      A new OTP has been sent to the email address you provided.
+    </div>
+    <form @submit.prevent="submit" class="space-y-4">
+      <div>
+        <InputLabel for="otp" value="Verification Code" />
+        <TextInput
+          id="otp"
+          type="text"
+          inputmode="numeric"
+          pattern="\d{6}"
+          class="mt-1 block w-full text-center text-xl tracking-[0.5em]"
+          v-model="form.otp"
+          required
+          autofocus
+        />
+        <InputError class="mt-2" :message="form.errors.otp" />
+      </div>
+      <div class="flex items-center justify-between">
+        <PrimaryButton :disabled="form.processing">Verify OTP</PrimaryButton>
+        <button
+          type="button"
+          @click="resendOtp"
+          class="text-sm text-green-600 hover:text-green-800 ml-4"
+        >
+          Didn't get the code? Resend
+        </button>
+      </div>
+    </form>
+    <template #footer />
+  </GuestLayout>
 </template>

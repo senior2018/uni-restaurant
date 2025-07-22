@@ -1,6 +1,6 @@
 <script setup>
 import StaffLayout from './Layout.vue';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { router, usePage } from '@inertiajs/vue3';
 import Modal from '../../Components/Modal.vue';
 import axios from 'axios';
@@ -15,6 +15,7 @@ const statusOptions = [
     { value: 'all', label: 'All' },
     { value: 'pending', label: 'Pending' },
     { value: 'preparing', label: 'Preparing' },
+    { value: 'cancellation_requested', label: 'Cancellation Requested' },
     { value: 'delivered', label: 'Delivered' },
 ];
 
@@ -24,10 +25,13 @@ const showModal = ref(false);
 const selectedOrder = ref(null);
 
 function applyFilters() {
-    router.get(route('staff.myOrders'), {
-        status: filterStatus.value,
+    let status = filterStatus.value;
+    let filters = {
+        status: status === 'cancellation_requested' ? 'preparing' : status,
+        cancellation_requested: status === 'cancellation_requested' ? 1 : undefined,
         search: search.value
-    }, { preserveState: true, replace: true });
+    };
+    router.get(route('staff.myOrders'), filters, { preserveState: true, replace: true });
 }
 
 function openModal(order) {
@@ -55,6 +59,25 @@ function rejectCancellation(orderId) {
         .then(() => window.location.reload())
         .catch(err => alert(err.response?.data?.message || 'Failed to reject cancellation.'));
 }
+
+const getStatusFilterName = (status) => {
+    const statusNames = {
+        'all': 'All',
+        'pending': 'Pending',
+        'preparing': 'Preparing',
+        'cancellation_requested': 'Cancellation Requested',
+        'delivered': 'Delivered',
+    };
+    return statusNames[status] || status;
+};
+const hasActiveFilters = computed(() => {
+    return search.value || filterStatus.value !== 'all';
+});
+const clearAllFilters = () => {
+    search.value = '';
+    filterStatus.value = 'all';
+    applyFilters();
+};
 </script>
 
 <template>
@@ -75,7 +98,25 @@ function rejectCancellation(orderId) {
                     <label class="block text-sm font-medium">Search</label>
                     <input type="text" v-model="search" @keyup.enter="applyFilters" placeholder="Order ID or Customer" class="border rounded px-2 py-1" />
                 </div>
-                <button @click="applyFilters" class="px-4 py-2 bg-blue-600 text-white rounded">Apply</button>
+                <!-- Removed Apply button; filters now apply automatically on change/enter -->
+            </div>
+            <!-- Active Filters Display -->
+            <div v-if="hasActiveFilters" class="mb-4 flex flex-wrap gap-2">
+                <span class="text-sm text-gray-600">Active filters:</span>
+                <span v-if="search" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    Search: "{{ search }}"
+                    <button @click="search = ''; applyFilters()" class="ml-1 text-blue-600 hover:text-blue-800">×</button>
+                </span>
+                <span v-if="filterStatus !== 'all'" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    {{ getStatusFilterName(filterStatus) }}
+                    <button @click="filterStatus = 'all'; applyFilters()" class="ml-1 text-green-600 hover:text-green-800">×</button>
+                </span>
+                <button @click="clearAllFilters" class="px-4 py-1 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 flex items-center gap-2 shadow ml-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    Clear Filters
+                </button>
             </div>
             <!-- Order List -->
             <div v-if="orders.data.length === 0" class="text-gray-500">No orders found.</div>
@@ -84,11 +125,16 @@ function rejectCancellation(orderId) {
                     <div>
                         <span class="font-medium">Order #{{ order.id }}</span>
                         <span class="text-sm text-gray-500 ml-2">{{ order.created_at }}</span>
-                        <span class="ml-4 px-3 py-1 rounded-full text-xs font-semibold" :class="{
-                            'bg-yellow-100 text-yellow-700': order.status === 'pending',
-                            'bg-blue-100 text-blue-700': order.status === 'preparing',
-                            'bg-green-100 text-green-700': order.status === 'delivered'
-                        }">{{ order.status }}</span>
+                        <span class="ml-4 px-3 py-1 rounded-full text-xs font-semibold"
+                              :class="{
+                                'bg-orange-100 text-orange-700': order.status === 'preparing' && order.cancellation_requested,
+                                'bg-yellow-100 text-yellow-700': order.status === 'pending',
+                                'bg-blue-100 text-blue-700': order.status === 'preparing' && !order.cancellation_requested,
+                                'bg-green-100 text-green-700': order.status === 'delivered',
+                                'bg-red-100 text-red-700': order.status === 'cancelled',
+                              }">
+                            {{ order.status === 'preparing' && order.cancellation_requested ? 'Preparing (Cancellation Requested)' : order.status.charAt(0).toUpperCase() + order.status.slice(1) }}
+                        </span>
                     </div>
                     <div class="flex gap-2">
                         <button @click="openModal(order)" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">View Details</button>
@@ -109,11 +155,16 @@ function rejectCancellation(orderId) {
                     <div class="flex items-center gap-2 mb-4">
                         <span class="font-bold">Order #{{ selectedOrder?.id }}</span>
                         <span class="text-xs text-gray-500">{{ selectedOrder?.created_at }}</span>
-                        <span class="ml-2 px-2 py-0.5 rounded-full text-xs font-semibold" :class="{
-                            'bg-yellow-100 text-yellow-700': selectedOrder?.status === 'pending',
-                            'bg-blue-100 text-blue-700': selectedOrder?.status === 'preparing',
-                            'bg-green-100 text-green-700': selectedOrder?.status === 'delivered'
-                        }">{{ selectedOrder?.status }}</span>
+                        <span class="ml-2 px-2 py-0.5 rounded-full text-xs font-semibold"
+                              :class="{
+                                'bg-orange-100 text-orange-700': selectedOrder?.status === 'preparing' && selectedOrder?.cancellation_requested,
+                                'bg-yellow-100 text-yellow-700': selectedOrder?.status === 'pending',
+                                'bg-blue-100 text-blue-700': selectedOrder?.status === 'preparing' && !selectedOrder?.cancellation_requested,
+                                'bg-green-100 text-green-700': selectedOrder?.status === 'delivered',
+                                'bg-red-100 text-red-700': selectedOrder?.status === 'cancelled',
+                              }">
+                            {{ selectedOrder?.status === 'preparing' && selectedOrder?.cancellation_requested ? 'Preparing (Cancellation Requested)' : selectedOrder?.status?.charAt(0).toUpperCase() + selectedOrder?.status?.slice(1) }}
+                        </span>
                     </div>
                     <div v-if="selectedOrder?.cancellation_requested" class="mb-4 p-4 bg-red-50 border border-red-300 rounded">
                         <div class="font-semibold text-red-700 mb-2 flex items-center gap-2">

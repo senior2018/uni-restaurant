@@ -6,6 +6,11 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
+defineProps({
+    canLogin: Boolean,
+    canRegister: Boolean,
+});
+
 const form = useForm({
     name: '',
     email: '',
@@ -27,11 +32,31 @@ const redirectToGoogle = () => {
 </script>
 
 <template>
-    <GuestLayout>
-        <Head title="Create Account" />
-
-        <div class="max-w-lg w-full mx-auto mt-10 px-6 py-8 bg-white shadow-xl rounded-2xl space-y-6 border border-gray-200">
-            <h2 class="text-3xl font-extrabold text-center text-green-800">Create Your Account</h2>
+    <Head title="Create Account" />
+    <nav class="bg-white shadow-sm border-b border-green-100 mb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <Link :href="route('home')" class="text-2xl font-bold text-green-600 hover:text-green-800 flex items-center gap-2">
+                        <i class="fas fa-utensils mr-2"></i>UniRestaurant
+                    </Link>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <Link :href="route('contact')"
+                        class="px-4 py-2 border-2 border-blue-600 text-blue-600 rounded hover:bg-blue-50 transition flex items-center gap-2">
+                        <i class="fas fa-headset"></i> Contact Support
+                    </Link>
+                    <Link v-if="canLogin"
+                        :href="route('login')"
+                        class="px-4 py-2 text-green-600 hover:text-green-800 transition">
+                        Login
+                    </Link>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="max-w-[56rem] w-full mx-auto mt-10 px-6 py-8 bg-white shadow-xl rounded-2xl space-y-6 border border-gray-200">
+        <h2 class="text-3xl font-extrabold text-center text-green-800">Create Your Account</h2>
 
             <!-- Google Login Button -->
             <PrimaryButton
@@ -158,5 +183,4 @@ const redirectToGoogle = () => {
                 </div>
             </form>
         </div>
-    </GuestLayout>
 </template>

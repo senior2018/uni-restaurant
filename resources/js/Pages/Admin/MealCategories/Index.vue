@@ -329,18 +329,14 @@ const getMealCount = (category) => {
 const showCategoryMeals = (category) => {
     if (category.deleted_at) return; // Don't show meals for deleted categories
 
-    console.log('Showing meals for category:', category.name);
-
     selectedCategory.value = category;
     showMealsModal.value = true;
 
     // Use the meals that are already loaded with the category
     if (category.meals && Array.isArray(category.meals)) {
         categoryMeals.value = category.meals;
-        console.log('Meals loaded:', category.meals.length);
     } else {
         categoryMeals.value = [];
-        console.log('No meals found for this category');
     }
 };
 

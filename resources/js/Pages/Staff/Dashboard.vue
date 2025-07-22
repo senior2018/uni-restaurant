@@ -116,7 +116,16 @@ function scrollToCancellationRequests() {
                                 <div>
                                     <span class="font-medium">Order #{{ order.id }}</span>
                                     <span class="text-sm text-gray-500 ml-2">{{ order.created_at }}</span>
-                                    <span class="ml-4 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">{{ order.status }}</span>
+                                    <span class="ml-4 px-3 py-1 rounded-full text-xs font-semibold"
+                                          :class="{
+                                            'bg-orange-100 text-orange-700': order.status === 'preparing' && order.cancellation_requested,
+                                            'bg-blue-100 text-blue-700': order.status === 'preparing' && !order.cancellation_requested,
+                                            'bg-yellow-100 text-yellow-700': order.status === 'pending',
+                                            'bg-green-100 text-green-700': order.status === 'delivered',
+                                            'bg-red-100 text-red-700': order.status === 'cancelled',
+                                          }">
+  {{ order.status === 'preparing' && order.cancellation_requested ? 'Preparing (Cancellation Requested)' : order.status.charAt(0).toUpperCase() + order.status.slice(1) }}
+</span>
                                 </div>
                                 <button @click="updateOrderStatus(order.id, 'delivered')" class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition">Mark as Delivered</button>
                             </div>

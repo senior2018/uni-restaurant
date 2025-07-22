@@ -17,7 +17,7 @@ const recentOrders = computed(() => props.orders.slice(0, 5));
 
 <template>
     <CustomerLayout :user="user">
-        <div class="min-h-screen bg-gray-50 p-6 max-w-5xl mx-auto">
+        <div class="min-h-screen bg-gray-50 p-6 w-full px-4">
             <h1 class="text-3xl font-bold text-gray-800 mb-4">Welcome, {{ user.name }}!</h1>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                 <div class="bg-white p-6 rounded-xl shadow flex flex-col items-center">
@@ -72,11 +72,12 @@ const recentOrders = computed(() => props.orders.slice(0, 5));
                                 <td class="px-4 py-2">
                                     <span :class="[
                                         'px-3 py-1 rounded-full text-xs font-semibold',
+                                        order.status === 'preparing' && order.cancellation_requested ? 'bg-orange-100 text-orange-700' :
                                         order.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
                                         order.status === 'completed' ? 'bg-green-100 text-green-700' :
                                         order.status === 'cancelled' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'
                                     ]">
-                                        {{ order.status.charAt(0).toUpperCase() + order.status.slice(1) }}
+                                        {{ order.status === 'preparing' && order.cancellation_requested ? 'Preparing (Cancellation Requested)' : order.status.charAt(0).toUpperCase() + order.status.slice(1) }}
                                     </span>
                                 </td>
                                 <td class="px-4 py-2">{{ new Intl.NumberFormat('sw-TZ', { style: 'currency', currency: 'TZS' }).format(order.total_price) }}</td>

@@ -40,7 +40,6 @@ const total = computed(() => {
 
 function placeOrder() {
     error.value = "";
-    console.log(cart.value);
     router.post(
         route('checkout.store'),
         {
@@ -64,7 +63,7 @@ function placeOrder() {
 
 <template>
     <CustomerLayout :user="user">
-        <div class="min-h-screen bg-gray-50 p-6 max-w-2xl mx-auto">
+        <div class="min-h-screen bg-gray-50 p-6 w-full px-4">
             <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Checkout</h1>
             <div v-if="page.props.flash?.success" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6 text-center">
                 {{ page.props.flash.success }}

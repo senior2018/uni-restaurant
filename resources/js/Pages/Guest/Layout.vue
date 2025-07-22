@@ -9,7 +9,7 @@ import { Head } from '@inertiajs/vue3';
     <div class="min-h-screen bg-gray-50">
         <!-- Simple guest navigation -->
         <nav class="bg-white shadow">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="w-full px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16 items-center">
                     <div class="flex items-center">
                         <Link :href="route('home')" class="text-xl font-semibold text-gray-800">

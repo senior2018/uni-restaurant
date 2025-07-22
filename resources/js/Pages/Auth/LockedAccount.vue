@@ -1,33 +1,33 @@
 <template>
-    <GuestLayout>
+  <GuestLayout>
+    <template #header />
+    <!-- Page content -->
     <Head title="Account Locked" />
-
     <div class="mb-4 text-red-600">
-        Your account has been locked due to multiple failed login attempts.
-        Enter your email below to receive a 6-digit OTP to unlock your account and reset your password.
+      Your account has been locked due to multiple failed login attempts.
+      Enter your email below to receive a 6-digit OTP to unlock your account and reset your password.
     </div>
-
     <form @submit.prevent="submit">
-        <div>
+      <div>
         <InputLabel for="email" value="Email" />
         <TextInput
-            id="email"
-            v-model="form.email"
-            type="email"
-            class="mt-1 block w-full"
-            required
-            autofocus
+          id="email"
+          v-model="form.email"
+          type="email"
+          class="mt-1 block w-full"
+          required
+          autofocus
         />
         <InputError class="mt-2" :message="form.errors.email" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
+      </div>
+      <div class="flex items-center justify-end mt-4">
         <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-            Unlock Account
+          Unlock Account
         </PrimaryButton>
-        </div>
+      </div>
     </form>
-    </GuestLayout>
+    <template #footer />
+  </GuestLayout>
 </template>
 
 <script setup>

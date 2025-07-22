@@ -19,6 +19,7 @@ const submit = () => {
 
 <template>
     <GuestLayout>
+        <template #header />
         <Head title="Confirm Password" />
 
         <div class="mb-4 text-sm text-gray-600">
@@ -51,5 +52,6 @@ const submit = () => {
                 </PrimaryButton>
             </div>
         </form>
+        <template #footer />
     </GuestLayout>
 </template>
