@@ -37,7 +37,7 @@ WORKDIR /var/www/html
 COPY . .
 
 # Copy built Vue assets into Laravel public folder
-COPY --from=frontend /app/dist ./public
+COPY --from=frontend /app/public ./public
 
 # Install Laravel dependencies and cache config/routes/views
 RUN composer install --no-dev --optimize-autoloader \
