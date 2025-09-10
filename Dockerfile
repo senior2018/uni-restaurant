@@ -11,12 +11,23 @@ RUN apk add --no-cache python3 make g++ git
 # Use npm ci for reproducible installs
 RUN npm ci
 
-# Copy the rest of the frontend resources
-COPY resources/js resources/js
-COPY resources/css resources/css
+# Copy all necessary files for building
+COPY resources/ resources/
 COPY vite.config.js ./
 COPY tailwind.config.js ./
+COPY postcss.config.js ./
+
+# Debug: Check if files exist
+RUN ls -la resources/css/ && ls -la resources/js/
+
+# Build the frontend assets
 RUN npm run build
+
+# Debug: List built files
+RUN ls -la public/build/assets/ || echo "Build assets directory not found"
+
+# Debug: Check if CSS was built properly
+RUN find public/build -name "*.css" -exec echo "Found CSS file: {}" \;
 
 # Stage 2: Laravel backend
 FROM php:8.2-fpm

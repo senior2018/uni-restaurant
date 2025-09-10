@@ -1,4 +1,14 @@
 node_modules
 vendor
 .env
+.env.*
 tests
+storage/logs/*
+storage/app/public/*
+public/hot
+public/storage
+.git
+.gitignore
+README.md
+docker-compose*
+Dockerfile*
