@@ -18,15 +18,24 @@ export default defineConfig({
         }),
     ],
     build: {
+        // Ensure assets are built to the correct location
+        outDir: 'public/build',
+        emptyOutDir: true,
+        manifest: 'manifest.json', // Put manifest in root of build dir, not .vite subdir
         rollupOptions: {
             output: {
-                // Disable code splitting for now to avoid chunk loading issues
-                manualChunks: undefined,
+                // Ensure consistent asset naming
+                assetFileNames: 'assets/[name]-[hash][extname]',
+                chunkFileNames: 'assets/[name]-[hash].js',
+                entryFileNames: 'assets/[name]-[hash].js',
             },
         },
-        // Ensure assets are built with correct base path
+        // Generate source maps for debugging
+        sourcemap: false,
+        // Asset directory
         assetsDir: 'assets',
-        outDir: 'public/build',
+        // Ensure proper base path
+        assetsInlineLimit: 0,
     },
     server: {
         https: false,
@@ -34,6 +43,6 @@ export default defineConfig({
             host: 'localhost',
         },
     },
-    // Ensure correct base path in production
-    base: '/',
+    // Ensure correct base path
+    base: process.env.NODE_ENV === 'production' ? '/' : '/',
 });

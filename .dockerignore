@@ -5,10 +5,14 @@ vendor
 tests
 storage/logs/*
 storage/app/public/*
-public/hot
-public/storage
 .git
 .gitignore
 README.md
 docker-compose*
 Dockerfile*
+# Don't ignore these - we need them for the build
+# public/build - should be created during build
+# resources/ - needed for building
+# vite.config.js - needed for building
+# tailwind.config.js - needed for building
+# postcss.config.js - needed for building

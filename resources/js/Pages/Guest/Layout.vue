@@ -1,6 +1,6 @@
 <!-- For unauthenticated users (login/register pages) -->
 <script setup>
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 </script>
 
 <template>
