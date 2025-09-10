@@ -1,4 +1,3 @@
-# ...existing code...
 # Stage 1: Build Vue frontend
 FROM node:22-alpine AS frontend
 WORKDIR /app
@@ -48,6 +47,6 @@ RUN composer install --no-dev --optimize-autoloader \
 # Expose port
 EXPOSE 8000
 
-# Start Laravel server
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
-# ...existing code...
+# Run migrations and start Laravel server
+CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000
+
