@@ -115,6 +115,9 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
+# Clear any cached views that might have wrong URLs
+php artisan view:clear
+
 echo "Starting services..."
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
 EOF
