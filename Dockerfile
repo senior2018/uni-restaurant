@@ -118,16 +118,29 @@ COPY <<EOF /start.sh
 #!/bin/bash
 set -e
 
+echo "Checking build assets..."
+ls -la /var/www/html/public/build/ || echo "Build directory not found"
+ls -la /var/www/html/public/build/assets/ || echo "Assets directory not found"
+
+echo "Checking manifest..."
+cat /var/www/html/public/build/manifest.json || echo "Manifest not found"
+
 echo "Running migrations..."
 php artisan migrate --force
+
+echo "Clearing all caches..."
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
 
 echo "Caching configuration..."
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
-# Clear any cached views that might have wrong URLs
-php artisan view:clear
+echo "Final asset check..."
+find /var/www/html/public/build -name "*.css" -o -name "*.js" | head -5
 
 echo "Starting services..."
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf

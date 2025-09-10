@@ -20,9 +20,13 @@ export default defineConfig({
     build: {
         rollupOptions: {
             output: {
+                // Disable code splitting for now to avoid chunk loading issues
                 manualChunks: undefined,
             },
         },
+        // Ensure assets are built with correct base path
+        assetsDir: 'assets',
+        outDir: 'public/build',
     },
     server: {
         https: false,
@@ -30,5 +34,6 @@ export default defineConfig({
             host: 'localhost',
         },
     },
-    base: process.env.NODE_ENV === 'production' ? '/' : '/',
+    // Ensure correct base path in production
+    base: '/',
 });
