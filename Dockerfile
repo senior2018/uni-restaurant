@@ -38,6 +38,10 @@ COPY . .
 # Copy built Vue assets into Laravel public folder
 COPY --from=frontend /app/public ./public
 
+# Make storage/cache writable
+RUN chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
+
 # Install Laravel dependencies and cache config/routes/views
 RUN composer install --no-dev --optimize-autoloader \
     && php artisan config:cache \
@@ -48,5 +52,5 @@ RUN composer install --no-dev --optimize-autoloader \
 EXPOSE 8000
 
 # Run migrations and start Laravel server
-CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000
-
+CMD php artisan migrate --force && \
+    php -d display_errors=On artisan serve --host=0.0.0.0 --port=8000
