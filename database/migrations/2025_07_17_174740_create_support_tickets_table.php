@@ -20,6 +20,7 @@ return new class extends Migration
             $table->enum('status', ['open', 'closed'])->default('open');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->text('admin_response')->nullable();
+            $table->boolean('is_registered')->default(false);
             $table->timestamps();
         });
     }
