@@ -3,21 +3,22 @@
         <div class="p-6 bg-gray-50 min-h-screen">
             <div class="flex justify-between mb-6">
                 <h1 class="text-3xl font-bold text-gray-800">Meal Management</h1>
-                <Link
-                    :href="route('meal-categories.index')"
+                <button
+                    @click="openAddMeal"
                     class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors duration-200"
                 >
-                    Manage Categories
-                </Link>
+                    Add New Meal
+                </button>
             </div>
 
-            <!-- Form for adding new meals -->
-            <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
-                <MealForm
-                    :categories="categories"
-                    @refresh="fetchMeals"
-                />
-            </div>
+            <!-- MealForm Modal (for add/edit) -->
+            <MealForm
+                :show="showMealForm"
+                :meal="selectedMeal"
+                :categories="categories"
+                @refresh="() => { fetchMeals(); closeMealForm(); }"
+                @close="closeMealForm"
+            />
 
             <!-- Search and Filter Section -->
             <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
@@ -174,7 +175,6 @@
                         </div>
                         <!-- Action Buttons -->
                         <div class="flex gap-1">
-                            <!-- Normal meal actions (not deleted) -->
                             <template v-if="!meal.deleted_at">
                                 <!-- Toggle Button -->
                                 <button
@@ -187,13 +187,15 @@
                                     {{ meal.is_available ? 'Make Unavailable' : 'Make Available' }}
                                 </button>
                                 <!-- Edit Button -->
-                                <div class="flex-shrink-0">
-                                    <MealForm
-                                        :meal="meal"
-                                        :categories="categories"
-                                        @refresh="fetchMeals"
-                                    />
-                                </div>
+                                <button
+                                    @click="openEditMeal(meal)"
+                                    class="flex-shrink-0 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 flex items-center space-x-1 text-sm"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                    <span>Edit</span>
+                                </button>
                                 <!-- Delete Button -->
                                 <button
                                     @click="deleteMeal(meal)"
@@ -204,7 +206,6 @@
                                     </svg>
                                 </button>
                             </template>
-                            <!-- Deleted meal actions -->
                             <template v-else>
                                 <!-- Restore Button -->
                                 <button
@@ -310,7 +311,6 @@ const categoryFilter = ref('all');
 // Computed filtered meals
 const filteredMeals = computed(() => {
     let filtered = meals.value;
-
     // Search filter
     if (searchQuery.value) {
         const query = searchQuery.value.toLowerCase();
@@ -319,7 +319,6 @@ const filteredMeals = computed(() => {
             meal.category.name.toLowerCase().includes(query)
         );
     }
-
     // Status filter (updated logic)
     if (statusFilter.value !== 'all') {
         filtered = filtered.filter(meal => {
@@ -335,12 +334,10 @@ const filteredMeals = computed(() => {
             }
         });
     }
-
     // Category filter
     if (categoryFilter.value !== 'all') {
         filtered = filtered.filter(meal => meal.category.id == categoryFilter.value);
     }
-
     return filtered;
 });
 
@@ -392,14 +389,10 @@ const deleteMeal = (meal) => {
     if (!confirm(`Are you sure you want to move "${meal.name}" to trash? You can restore it later.`)) {
         return;
     }
-
     router.delete(route('meals.destroy', meal.id), {
         preserveScroll: true,
-        onSuccess: () => {
-            // console.log('Meal moved to trash successfully');
-        },
+        onSuccess: () => {},
         onError: (errors) => {
-            // console.error('Error moving meal to trash:', errors);
             alert('An error occurred while moving the meal to trash. Please try again.');
         }
     });
@@ -409,14 +402,10 @@ const restoreMeal = (meal) => {
     if (!confirm(`Are you sure you want to restore "${meal.name}"?`)) {
         return;
     }
-
     router.post(route('meals.restore', meal.id), {}, {
         preserveScroll: true,
-        onSuccess: () => {
-            // console.log('Meal restored successfully');
-        },
+        onSuccess: () => {},
         onError: (errors) => {
-            // console.error('Error restoring meal:', errors);
             alert('An error occurred while restoring the meal. Please try again.');
         }
     });
@@ -426,18 +415,32 @@ const permanentDelete = (meal) => {
     if (!confirm(`Are you sure you want to PERMANENTLY delete "${meal.name}"? This action cannot be undone!`)) {
         return;
     }
-
     router.delete(route('meals.force-delete', meal.id), {
         preserveScroll: true,
-        onSuccess: () => {
-            // console.log('Meal permanently deleted');
-        },
+        onSuccess: () => {},
         onError: (errors) => {
-            // console.error('Error permanently deleting meal:', errors);
             alert('An error occurred while permanently deleting the meal. Please try again.');
         }
     });
 };
+
+// --- Modal Edit Logic ---
+const showMealForm = ref(false);
+const selectedMeal = ref(null);
+
+const openAddMeal = () => {
+    selectedMeal.value = null;
+    showMealForm.value = true;
+};
+const openEditMeal = (meal) => {
+    selectedMeal.value = meal;
+    showMealForm.value = true;
+};
+const closeMealForm = () => {
+    showMealForm.value = false;
+    selectedMeal.value = null;
+};
+
 </script>
 
 <style scoped>

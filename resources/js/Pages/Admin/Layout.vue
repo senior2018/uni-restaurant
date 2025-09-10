@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import BaseLayout from "../Shared/BaseLayout.vue";
 import NavLink from "@/Components/NavLink.vue";
 import { Link, usePage } from "@inertiajs/vue3";
@@ -20,6 +20,19 @@ const navLinks = [
     { name: 'Alerts', route: route('admin.alerts.index'), icon: 'fas fa-exclamation-triangle', badge: page.props.unresolvedAlertCount || 0 },
     { name: 'Support Tickets', route: route('admin.support-tickets.index'), icon: 'fas fa-envelope-open-text' },
 ];
+
+// Flash message auto-dismiss logic
+const showSuccess = ref(!!flash.value.success);
+watch(
+  () => flash.value.success,
+  (val) => {
+    showSuccess.value = !!val;
+    if (val) {
+      setTimeout(() => { showSuccess.value = false; }, 10000);
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
@@ -29,8 +42,10 @@ const navLinks = [
         <main class="py-8">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <!-- Flash messages -->
-                <div v-if="flash.success" class="bg-primary-light text-primary-dark p-2 mb-4 rounded">
-                    {{ flash.success }}
+                <div v-if="showSuccess && flash.success" class="mb-4">
+                  <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative transition-opacity duration-500" role="alert">
+                    <span class="block sm:inline">{{ flash.success }}</span>
+                  </div>
                 </div>
                 <div v-if="flash.error" class="bg-accent-pink text-white p-2 mb-4 rounded">
                     {{ flash.error }}
