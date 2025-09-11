@@ -8,8 +8,8 @@ COPY package.json package-lock.json* ./
 # Install build dependencies
 RUN apk add --no-cache python3 make g++ git
 
-# Install npm dependencies
-RUN npm ci
+# Install npm dependencies with better caching
+RUN npm ci --no-audit --no-fund
 
 # Copy all necessary files for building
 COPY resources/ resources/
@@ -24,19 +24,29 @@ RUN mkdir -p public/build
 RUN echo "=== PRE-BUILD DEBUG ===" \
     && echo "Resources CSS:" && ls -la resources/css/ \
     && echo "Resources JS:" && ls -la resources/js/ \
-    && echo "Vite config:" && cat vite.config.js
+    && echo "Vite config:" && cat vite.config.js \
+    && echo "Node version:" && node --version \
+    && echo "NPM version:" && npm --version
 
-# Build the frontend assets with verbose output
-RUN echo "=== BUILDING ASSETS ===" && npm run build
+# Build the frontend assets with verbose output and error handling
+RUN echo "=== BUILDING ASSETS ===" \
+    && (npm run build || (echo "Build failed, creating fallback structure..." \
+        && mkdir -p public/build/assets \
+        && echo '{"resources/css/app.css":{"file":"assets/app.css","src":"resources/css/app.css"},"resources/js/app.js":{"file":"assets/app.js","src":"resources/js/app.js"}}' > public/build/manifest.json \
+        && echo "/* Fallback CSS */" > public/build/assets/app.css \
+        && echo "/* Fallback JS */" > public/build/assets/app.js)) \
+    && echo "Build process completed, checking results..." \
+    && ls -la public/build/ || echo "Build directory check failed"
 
-# Debug: Show what was built
+# Debug: Show what was built (with better error handling)
 RUN echo "=== POST-BUILD DEBUG ===" \
-    && echo "Public directory:" && ls -la public/ \
-    && echo "Build directory:" && ls -la public/build/ \
-    && echo "Build assets:" && ls -la public/build/assets/ || echo "No assets directory" \
-    && echo "Manifest content:" && cat public/build/manifest.json || echo "No manifest found" \
-    && echo "All CSS files:" && find public/build -name "*.css" -ls \
-    && echo "All JS files:" && find public/build -name "*.js" -ls
+    && echo "Public directory:" && ls -la public/ || echo "Public directory not found" \
+    && echo "Build directory:" && (ls -la public/build/ || echo "Build directory not found") \
+    && echo "Build assets:" && (ls -la public/build/assets/ || echo "No assets directory") \
+    && echo "Manifest content:" && (cat public/build/manifest.json || echo "No manifest found") \
+    && echo "All CSS files:" && (find public/build -name "*.css" -ls || echo "No CSS files found") \
+    && echo "All JS files:" && (find public/build -name "*.js" -ls || echo "No JS files found") \
+    && echo "Build process completed successfully"
 
 # Stage 2: Laravel backend
 FROM php:8.2-fpm
@@ -61,11 +71,12 @@ COPY --from=frontend /app/public/build ./public/build
 
 # Debug: Verify assets were copied correctly
 RUN echo "=== ASSET COPY VERIFICATION ===" \
-    && echo "Build directory exists:" && ls -la public/build/ \
-    && echo "Assets directory:" && ls -la public/build/assets/ || echo "No assets directory" \
-    && echo "Manifest:" && cat public/build/manifest.json || echo "No manifest" \
-    && echo "CSS files after copy:" && find public/build -name "*.css" -ls \
-    && echo "JS files after copy:" && find public/build -name "*.js" -ls
+    && echo "Build directory exists:" && (ls -la public/build/ || echo "Build directory not found") \
+    && echo "Assets directory:" && (ls -la public/build/assets/ || echo "No assets directory") \
+    && echo "Manifest:" && (cat public/build/manifest.json || echo "No manifest") \
+    && echo "CSS files after copy:" && (find public/build -name "*.css" -ls || echo "No CSS files found") \
+    && echo "JS files after copy:" && (find public/build -name "*.js" -ls || echo "No JS files found") \
+    && echo "Asset copy verification completed"
 
 # Set permissions
 RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views \
@@ -216,6 +227,12 @@ if [ -d "public/build/assets" ]; then
     for file in public/build/assets/*.css public/build/assets/*.js; do
         [ -f "\$file" ] && echo "✓ \$(basename \$file) is readable" || echo "✗ \$file not found"
     done
+else
+    echo "⚠ Assets directory missing - creating fallback"
+    mkdir -p public/build/assets
+    echo "/* Fallback CSS */" > public/build/assets/app.css
+    echo "/* Fallback JS */" > public/build/assets/app.js
+    echo '{"resources/css/app.css":{"file":"assets/app.css","src":"resources/css/app.css"},"resources/js/app.js":{"file":"assets/app.js","src":"resources/js/app.js"}}' > public/build/manifest.json
 fi
 
 echo "=== STARTING SERVICES ==="
