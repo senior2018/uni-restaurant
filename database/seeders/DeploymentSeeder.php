@@ -66,46 +66,14 @@ class DeploymentSeeder extends Seeder
         $this->command->info('Creating meal categories...');
 
         $categories = [
-            [
-                'name' => 'Appetizers',
-                'description' => 'Start your meal with our delicious appetizers',
-                'is_active' => true,
-            ],
-            [
-                'name' => 'Main Courses',
-                'description' => 'Hearty main dishes to satisfy your hunger',
-                'is_active' => true,
-            ],
-            [
-                'name' => 'Desserts',
-                'description' => 'Sweet treats to end your meal perfectly',
-                'is_active' => true,
-            ],
-            [
-                'name' => 'Beverages',
-                'description' => 'Refreshing drinks and beverages',
-                'is_active' => true,
-            ],
-            [
-                'name' => 'Salads',
-                'description' => 'Fresh and healthy salad options',
-                'is_active' => true,
-            ],
-            [
-                'name' => 'Soups',
-                'description' => 'Warm and comforting soup varieties',
-                'is_active' => true,
-            ],
-            [
-                'name' => 'Pasta',
-                'description' => 'Italian-inspired pasta dishes',
-                'is_active' => true,
-            ],
-            [
-                'name' => 'Pizza',
-                'description' => 'Authentic wood-fired pizzas',
-                'is_active' => true,
-            ],
+            ['name' => 'Appetizers'],
+            ['name' => 'Main Courses'],
+            ['name' => 'Desserts'],
+            ['name' => 'Beverages'],
+            ['name' => 'Salads'],
+            ['name' => 'Soups'],
+            ['name' => 'Pasta'],
+            ['name' => 'Pizza'],
         ];
 
         foreach ($categories as $category) {
@@ -134,7 +102,6 @@ class DeploymentSeeder extends Seeder
                 'price' => 12.99,
                 'category_id' => $appetizers->id,
                 'is_available' => true,
-                'preparation_time' => 15,
             ],
             [
                 'name' => 'Mozzarella Sticks',
@@ -142,7 +109,6 @@ class DeploymentSeeder extends Seeder
                 'price' => 9.99,
                 'category_id' => $appetizers->id,
                 'is_available' => true,
-                'preparation_time' => 10,
             ],
             [
                 'name' => 'Garlic Bread',
@@ -150,7 +116,6 @@ class DeploymentSeeder extends Seeder
                 'price' => 6.99,
                 'category_id' => $appetizers->id,
                 'is_available' => true,
-                'preparation_time' => 8,
             ],
 
             // Main Courses
@@ -160,7 +125,6 @@ class DeploymentSeeder extends Seeder
                 'price' => 24.99,
                 'category_id' => $mainCourses->id,
                 'is_available' => true,
-                'preparation_time' => 20,
             ],
             [
                 'name' => 'Beef Steak',
@@ -168,7 +132,6 @@ class DeploymentSeeder extends Seeder
                 'price' => 32.99,
                 'category_id' => $mainCourses->id,
                 'is_available' => true,
-                'preparation_time' => 25,
             ],
             [
                 'name' => 'Chicken Parmesan',
@@ -176,7 +139,6 @@ class DeploymentSeeder extends Seeder
                 'price' => 18.99,
                 'category_id' => $mainCourses->id,
                 'is_available' => true,
-                'preparation_time' => 22,
             ],
             [
                 'name' => 'Fish and Chips',
@@ -184,7 +146,6 @@ class DeploymentSeeder extends Seeder
                 'price' => 16.99,
                 'category_id' => $mainCourses->id,
                 'is_available' => true,
-                'preparation_time' => 18,
             ],
 
             // Pasta
@@ -194,7 +155,6 @@ class DeploymentSeeder extends Seeder
                 'price' => 17.99,
                 'category_id' => $pasta->id,
                 'is_available' => true,
-                'preparation_time' => 15,
             ],
             [
                 'name' => 'Fettuccine Alfredo',
@@ -202,7 +162,6 @@ class DeploymentSeeder extends Seeder
                 'price' => 15.99,
                 'category_id' => $pasta->id,
                 'is_available' => true,
-                'preparation_time' => 12,
             ],
             [
                 'name' => 'Penne Arrabbiata',
@@ -210,7 +169,6 @@ class DeploymentSeeder extends Seeder
                 'price' => 14.99,
                 'category_id' => $pasta->id,
                 'is_available' => true,
-                'preparation_time' => 14,
             ],
 
             // Pizza
@@ -220,7 +178,6 @@ class DeploymentSeeder extends Seeder
                 'price' => 16.99,
                 'category_id' => $pizza->id,
                 'is_available' => true,
-                'preparation_time' => 20,
             ],
             [
                 'name' => 'Pepperoni Pizza',
@@ -228,7 +185,6 @@ class DeploymentSeeder extends Seeder
                 'price' => 18.99,
                 'category_id' => $pizza->id,
                 'is_available' => true,
-                'preparation_time' => 20,
             ],
             [
                 'name' => 'Supreme Pizza',
@@ -236,7 +192,6 @@ class DeploymentSeeder extends Seeder
                 'price' => 22.99,
                 'category_id' => $pizza->id,
                 'is_available' => true,
-                'preparation_time' => 25,
             ],
 
             // Salads
@@ -246,7 +201,6 @@ class DeploymentSeeder extends Seeder
                 'price' => 11.99,
                 'category_id' => $salads->id,
                 'is_available' => true,
-                'preparation_time' => 8,
             ],
             [
                 'name' => 'Greek Salad',
@@ -254,7 +208,6 @@ class DeploymentSeeder extends Seeder
                 'price' => 13.99,
                 'category_id' => $salads->id,
                 'is_available' => true,
-                'preparation_time' => 10,
             ],
 
             // Soups
@@ -264,7 +217,6 @@ class DeploymentSeeder extends Seeder
                 'price' => 8.99,
                 'category_id' => $soups->id,
                 'is_available' => true,
-                'preparation_time' => 12,
             ],
             [
                 'name' => 'Chicken Noodle Soup',
@@ -272,7 +224,6 @@ class DeploymentSeeder extends Seeder
                 'price' => 9.99,
                 'category_id' => $soups->id,
                 'is_available' => true,
-                'preparation_time' => 15,
             ],
 
             // Desserts
@@ -282,7 +233,6 @@ class DeploymentSeeder extends Seeder
                 'price' => 7.99,
                 'category_id' => $desserts->id,
                 'is_available' => true,
-                'preparation_time' => 5,
             ],
             [
                 'name' => 'Tiramisu',
@@ -290,7 +240,6 @@ class DeploymentSeeder extends Seeder
                 'price' => 8.99,
                 'category_id' => $desserts->id,
                 'is_available' => true,
-                'preparation_time' => 5,
             ],
             [
                 'name' => 'Ice Cream Sundae',
@@ -298,7 +247,6 @@ class DeploymentSeeder extends Seeder
                 'price' => 6.99,
                 'category_id' => $desserts->id,
                 'is_available' => true,
-                'preparation_time' => 3,
             ],
 
             // Beverages
@@ -308,7 +256,6 @@ class DeploymentSeeder extends Seeder
                 'price' => 4.99,
                 'category_id' => $beverages->id,
                 'is_available' => true,
-                'preparation_time' => 2,
             ],
             [
                 'name' => 'Iced Tea',
@@ -316,7 +263,6 @@ class DeploymentSeeder extends Seeder
                 'price' => 3.99,
                 'category_id' => $beverages->id,
                 'is_available' => true,
-                'preparation_time' => 2,
             ],
             [
                 'name' => 'Coffee',
@@ -324,7 +270,6 @@ class DeploymentSeeder extends Seeder
                 'price' => 2.99,
                 'category_id' => $beverages->id,
                 'is_available' => true,
-                'preparation_time' => 3,
             ],
         ];
 
@@ -338,39 +283,46 @@ class DeploymentSeeder extends Seeder
         $this->command->info('Creating users...');
 
         // Super Admin
-        User::create([
-            'name' => 'Super Admin',
-            'email' => 'superadmin@ourrestaurant.com',
-            'password' => Hash::make('password'),
-            'role' => 'super_admin',
-            'email_verified_at' => now(),
-            'phone' => '+1234567890',
-            'address' => '123 Admin Street, Admin City',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'superadmin@ourrestaurant.com'],
+            [
+                'name' => 'Super Admin',
+                'password' => Hash::make('password'),
+                'role' => 'super_admin',
+                'email_verified_at' => now(),
+                'phone' => '+1234567890',
+                'permanent_location' => '123 Admin Street, Admin City',
+            ]
+        );
 
         // Admin
-        User::create([
-            'name' => 'Restaurant Admin',
-            'email' => 'admin@ourrestaurant.com',
-            'password' => Hash::make('password'),
-            'role' => 'admin',
-            'email_verified_at' => now(),
-            'phone' => '+1234567891',
-            'address' => '456 Admin Avenue, Admin City',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'admin@ourrestaurant.com'],
+            [
+                'name' => 'Restaurant Admin',
+                'password' => Hash::make('password'),
+                'role' => 'admin',
+                'email_verified_at' => now(),
+                'phone' => '+1234567891',
+                'permanent_location' => '456 Admin Avenue, Admin City',
+            ]
+        );
 
         // Staff members
         $staffNames = ['John Smith', 'Sarah Johnson', 'Mike Wilson', 'Emily Davis', 'David Brown'];
         foreach ($staffNames as $index => $name) {
-            User::create([
-                'name' => $name,
-                'email' => strtolower(str_replace(' ', '.', $name)) . '@ourrestaurant.com',
-                'password' => Hash::make('password'),
-                'role' => 'staff',
-                'email_verified_at' => now(),
-                'phone' => '+123456789' . (2 + $index),
-                'address' => (100 + $index) . ' Staff Street, Staff City',
-            ]);
+            $email = strtolower(str_replace(' ', '.', $name)) . '@ourrestaurant.com';
+            User::firstOrCreate(
+                ['email' => $email],
+                [
+                    'name' => $name,
+                    'password' => Hash::make('password'),
+                    'role' => 'staff',
+                    'email_verified_at' => now(),
+                    'phone' => '+123456789' . (2 + $index),
+                    'permanent_location' => (100 + $index) . ' Staff Street, Staff City',
+                ]
+            );
         }
 
         // Customers
@@ -382,15 +334,18 @@ class DeploymentSeeder extends Seeder
         ];
 
         foreach ($customerNames as $index => $name) {
-            User::create([
-                'name' => $name,
-                'email' => strtolower(str_replace(' ', '.', $name)) . '@example.com',
-                'password' => Hash::make('password'),
-                'role' => 'customer',
-                'email_verified_at' => now(),
-                'phone' => '+198765432' . str_pad($index, 1, '0', STR_PAD_LEFT),
-                'address' => (200 + $index) . ' Customer Street, Customer City',
-            ]);
+            $email = strtolower(str_replace(' ', '.', $name)) . '@example.com';
+            User::firstOrCreate(
+                ['email' => $email],
+                [
+                    'name' => $name,
+                    'password' => Hash::make('password'),
+                    'role' => 'customer',
+                    'email_verified_at' => now(),
+                    'phone' => '+198765432' . str_pad($index, 1, '0', STR_PAD_LEFT),
+                    'permanent_location' => (200 + $index) . ' Customer Street, Customer City',
+                ]
+            );
         }
     }
 
@@ -401,7 +356,7 @@ class DeploymentSeeder extends Seeder
         $customers = User::where('role', 'customer')->get();
         $staff = User::where('role', 'staff')->get();
         $meals = Meal::all();
-        $statuses = ['pending', 'confirmed', 'preparing', 'ready', 'delivered', 'cancelled'];
+        $statuses = ['pending', 'preparing', 'delivered', 'cancelled'];
 
         // Create 50 orders
         for ($i = 0; $i < 50; $i++) {
@@ -412,11 +367,12 @@ class DeploymentSeeder extends Seeder
 
             $order = Order::create([
                 'user_id' => $customer->id,
-                'assigned_staff_id' => $assignedStaff->id,
+                'staff_id' => $assignedStaff->id,
                 'status' => $status,
-                'total_amount' => 0, // Will be calculated
-                'delivery_address' => $customer->address,
-                'notes' => rand(0, 1) ? 'Please deliver to the back door' : null,
+                'total_price' => 0, // Will be calculated
+                'delivery_location' => $customer->permanent_location,
+                'staff_notes' => rand(0, 1) ? 'Please deliver to the back door' : null,
+                'payment_method' => ['cash', 'mobile_money', 'card'][array_rand(['cash', 'mobile_money', 'card'])],
                 'created_at' => $createdAt,
                 'updated_at' => $createdAt,
             ]);
@@ -435,14 +391,13 @@ class DeploymentSeeder extends Seeder
                     'meal_id' => $meal->id,
                     'quantity' => $quantity,
                     'price' => $meal->price,
-                    'subtotal' => $subtotal,
                 ]);
 
                 $totalAmount += $subtotal;
             }
 
             // Update order total
-            $order->update(['total_amount' => $totalAmount]);
+            $order->update(['total_price' => $totalAmount]);
         }
     }
 
@@ -519,17 +474,17 @@ class DeploymentSeeder extends Seeder
         // Create 20 support tickets
         for ($i = 0; $i < 20; $i++) {
             $customer = $customers->random();
-            $assignedStaff = $staff->random();
             $subject = $subjects[array_rand($subjects)];
-            $status = ['open', 'in_progress', 'resolved'][array_rand(['open', 'in_progress', 'resolved'])];
+            $status = ['open', 'closed'][array_rand(['open', 'closed'])];
 
             SupportTicket::create([
-                'user_id' => $customer->id,
-                'assigned_staff_id' => $assignedStaff->id,
+                'name' => $customer->name,
+                'email' => $customer->email,
                 'subject' => $subject,
-                'description' => 'Customer inquiry about ' . strtolower($subject),
+                'message' => 'Customer inquiry about ' . strtolower($subject),
                 'status' => $status,
-                'priority' => ['low', 'medium', 'high'][array_rand(['low', 'medium', 'high'])],
+                'user_id' => $customer->id,
+                'is_registered' => true,
                 'created_at' => now()->subDays(rand(0, 30)),
             ]);
         }
@@ -546,9 +501,11 @@ class DeploymentSeeder extends Seeder
             OtpVerification::create([
                 'user_id' => $user->id,
                 'otp' => rand(100000, 999999),
-                'type' => 'email_verification',
+                'otp_type' => 'email',
+                'recipient' => $user->email,
                 'expires_at' => now()->addMinutes(15),
                 'verified_at' => rand(0, 1) ? now() : null,
+                'used' => rand(0, 1),
             ]);
         }
     }
