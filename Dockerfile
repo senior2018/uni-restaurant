@@ -1,5 +1,5 @@
 # Stage 1: Build Vue frontend
-FROM node:22-alpine AS frontend
+FROM node:18-alpine AS frontend
 WORKDIR /app
 
 # Copy only package files first for caching
@@ -30,7 +30,9 @@ RUN echo "=== PRE-BUILD DEBUG ===" \
 
 # Build the frontend assets with verbose output and error handling
 RUN echo "=== BUILDING ASSETS ===" \
-    && (npm run build || (echo "Build failed, creating fallback structure..." \
+    && echo "Node version: $(node --version)" \
+    && echo "NPM version: $(npm --version)" \
+    && (npm run build 2>&1 || (echo "Build failed, creating fallback structure..." \
         && mkdir -p public/build/assets \
         && echo '{"resources/css/app.css":{"file":"assets/app.css","src":"resources/css/app.css"},"resources/js/app.js":{"file":"assets/app.js","src":"resources/js/app.js"}}' > public/build/manifest.json \
         && echo "/* Fallback CSS */" > public/build/assets/app.css \

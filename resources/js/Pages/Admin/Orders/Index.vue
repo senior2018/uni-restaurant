@@ -335,7 +335,7 @@ const clearAllFilters = () => {
                 </div>
                 <div v-if="selectedOrder && selectedOrder.status !== 'cancelled'" class="mb-4">
                     <label class="block text-sm font-medium mb-1">Assign Staff</label>
-                    <select v-model="staffAssignId" class="border rounded px-2 py-1 min-w-[120px]">
+                    <select v-model="staffAssignId" class="border rounded px-2 py-1 min-w-120">
                         <option value="">Unassigned</option>
                         <option v-for="s in staff" :key="s.id" :value="s.id">{{ s.name }}</option>
                     </select>
@@ -345,7 +345,7 @@ const clearAllFilters = () => {
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium mb-1">Change Status</label>
-                    <select v-model="statusUpdate" class="border rounded px-2 py-1 min-w-[120px]">
+                    <select v-model="statusUpdate" class="border rounded px-2 py-1 min-w-120">
                         <option v-for="opt in statusOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
                     </select>
                     <button @click="updateOrderStatus(selectedOrder.id)" :disabled="statusLoading" class="ml-2 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700">
@@ -461,5 +461,5 @@ const clearAllFilters = () => {
 </template>
 
 <style scoped>
-.min-w-[120px] { min-width: 120px; }
+.min-w-120 { min-width: 120px; }
 </style>
