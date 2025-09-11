@@ -10,7 +10,13 @@ const input = ref(null);
 
 onMounted(() => {
     if (input.value.hasAttribute('autofocus')) {
-        input.value.focus();
+        // Use setTimeout to ensure DOM is fully rendered and avoid autofocus conflicts
+        setTimeout(() => {
+            // Only focus if no other element is already focused
+            if (document.activeElement === document.body) {
+                input.value.focus();
+            }
+        }, 100);
     }
 });
 

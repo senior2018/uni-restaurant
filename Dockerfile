@@ -266,6 +266,9 @@ if [ ! -f "public/storage/image/logo.png" ]; then
     if [ -f "storage/app/public/image/logo.png" ]; then
         cp storage/app/public/image/logo.png public/storage/image/logo.png
         echo "Logo copied from storage to public directory"
+    elif [ -f "storage/app/public/image/logo.jpg" ]; then
+        cp storage/app/public/image/logo.jpg public/storage/image/logo.jpg
+        echo "Logo (JPEG) copied from storage to public directory"
     else
         echo "Logo not found in storage, creating placeholder..."
         # Create a simple placeholder logo (1x1 transparent PNG)
