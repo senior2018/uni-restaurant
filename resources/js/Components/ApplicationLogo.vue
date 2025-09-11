@@ -37,7 +37,7 @@ onMounted(() => {
     };
     img.onerror = () => {
         console.log('Logo failed to load, using fallback');
-        logoSrc.value = fallbackLogoSrc.value;
+        logoSrc.value = fallbackOptions[0]; // Use first fallback
     };
     img.src = '/storage/image/logo.png';
 });

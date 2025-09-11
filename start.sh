@@ -165,6 +165,36 @@ if [ ! -f "public/storage/image/placeholder.jpg" ]; then
     fi
 fi
 
+# Fix logo file formats for deployment
+echo "Fixing logo file formats..."
+# Ensure logo.png is properly formatted (even if it's JPEG data, browsers can handle it)
+if [ -f "storage/app/public/image/logo.jpg" ]; then
+    cp storage/app/public/image/logo.jpg storage/app/public/image/logo.png
+    echo "Logo PNG created from JPEG"
+fi
+
+# Create a proper SVG logo as fallback
+echo "Creating SVG logo fallback..."
+cat > storage/app/public/image/logo.svg << 'EOF'
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" fill="#10b981" rx="4"/>
+  <text x="16" y="20" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="white">R</text>
+</svg>
+EOF
+echo "SVG logo created"
+
+# Create proper favicon files
+echo "Creating proper favicon files..."
+# Copy logo as favicon.png
+if [ -f "storage/app/public/image/logo.jpg" ]; then
+    cp storage/app/public/image/logo.jpg public/favicon.png
+    echo "Favicon PNG created"
+fi
+
+# Create a simple favicon.ico
+echo -e '\x00\x00\x01\x00\x01\x00\x10\x10\x00\x00\x01\x00\x20\x00\x68\x04\x00\x00\x16\x00\x00\x00\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x10\x00\x00\x00\x10\x08\x06\x00\x00\x00\x1f\xf3\xffa\x00\x00\x00\x19tEXtSoftware\x00Adobe ImageReadyq\xc9e<\x00\x00\x03\xf7IDATx\xdab\xf8\x0f\x00\x00\x00\xff\xff\x03\x00\x00\x06\x00\x05\xdd\x1d\xa4\x00\x00\x00\x00IEND\xaeB`\x82' > public/favicon.ico
+echo "Favicon ICO created"
+
 echo "File permissions:"
 ls -la storage/app/public/image/logo.png
 echo "Final logo accessibility check:"
