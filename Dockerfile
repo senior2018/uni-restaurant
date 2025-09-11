@@ -20,15 +20,12 @@ RUN npm run build
 # Stage 2: Laravel backend
 FROM php:8.3-fpm
 
-# Install system dependencies and security updates
+# Install system dependencies and security updates in one layer
 RUN apt-get update && apt-get install -y \
     libpq-dev unzip git curl zip nginx supervisor \
-    && apt-get upgrade -y \
     && docker-php-ext-install pdo pdo_pgsql \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /tmp/* \
-    && rm -rf /var/tmp/*
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Configure PHP-FPM to use stdout/stderr for logging
 RUN echo '[global]' > /usr/local/etc/php-fpm.d/docker.conf \
@@ -55,17 +52,13 @@ RUN echo "Verifying storage files are copied..." \
 # Copy built assets from frontend stage
 COPY --from=frontend /app/public/build ./public/build
 
-# Create non-root user for security
-RUN groupadd -r appuser && useradd -r -g appuser appuser
-
-# Set permissions
-RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views \
+# Create user, set permissions, and install dependencies in one layer
+RUN groupadd -r appuser && useradd -r -g appuser appuser \
+    && mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views \
     && chown -R www-data:www-data storage bootstrap/cache public \
     && chmod -R 775 storage bootstrap/cache \
-    && chmod -R 755 public
-
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
+    && chmod -R 755 public \
+    && composer install --no-dev --optimize-autoloader --no-scripts
 
 # Nginx configuration
 COPY <<EOF /etc/nginx/sites-available/default
@@ -114,6 +107,9 @@ COPY <<EOF /etc/supervisor/conf.d/supervisord.conf
 [supervisord]
 nodaemon=true
 user=root
+logfile=/dev/stdout
+logfile_maxbytes=0
+loglevel=info
 
 [program:php-fpm]
 command=php-fpm --nodaemonize
@@ -122,6 +118,10 @@ stdout_logfile_maxbytes=0
 stderr_logfile=/dev/stderr
 stderr_logfile_maxbytes=0
 autorestart=true
+startsecs=0
+stopwaitsecs=10
+killasgroup=true
+stopasgroup=true
 
 [program:nginx]
 command=nginx -g 'daemon off;'
@@ -130,6 +130,10 @@ stdout_logfile_maxbytes=0
 stderr_logfile=/dev/stderr
 stderr_logfile_maxbytes=0
 autorestart=true
+startsecs=0
+stopwaitsecs=10
+killasgroup=true
+stopasgroup=true
 EOF
 
 EXPOSE 8000

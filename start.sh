@@ -103,13 +103,15 @@ ls -la storage/app/public/image/logo.png || echo "Logo not found in storage"
 # Clear any existing cache files that might have wrong permissions
 rm -rf storage/framework/views/* storage/framework/cache/* storage/framework/sessions/*
 
-# Run Laravel setup
-php artisan migrate --force || echo "Migration failed, continuing..."
-php artisan cache:clear || echo "Cache clear failed, continuing..."
-php artisan config:cache || echo "Config cache failed, continuing..."
+# Run Laravel setup (optimized)
+php artisan migrate --force --no-interaction || echo "Migration failed, continuing..."
+php artisan cache:clear --no-interaction || echo "Cache clear failed, continuing..."
+php artisan config:cache --no-interaction || echo "Config cache failed, continuing..."
 
 # Create storage link using Laravel artisan command
 echo "Creating storage link using Laravel artisan..."
+# Remove existing link first to avoid conflicts
+rm -f public/storage
 php artisan storage:link || echo "Storage link creation failed, using manual symlink"
 
 # Final verification of storage setup
@@ -170,9 +172,9 @@ ls -la public/storage/image/logo.png || echo "Logo still not accessible after al
 echo "All available logo files:"
 ls -la public/storage/image/logo.* || echo "No logo files found"
 
-# Seed database with deployment data
+# Seed database with deployment data (optimized)
 echo "Seeding database with deployment data..."
-php artisan db:seed --class=DeploymentSeeder --force
+php artisan db:seed --class=DeploymentSeeder --force --no-interaction
 echo "Seeding completed successfully!"
 
 # Create a simple test page to verify assets
