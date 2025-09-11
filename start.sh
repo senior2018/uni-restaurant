@@ -167,8 +167,11 @@ fi
 
 # Fix logo file formats for deployment
 echo "Fixing logo file formats..."
-# Ensure logo.png is properly formatted (even if it's JPEG data, browsers can handle it)
-if [ -f "storage/app/public/image/logo.jpg" ]; then
+# Use logo2.png as primary logo (it's a proper PNG file)
+if [ -f "storage/app/public/image/logo2.png" ]; then
+    cp storage/app/public/image/logo2.png storage/app/public/image/logo.png
+    echo "Logo2.png copied as primary logo.png"
+elif [ -f "storage/app/public/image/logo.jpg" ]; then
     cp storage/app/public/image/logo.jpg storage/app/public/image/logo.png
     echo "Logo PNG created from JPEG"
 fi
@@ -185,10 +188,13 @@ echo "SVG logo created"
 
 # Create proper favicon files
 echo "Creating proper favicon files..."
-# Copy logo as favicon.png
-if [ -f "storage/app/public/image/logo.jpg" ]; then
+# Copy logo2.png as favicon.png (it's a proper PNG)
+if [ -f "storage/app/public/image/logo2.png" ]; then
+    cp storage/app/public/image/logo2.png public/favicon.png
+    echo "Favicon PNG created from logo2.png"
+elif [ -f "storage/app/public/image/logo.jpg" ]; then
     cp storage/app/public/image/logo.jpg public/favicon.png
-    echo "Favicon PNG created"
+    echo "Favicon PNG created from logo.jpg"
 fi
 
 # Create a simple favicon.ico

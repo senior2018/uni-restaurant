@@ -10,8 +10,9 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 
-const logoSrc = ref('/storage/image/logo.png');
+const logoSrc = ref('/storage/image/logo2.png');
 const fallbackOptions = [
+    '/storage/image/logo.png',
     '/storage/image/logo.jpg',
     '/storage/image/logo.svg',
     '/favicon.png',
@@ -39,6 +40,6 @@ onMounted(() => {
         console.log('Logo failed to load, using fallback');
         logoSrc.value = fallbackOptions[0]; // Use first fallback
     };
-    img.src = '/storage/image/logo.png';
+    img.src = '/storage/image/logo2.png';
 });
 </script>
