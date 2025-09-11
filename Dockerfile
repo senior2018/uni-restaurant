@@ -30,18 +30,13 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /tmp/* \
     && rm -rf /var/tmp/*
 
-# Configure PHP-FPM
-RUN echo '[www]' > /usr/local/etc/php-fpm.d/www.conf \
-    && echo 'user = www-data' >> /usr/local/etc/php-fpm.d/www.conf \
-    && echo 'group = www-data' >> /usr/local/etc/php-fpm.d/www.conf \
-    && echo 'listen = 127.0.0.1:9000' >> /usr/local/etc/php-fpm.d/www.conf \
-    && echo 'listen.owner = www-data' >> /usr/local/etc/php-fpm.d/www.conf \
-    && echo 'listen.group = www-data' >> /usr/local/etc/php-fpm.d/www.conf \
-    && echo 'pm = dynamic' >> /usr/local/etc/php-fpm.d/www.conf \
-    && echo 'pm.max_children = 5' >> /usr/local/etc/php-fpm.d/www.conf \
-    && echo 'pm.start_servers = 2' >> /usr/local/etc/php-fpm.d/www.conf \
-    && echo 'pm.min_spare_servers = 1' >> /usr/local/etc/php-fpm.d/www.conf \
-    && echo 'pm.max_spare_servers = 3' >> /usr/local/etc/php-fpm.d/www.conf
+# Configure PHP-FPM to use stdout/stderr for logging
+RUN echo '[global]' > /usr/local/etc/php-fpm.d/docker.conf \
+    && echo 'error_log = /dev/stderr' >> /usr/local/etc/php-fpm.d/docker.conf \
+    && echo '' >> /usr/local/etc/php-fpm.d/docker.conf \
+    && echo '[www]' >> /usr/local/etc/php-fpm.d/docker.conf \
+    && echo 'access.log = /dev/stdout' >> /usr/local/etc/php-fpm.d/docker.conf \
+    && echo 'catch_workers_output = yes' >> /usr/local/etc/php-fpm.d/docker.conf
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -115,8 +110,7 @@ nodaemon=true
 user=root
 
 [program:php-fpm]
-command=php-fpm
-user=www-data
+command=php-fpm --nodaemonize
 stdout_logfile=/dev/stdout
 stdout_logfile_maxbytes=0
 stderr_logfile=/dev/stderr
@@ -261,6 +255,18 @@ echo "=== Starting Services ==="
 # Test PHP-FPM configuration
 echo "Testing PHP-FPM configuration..."
 php-fpm -t || echo "PHP-FPM config test failed"
+
+# Show PHP-FPM configuration
+echo "PHP-FPM main configuration:"
+cat /usr/local/etc/php-fpm.conf
+echo "PHP-FPM www pool configuration:"
+cat /usr/local/etc/php-fpm.d/www.conf
+echo "PHP-FPM docker configuration:"
+cat /usr/local/etc/php-fpm.d/docker.conf
+
+# Test if PHP-FPM can start
+echo "Testing PHP-FPM startup..."
+timeout 5 php-fpm --test || echo "PHP-FPM startup test completed"
 
 # Test Nginx configuration
 echo "Testing Nginx configuration..."
