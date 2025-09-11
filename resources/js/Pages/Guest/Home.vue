@@ -1,6 +1,7 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
 import GuestLayout from './Layout.vue';
+import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 
 defineProps({
     canLogin: Boolean,
@@ -18,7 +19,7 @@ defineProps({
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
                         <span class="text-2xl font-bold text-green-600 flex items-center">
-                            <img src="/public/logo.png" alt="Logo" class="h-8 w-8 mr-2" />
+                            <ApplicationLogo />
                             Our Restaurant
                         </span>
                     </div>
