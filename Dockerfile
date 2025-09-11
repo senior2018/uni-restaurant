@@ -48,8 +48,7 @@ RUN groupadd -r appuser && useradd -r -g appuser appuser
 RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views \
     && chown -R www-data:www-data storage bootstrap/cache public \
     && chmod -R 775 storage bootstrap/cache \
-    && chmod -R 755 public \
-    && chown -R appuser:appuser /var/www/html
+    && chmod -R 755 public
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
@@ -97,6 +96,7 @@ user=root
 
 [program:php-fpm]
 command=php-fpm
+user=www-data
 stdout_logfile=/dev/stdout
 stdout_logfile_maxbytes=0
 stderr_logfile=/dev/stderr
@@ -191,6 +191,15 @@ else
     echo "Manifest content:"
     cat public/build/manifest.json
 fi
+
+# Ensure proper permissions for storage directories
+echo "Setting up storage permissions..."
+mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views
+chown -R www-data:www-data storage bootstrap/cache
+chmod -R 775 storage bootstrap/cache
+
+# Clear any existing cache files that might have wrong permissions
+rm -rf storage/framework/views/* storage/framework/cache/* storage/framework/sessions/*
 
 # Run Laravel setup
 php artisan migrate --force || echo "Migration failed, continuing..."
