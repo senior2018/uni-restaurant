@@ -8,38 +8,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 
-const logoSrc = ref('/storage/image/logo2.png');
-const fallbackOptions = [
-    '/storage/image/logo.png',
-    '/storage/image/logo.jpg',
-    '/storage/image/logo.svg',
-    '/favicon.png',
-    '/favicon.ico'
-];
-let currentFallbackIndex = 0;
+const logoSrc = ref('/storage/image/logo.png');
 
 const handleImageError = () => {
-    console.log('Logo failed to load, trying fallback...');
-    if (currentFallbackIndex < fallbackOptions.length) {
-        logoSrc.value = fallbackOptions[currentFallbackIndex];
-        currentFallbackIndex++;
-    } else {
-        console.log('All logo fallbacks failed');
-    }
+    console.log('Logo failed to load, using fallback');
+    // Simple fallback to favicon
+    logoSrc.value = '/favicon.png';
 };
-
-onMounted(() => {
-    // Preload the logo to check if it exists
-    const img = new Image();
-    img.onload = () => {
-        console.log('Logo loaded successfully');
-    };
-    img.onerror = () => {
-        console.log('Logo failed to load, using fallback');
-        logoSrc.value = fallbackOptions[0]; // Use first fallback
-    };
-    img.src = '/storage/image/logo2.png';
-});
 </script>

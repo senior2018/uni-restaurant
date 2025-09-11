@@ -165,41 +165,28 @@ if [ ! -f "public/storage/image/placeholder.jpg" ]; then
     fi
 fi
 
-# Fix logo file formats for deployment
-echo "Fixing logo file formats..."
-# Use logo2.png as primary logo (it's a proper PNG file)
-if [ -f "storage/app/public/image/logo2.png" ]; then
-    cp storage/app/public/image/logo2.png storage/app/public/image/logo.png
-    echo "Logo2.png copied as primary logo.png"
-elif [ -f "storage/app/public/image/logo.jpg" ]; then
-    cp storage/app/public/image/logo.jpg storage/app/public/image/logo.png
-    echo "Logo PNG created from JPEG"
+# Simple logo setup
+echo "Setting up logo files..."
+# Use logo.png as the main logo (it's a proper PNG file)
+if [ -f "storage/app/public/image/logo.png" ]; then
+    echo "Using logo.png as main logo"
+    # Copy logo.png as favicon.png for fallback
+    cp storage/app/public/image/logo.png public/favicon.png
+    echo "Favicon created from logo.png"
+elif [ -f "storage/app/public/image/Logo.png" ]; then
+    echo "Using Logo.png as main logo (copying to logo.png)"
+    cp storage/app/public/image/Logo.png storage/app/public/image/logo.png
+    cp storage/app/public/image/logo.png public/favicon.png
+    echo "logo.png and favicon created from Logo.png"
+else
+    echo "No logo found, creating simple fallback"
+    # Create a simple green square as fallback
+    echo -e '\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00 \x00\x00\x00 \x08\x06\x00\x00\x00szz\xf4\x00\x00\x00\x19tEXtSoftware\x00Adobe ImageReadyq\xc9e<\x00\x00\x00\xa4IDATx\xdab\xf8\x0f\x00\x00\x00\xff\xff\x03\x00\x00\x06\x00\x05\xdd\x1d\xa4\x00\x00\x00\x00IEND\xaeB`\x82' > public/favicon.png
 fi
 
-# Create a proper SVG logo as fallback
-echo "Creating SVG logo fallback..."
-cat > storage/app/public/image/logo.svg << 'EOF'
-<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-  <rect width="32" height="32" fill="#10b981" rx="4"/>
-  <text x="16" y="20" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="white">R</text>
-</svg>
-EOF
-echo "SVG logo created"
-
-# Create proper favicon files
-echo "Creating proper favicon files..."
-# Copy logo2.png as favicon.png (it's a proper PNG)
-if [ -f "storage/app/public/image/logo2.png" ]; then
-    cp storage/app/public/image/logo2.png public/favicon.png
-    echo "Favicon PNG created from logo2.png"
-elif [ -f "storage/app/public/image/logo.jpg" ]; then
-    cp storage/app/public/image/logo.jpg public/favicon.png
-    echo "Favicon PNG created from logo.jpg"
-fi
-
-# Create a simple favicon.ico
+# Create simple favicon.ico
 echo -e '\x00\x00\x01\x00\x01\x00\x10\x10\x00\x00\x01\x00\x20\x00\x68\x04\x00\x00\x16\x00\x00\x00\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x10\x00\x00\x00\x10\x08\x06\x00\x00\x00\x1f\xf3\xffa\x00\x00\x00\x19tEXtSoftware\x00Adobe ImageReadyq\xc9e<\x00\x00\x03\xf7IDATx\xdab\xf8\x0f\x00\x00\x00\xff\xff\x03\x00\x00\x06\x00\x05\xdd\x1d\xa4\x00\x00\x00\x00IEND\xaeB`\x82' > public/favicon.ico
-echo "Favicon ICO created"
+echo "Simple favicon.ico created"
 
 echo "File permissions:"
 ls -la storage/app/public/image/logo.png
