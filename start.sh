@@ -150,6 +150,19 @@ EOF
     fi
 fi
 
+# Ensure placeholder image exists
+if [ ! -f "public/storage/image/placeholder.jpg" ]; then
+    echo "Creating placeholder image..."
+    mkdir -p public/storage/image
+    if [ -f "storage/app/public/image/placeholder.jpg" ]; then
+        cp storage/app/public/image/placeholder.jpg public/storage/image/placeholder.jpg
+        echo "Placeholder image copied from storage"
+    else
+        # Create a simple placeholder by copying logo
+        cp storage/app/public/image/logo.jpg public/storage/image/placeholder.jpg 2>/dev/null || echo "Could not create placeholder image"
+    fi
+fi
+
 echo "File permissions:"
 ls -la storage/app/public/image/logo.png
 echo "Final logo accessibility check:"
