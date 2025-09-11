@@ -32,6 +32,8 @@ RUN echo "=== PRE-BUILD DEBUG ===" \
 RUN echo "=== BUILDING ASSETS ===" \
     && echo "Node version: $(node --version)" \
     && echo "NPM version: $(npm --version)" \
+    && export NODE_ENV=production \
+    && export VITE_APP_ENV=production \
     && (npm run build 2>&1 || (echo "Build failed, creating fallback structure..." \
         && mkdir -p public/build/assets \
         && echo '{"resources/css/app.css":{"file":"assets/app.css","src":"resources/css/app.css"},"resources/js/app.js":{"file":"assets/app.js","src":"resources/js/app.js"}}' > public/build/manifest.json \
@@ -229,6 +231,20 @@ if [ -d "public/build/assets" ]; then
     for file in public/build/assets/*.css public/build/assets/*.js; do
         [ -f "\$file" ] && echo "✓ \$(basename \$file) is readable" || echo "✗ \$file not found"
     done
+
+    # Check if manifest references exist
+    echo "Checking manifest consistency:"
+    if [ -f "public/build/manifest.json" ]; then
+        # Extract asset filenames from manifest and check if they exist
+        manifest_assets=\$(grep -o '"file": "[^"]*"' public/build/manifest.json | sed 's/"file": "//g' | sed 's/"//g')
+        for asset in \$manifest_assets; do
+            if [ -f "public/build/\$asset" ]; then
+                echo "✓ Manifest asset \$asset exists"
+            else
+                echo "⚠ Manifest asset \$asset missing - this may cause 404 errors"
+            fi
+        done
+    fi
 else
     echo "⚠ Assets directory missing - creating fallback"
     mkdir -p public/build/assets

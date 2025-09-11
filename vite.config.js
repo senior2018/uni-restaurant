@@ -24,8 +24,15 @@ export default defineConfig({
         manifest: 'manifest.json', // Put manifest in root of build dir, not .vite subdir
         rollupOptions: {
             output: {
-                // Ensure consistent asset naming
-                assetFileNames: 'assets/[name]-[hash][extname]',
+                // Use more predictable asset naming for production
+                assetFileNames: (assetInfo) => {
+                    const info = assetInfo.name.split('.');
+                    const ext = info[info.length - 1];
+                    if (/\.(css)$/.test(assetInfo.name)) {
+                        return `assets/[name]-[hash].${ext}`;
+                    }
+                    return `assets/[name]-[hash].${ext}`;
+                },
                 chunkFileNames: 'assets/[name]-[hash].js',
                 entryFileNames: 'assets/[name]-[hash].js',
             },
@@ -36,6 +43,8 @@ export default defineConfig({
         assetsDir: 'assets',
         // Ensure proper base path
         assetsInlineLimit: 0,
+        // Ensure consistent builds
+        minify: 'esbuild',
     },
     server: {
         https: false,
