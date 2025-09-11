@@ -66,14 +66,12 @@ class DeploymentSeeder extends Seeder
         $this->command->info('Creating meal categories...');
 
         $categories = [
-            ['name' => 'Appetizers'],
-            ['name' => 'Main Courses'],
-            ['name' => 'Desserts'],
+            ['name' => 'Starches'],
+            ['name' => 'Proteins'],
+            ['name' => 'Vegetables'],
+            ['name' => 'Breakfast'],
             ['name' => 'Beverages'],
-            ['name' => 'Salads'],
-            ['name' => 'Soups'],
-            ['name' => 'Pasta'],
-            ['name' => 'Pizza'],
+            ['name' => 'Specials'],
         ];
 
         foreach ($categories as $category) {
@@ -85,122 +83,149 @@ class DeploymentSeeder extends Seeder
     {
         $this->command->info('Creating meals...');
 
-        $appetizers = MealCategory::where('name', 'Appetizers')->first();
-        $mainCourses = MealCategory::where('name', 'Main Courses')->first();
-        $desserts = MealCategory::where('name', 'Desserts')->first();
+        $starches = MealCategory::where('name', 'Starches')->first();
+        $proteins = MealCategory::where('name', 'Proteins')->first();
+        $vegetables = MealCategory::where('name', 'Vegetables')->first();
+        $breakfast = MealCategory::where('name', 'Breakfast')->first();
         $beverages = MealCategory::where('name', 'Beverages')->first();
-        $salads = MealCategory::where('name', 'Salads')->first();
-        $soups = MealCategory::where('name', 'Soups')->first();
-        $pasta = MealCategory::where('name', 'Pasta')->first();
-        $pizza = MealCategory::where('name', 'Pizza')->first();
+        $specials = MealCategory::where('name', 'Specials')->first();
 
         $meals = [
-            // Available Meals (10)
+            // Starches Category (3 meals: 2 available, 1 unavailable)
             [
-                'name' => 'Buffalo Wings',
-                'description' => 'Crispy chicken wings tossed in spicy buffalo sauce',
-                'price' => 12.99,
-                'category_id' => $appetizers->id,
+                'name' => 'Ugali Maharage',
+                'description' => 'Traditional maize meal with beans',
+                'price' => 2500.00,
+                'category_id' => $starches->id,
                 'is_available' => true,
             ],
             [
-                'name' => 'Grilled Salmon',
-                'description' => 'Fresh Atlantic salmon grilled to perfection with lemon herb butter',
-                'price' => 24.99,
-                'category_id' => $mainCourses->id,
+                'name' => 'Wali Maharage',
+                'description' => 'Rice with beans',
+                'price' => 3000.00,
+                'category_id' => $starches->id,
                 'is_available' => true,
             ],
             [
-                'name' => 'Beef Steak',
-                'description' => 'Premium ribeye steak cooked to your preference',
-                'price' => 32.99,
-                'category_id' => $mainCourses->id,
+                'name' => 'Pilau',
+                'description' => 'Spiced rice with meat',
+                'price' => 4000.00,
+                'category_id' => $starches->id,
+                'is_available' => false,
+            ],
+
+            // Proteins Category (3 meals: 2 available, 1 unavailable)
+            [
+                'name' => 'Samaki wa Kupaka',
+                'description' => 'Grilled fish with coconut sauce',
+                'price' => 5000.00,
+                'category_id' => $proteins->id,
                 'is_available' => true,
             ],
             [
-                'name' => 'Spaghetti Carbonara',
-                'description' => 'Classic Italian pasta with eggs, cheese, and pancetta',
-                'price' => 17.99,
-                'category_id' => $pasta->id,
+                'name' => 'Mchuzi wa Kuku',
+                'description' => 'Chicken curry',
+                'price' => 4500.00,
+                'category_id' => $proteins->id,
                 'is_available' => true,
             ],
             [
-                'name' => 'Margherita Pizza',
-                'description' => 'Classic pizza with tomato sauce, mozzarella, and basil',
-                'price' => 16.99,
-                'category_id' => $pizza->id,
+                'name' => 'Beef Stew',
+                'description' => 'Tender beef in rich gravy',
+                'price' => 6000.00,
+                'category_id' => $proteins->id,
+                'is_available' => false,
+            ],
+
+            // Vegetables Category (3 meals: 2 available, 1 unavailable)
+            [
+                'name' => 'Vegetable Curry',
+                'description' => 'Mixed vegetables in curry sauce',
+                'price' => 2000.00,
+                'category_id' => $vegetables->id,
                 'is_available' => true,
             ],
             [
-                'name' => 'Caesar Salad',
-                'description' => 'Fresh romaine lettuce with caesar dressing and croutons',
-                'price' => 11.99,
-                'category_id' => $salads->id,
+                'name' => 'Kisamvu na Nyama',
+                'description' => 'Cassava leaves with meat',
+                'price' => 3500.00,
+                'category_id' => $vegetables->id,
                 'is_available' => true,
             ],
             [
-                'name' => 'Tomato Basil Soup',
-                'description' => 'Creamy tomato soup with fresh basil',
-                'price' => 8.99,
-                'category_id' => $soups->id,
+                'name' => 'Mchemsho',
+                'description' => 'Mixed vegetable stew',
+                'price' => 2500.00,
+                'category_id' => $vegetables->id,
+                'is_available' => false,
+            ],
+
+            // Breakfast Category (3 meals: 2 available, 1 unavailable)
+            [
+                'name' => 'Chips Mayai',
+                'description' => 'French fries with eggs',
+                'price' => 3000.00,
+                'category_id' => $breakfast->id,
                 'is_available' => true,
             ],
             [
-                'name' => 'Chocolate Cake',
-                'description' => 'Rich chocolate cake with chocolate ganache',
-                'price' => 7.99,
-                'category_id' => $desserts->id,
+                'name' => 'Chapati',
+                'description' => 'Flatbread with tea',
+                'price' => 1500.00,
+                'category_id' => $breakfast->id,
                 'is_available' => true,
             ],
             [
-                'name' => 'Fresh Orange Juice',
-                'description' => 'Freshly squeezed orange juice',
-                'price' => 4.99,
+                'name' => 'Mandazi',
+                'description' => 'Sweet fried bread',
+                'price' => 1000.00,
+                'category_id' => $breakfast->id,
+                'is_available' => false,
+            ],
+
+            // Beverages Category (3 meals: 2 available, 1 unavailable)
+            [
+                'name' => 'Chai',
+                'description' => 'Traditional spiced tea',
+                'price' => 500.00,
+                'category_id' => $beverages->id,
+                'is_available' => true,
+            ],
+            [
+                'name' => 'Fresh Juice',
+                'description' => 'Fresh fruit juice',
+                'price' => 2000.00,
                 'category_id' => $beverages->id,
                 'is_available' => true,
             ],
             [
                 'name' => 'Coffee',
                 'description' => 'Freshly brewed coffee',
-                'price' => 2.99,
+                'price' => 1000.00,
                 'category_id' => $beverages->id,
-                'is_available' => true,
+                'is_available' => false,
             ],
 
-            // Unavailable Meals (5)
+            // Specials Category (3 meals: 2 available, 1 unavailable)
             [
-                'name' => 'Mozzarella Sticks',
-                'description' => 'Golden fried mozzarella cheese sticks with marinara sauce',
-                'price' => 9.99,
-                'category_id' => $appetizers->id,
-                'is_available' => false,
+                'name' => 'Katogo',
+                'description' => 'Traditional mixed dish',
+                'price' => 4000.00,
+                'category_id' => $specials->id,
+                'is_available' => true,
             ],
             [
-                'name' => 'Chicken Parmesan',
-                'description' => 'Breaded chicken breast with marinara sauce and melted mozzarella',
-                'price' => 18.99,
-                'category_id' => $mainCourses->id,
-                'is_available' => false,
+                'name' => 'Matoke',
+                'description' => 'Steamed green bananas',
+                'price' => 3000.00,
+                'category_id' => $specials->id,
+                'is_available' => true,
             ],
             [
-                'name' => 'Pepperoni Pizza',
-                'description' => 'Traditional pizza topped with pepperoni and mozzarella',
-                'price' => 18.99,
-                'category_id' => $pizza->id,
-                'is_available' => false,
-            ],
-            [
-                'name' => 'Tiramisu',
-                'description' => 'Classic Italian dessert with coffee and mascarpone',
-                'price' => 8.99,
-                'category_id' => $desserts->id,
-                'is_available' => false,
-            ],
-            [
-                'name' => 'Iced Tea',
-                'description' => 'Refreshing iced tea with lemon',
-                'price' => 3.99,
-                'category_id' => $beverages->id,
+                'name' => 'Supu ya Ndizi',
+                'description' => 'Banana soup',
+                'price' => 2500.00,
+                'category_id' => $specials->id,
                 'is_available' => false,
             ],
         ];
