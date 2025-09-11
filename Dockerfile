@@ -1,28 +1,4 @@
-# Stage 1: Build Vue frontend
-FROM node:18-alpine AS frontend
-WORKDIR /app
-
-# Copy package files
-COPY package.json package-lock.json* ./
-
-# Install dependencies
-RUN npm ci --no-audit --no-fund
-
-# Copy source files
-COPY resources/ resources/
-COPY vite.config.js ./
-COPY tailwind.config.js ./
-COPY postcss.config.js ./
-
-# Create build directory
-RUN mkdir -p public/build
-
-# Always use fallback assets for reliability on Render free tier
-RUN echo "Using fallback assets for reliable deployment..." && \
-    rm -rf public/build && \
-    mkdir -p public/build/assets
-
-# Stage 2: Laravel backend
+# Laravel backend with fallback assets
 FROM php:8.2-fpm
 
 # Install system dependencies
@@ -38,9 +14,6 @@ WORKDIR /var/www/html
 
 # Copy Laravel application
 COPY . .
-
-# Copy assets from frontend stage (if they exist)
-COPY --from=frontend /app/public/build ./public/build || echo "No assets from frontend stage"
 
 # Set permissions
 RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views \
