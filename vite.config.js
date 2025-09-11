@@ -38,5 +38,5 @@ export default defineConfig({
             host: 'localhost',
         },
     },
-    base: '/',
+    base: process.env.NODE_ENV === 'production' ? '/build/' : '/',
 });
