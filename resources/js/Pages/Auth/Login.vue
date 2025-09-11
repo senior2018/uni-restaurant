@@ -5,7 +5,8 @@
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
                     <Link :href="route('home')" class="text-2xl font-bold text-green-600 hover:text-green-800 flex items-center gap-2">
-                        <i class="fas fa-utensils mr-2"></i>UniRestaurant
+                        <img src="/storage/image/logo.png" alt="Logo" class="h-8 w-8 mr-2" />
+                        Our Restaurant
                     </Link>
                 </div>
                 <div class="flex items-center space-x-4">
@@ -26,8 +27,9 @@
         <div class="w-full max-w-[48rem] bg-white p-10 rounded-2xl shadow-lg border border-green-100 space-y-8">
             <!-- Logo and Title -->
             <div class="text-center">
-                <span class="text-3xl font-bold text-green-600">
-                    <i class="fas fa-utensils mr-2"></i>UniRestaurant
+                <span class="text-3xl font-bold text-green-600 flex items-center justify-center">
+                    <img src="/storage/image/logo.png" alt="Logo" class="h-10 w-10 mr-3" />
+                    Our Restaurant
                 </span>
                 <h2 class="mt-4 text-2xl font-bold text-gray-900">Sign in to your account</h2>
             </div>

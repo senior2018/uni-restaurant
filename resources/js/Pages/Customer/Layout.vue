@@ -42,7 +42,7 @@ watchEffect(() => {
 
 <template>
     <BaseLayout>
-        <TopNavBar :links="navLinks" :user="user" role="customer" brand="Uni Restaurant" />
+        <TopNavBar :links="navLinks" :user="user" role="customer" brand="Our Restaurant" />
 
         <!-- Flash Messages -->
         <div v-if="page.props.flash?.success" class="w-full px-4 mt-4 relative z-10">

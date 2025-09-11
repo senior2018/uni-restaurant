@@ -340,7 +340,7 @@ class DeploymentSeeder extends Seeder
         // Super Admin
         User::create([
             'name' => 'Super Admin',
-            'email' => 'superadmin@unirestaurant.com',
+            'email' => 'superadmin@ourrestaurant.com',
             'password' => Hash::make('password'),
             'role' => 'super_admin',
             'email_verified_at' => now(),
@@ -351,7 +351,7 @@ class DeploymentSeeder extends Seeder
         // Admin
         User::create([
             'name' => 'Restaurant Admin',
-            'email' => 'admin@unirestaurant.com',
+            'email' => 'admin@ourrestaurant.com',
             'password' => Hash::make('password'),
             'role' => 'admin',
             'email_verified_at' => now(),
@@ -364,7 +364,7 @@ class DeploymentSeeder extends Seeder
         foreach ($staffNames as $index => $name) {
             User::create([
                 'name' => $name,
-                'email' => strtolower(str_replace(' ', '.', $name)) . '@unirestaurant.com',
+                'email' => strtolower(str_replace(' ', '.', $name)) . '@ourrestaurant.com',
                 'password' => Hash::make('password'),
                 'role' => 'staff',
                 'email_verified_at' => now(),

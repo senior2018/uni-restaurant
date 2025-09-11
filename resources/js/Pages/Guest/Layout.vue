@@ -4,7 +4,7 @@ import { Head, Link } from '@inertiajs/vue3';
 </script>
 
 <template>
-    <Head title="Welcome to Reustarant" />
+    <Head title="Our Reustarant" />
 
     <div class="min-h-screen bg-gray-50">
         <!-- Simple guest navigation -->

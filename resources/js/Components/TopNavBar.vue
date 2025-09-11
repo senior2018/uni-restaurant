@@ -6,7 +6,7 @@ const props = defineProps({
     links: Array, // [{ name, route, icon }]
     user: Object,
     role: String, // 'admin', 'staff', 'customer'
-    brand: { type: String, default: 'Uni Restaurant' },
+    brand: { type: String, default: 'Our Restaurant' },
 });
 
 const showDropdown = ref(false);

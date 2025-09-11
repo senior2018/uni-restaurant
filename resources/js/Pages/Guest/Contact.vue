@@ -116,8 +116,9 @@ function submit() {
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
-                        <span class="text-2xl font-bold text-green-600">
-                            <i class="fas fa-utensils mr-2"></i>UniRestaurant
+                        <span class="text-2xl font-bold text-green-600 flex items-center">
+                            <img src="/storage/image/logo.png" alt="Logo" class="h-8 w-8 mr-2" />
+                            Our Restaurant
                         </span>
                     </div>
                     <div class="flex items-center space-x-4">

@@ -204,6 +204,46 @@
   .btn-responsive {
     @apply w-full;
   }
+
+  /* Mobile navigation improvements */
+  .nav-mobile {
+    @apply fixed inset-0 z-50 bg-white shadow-lg overflow-y-auto;
+  }
+
+  /* Mobile logo sizing */
+  .mobile-logo {
+    @apply h-6 w-6;
+  }
+
+  /* Mobile text sizing */
+  .mobile-text {
+    @apply text-sm;
+  }
+
+  /* Mobile spacing */
+  .mobile-spacing {
+    @apply px-2 py-1;
+  }
+
+  /* Mobile card improvements */
+  .card-responsive {
+    @apply p-3 m-2;
+  }
+
+  /* Mobile form improvements */
+  .form-responsive {
+    @apply space-y-3;
+  }
+
+  /* Mobile grid improvements */
+  .grid-responsive {
+    @apply grid-cols-1 gap-2;
+  }
+
+  /* Mobile container improvements */
+  .container-responsive {
+    @apply px-2;
+  }
 }
 
 /* Tablet-specific optimizations */

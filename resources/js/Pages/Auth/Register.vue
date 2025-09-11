@@ -38,7 +38,8 @@ const redirectToGoogle = () => {
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
                     <Link :href="route('home')" class="text-2xl font-bold text-green-600 hover:text-green-800 flex items-center gap-2">
-                        <i class="fas fa-utensils mr-2"></i>UniRestaurant
+                        <img src="/storage/image/logo.png" alt="Logo" class="h-8 w-8 mr-2" />
+                        Our Restaurant
                     </Link>
                 </div>
                 <div class="flex items-center space-x-4">

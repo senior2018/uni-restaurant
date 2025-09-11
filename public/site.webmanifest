@@ -1,7 +1,7 @@
 {
-    "name": "Uni Restaurant",
-    "short_name": "UniRestaurant",
-    "description": "University Restaurant Management System",
+    "name": "Our Restaurant",
+    "short_name": "OurRestaurant",
+    "description": "Restaurant Management System",
     "icons": [
         {
             "src": "/storage/image/logo.png",

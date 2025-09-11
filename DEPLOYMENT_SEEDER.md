@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Deployment Seeder is a comprehensive database seeding solution designed specifically for production deployments. It creates realistic sample data for the Uni Restaurant management system, optimized for Render's free tier database limitations (1GB).
+The Deployment Seeder is a comprehensive database seeding solution designed specifically for production deployments. It creates realistic sample data for the Our Restaurant management system, optimized for Render's free tier database limitations (1GB).
 
 ## Features
 

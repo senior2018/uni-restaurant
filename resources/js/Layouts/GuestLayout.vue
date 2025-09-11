@@ -28,7 +28,7 @@ onMounted(() => {
       <slot name="header">
         <div class="flex items-center gap-2">
           <img src="/storage/image/logo.png" alt="Logo" class="h-10 w-10" />
-          <span class="text-2xl font-bold text-white tracking-wide drop-shadow">UniRestaurant</span>
+          <span class="text-2xl font-bold text-white tracking-wide drop-shadow">Our Restaurant</span>
         </div>
       </slot>
     </header>
@@ -48,7 +48,7 @@ onMounted(() => {
     <!-- Footer slot (optional) -->
     <footer class="relative z-20 w-full flex justify-center py-6 mt-auto">
       <slot name="footer">
-        <span class="text-sm text-white/80">&copy; {{ new Date().getFullYear() }} UniRestaurant. All rights reserved.</span>
+        <span class="text-sm text-white/80">&copy; {{ new Date().getFullYear() }} Our Restaurant. All rights reserved.</span>
       </slot>
     </footer>
   </div>

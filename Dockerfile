@@ -1,5 +1,5 @@
 # Stage 1: Build Vue frontend
-FROM node:18-alpine AS frontend
+FROM node:20-alpine AS frontend
 WORKDIR /app
 
 # Copy package files
@@ -18,13 +18,17 @@ COPY postcss.config.js ./
 RUN npm run build
 
 # Stage 2: Laravel backend
-FROM php:8.2-fpm
+FROM php:8.3-fpm
 
-# Install system dependencies
+# Install system dependencies and security updates
 RUN apt-get update && apt-get install -y \
     libpq-dev unzip git curl zip nginx supervisor \
+    && apt-get upgrade -y \
     && docker-php-ext-install pdo pdo_pgsql \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/* \
+    && rm -rf /var/tmp/*
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -37,11 +41,15 @@ COPY . .
 # Copy built assets from frontend stage
 COPY --from=frontend /app/public/build ./public/build
 
+# Create non-root user for security
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
 # Set permissions
 RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views \
     && chown -R www-data:www-data storage bootstrap/cache public \
     && chmod -R 775 storage bootstrap/cache \
-    && chmod -R 755 public
+    && chmod -R 755 public \
+    && chown -R appuser:appuser /var/www/html
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
@@ -53,6 +61,13 @@ server {
     server_name _;
     root /var/www/html/public;
     index index.php;
+
+    # Security headers
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:;" always;
 
     # Handle static assets
     location ~* \.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
@@ -184,7 +199,8 @@ php artisan config:cache || echo "Config cache failed, continuing..."
 
 # Seed database with deployment data
 echo "Seeding database with deployment data..."
-php artisan db:seed --class=DeploymentSeeder --force || echo "Seeding failed, continuing..."
+php artisan db:seed --class=DeploymentSeeder --force
+echo "Seeding completed successfully!"
 
 # Create a simple test page to verify assets
 echo "Creating test page to verify assets..."

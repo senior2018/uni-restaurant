@@ -9,7 +9,7 @@ defineProps({
 </script>
 
 <template>
-    <Head title="Welcome to Uni Restaurant" />
+    <Head title="Welcome to Our Restaurant" />
 
     <div class="min-h-screen bg-gradient-to-b from-green-50 to-white">
         <!-- Navigation -->
@@ -17,8 +17,9 @@ defineProps({
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
-                        <span class="text-2xl font-bold text-green-600">
-                            <i class="fas fa-utensils mr-2"></i>UniRestaurant
+                        <span class="text-2xl font-bold text-green-600 flex items-center">
+                            <img src="/storage/image/logo.png" alt="Logo" class="h-8 w-8 mr-2" />
+                            Our Restaurant
                         </span>
                     </div>
                     <div class="flex items-center space-x-4">
@@ -91,7 +92,7 @@ defineProps({
 
         <!-- Footer -->
         <footer class="text-center py-6 text-sm text-gray-500">
-            &copy; {{ new Date().getFullYear() }} UniRestaurant. Built for Campus Life.
+            &copy; {{ new Date().getFullYear() }} Our Restaurant. Built for Campus Life.
         </footer>
     </div>
 </template>
