@@ -104,7 +104,7 @@ ls -la storage/app/public/image/logo.png || echo "Logo not found in storage"
 rm -rf storage/framework/views/* storage/framework/cache/* storage/framework/sessions/*
 
 # Run Laravel setup (optimized)
-php artisan migrate --force --no-interaction || echo "Migration failed, continuing..."
+php artisan migrate:fresh --force --no-interaction || echo "Migration failed, continuing..."
 php artisan cache:clear --no-interaction || echo "Cache clear failed, continuing..."
 php artisan config:cache --no-interaction || echo "Config cache failed, continuing..."
 
@@ -176,6 +176,16 @@ ls -la public/storage/image/logo.* || echo "No logo files found"
 echo "Seeding database with deployment data..."
 php artisan db:seed --class=DeploymentSeeder --force --no-interaction
 echo "Seeding completed successfully!"
+
+# Verify the seeded data
+echo "Verifying seeded data..."
+php artisan tinker --execute="
+echo 'Categories: ' . App\Models\MealCategory::count() . PHP_EOL;
+echo 'Meals: ' . App\Models\Meal::count() . PHP_EOL;
+echo 'Available meals: ' . App\Models\Meal::where('is_available', true)->count() . PHP_EOL;
+echo 'Unavailable meals: ' . App\Models\Meal::where('is_available', false)->count() . PHP_EOL;
+echo 'Meals with images: ' . App\Models\Meal::whereNotNull('image_url')->count() . PHP_EOL;
+" || echo "Verification failed, continuing..."
 
 # Create a simple test page to verify assets
 echo "Creating test page to verify assets..."
