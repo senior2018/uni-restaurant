@@ -4,7 +4,15 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+        <title inertia>{{ config('app.name', 'Uni Restaurant') }}</title>
+
+        <!-- Favicon -->
+        <link rel="icon" type="image/x-icon" href="/favicon.ico">
+        <link rel="icon" type="image/png" sizes="32x32" href="/storage/image/logo.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/storage/image/logo.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/storage/image/logo.png">
+        <link rel="manifest" href="/site.webmanifest">
+        <meta name="theme-color" content="#ffffff">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

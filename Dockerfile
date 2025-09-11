@@ -182,6 +182,10 @@ php artisan migrate --force || echo "Migration failed, continuing..."
 php artisan cache:clear || echo "Cache clear failed, continuing..."
 php artisan config:cache || echo "Config cache failed, continuing..."
 
+# Seed database with deployment data
+echo "Seeding database with deployment data..."
+php artisan db:seed --class=DeploymentSeeder --force || echo "Seeding failed, continuing..."
+
 # Create a simple test page to verify assets
 echo "Creating test page to verify assets..."
 echo '<!DOCTYPE html>' > public/test-assets.html

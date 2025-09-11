@@ -16,31 +16,37 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        $this->call([
-            MealCategorySeeder::class,
-            MealSeeder::class,
-            UserSeeder::class,
-            OrderSeeder::class,
-            OrderItemSeeder::class,
-            RatingSeeder::class,
-            AlertSeeder::class,
-            OtpVerificationsSeeder::class,
-            NotificationSeeder::class,
-        ]);
-
-        // Seed notifications for testing
-        $user = User::first();
-        $order = Order::first();
-        if ($user && $order) {
-            $alert = Alert::create([
-                'user_id' => $user->id,
-                'order_id' => $order->id,
-                'reason' => 'Test alert seeded',
-                'resolved' => false,
+        // Check if we're in production/deployment mode
+        if (app()->environment('production') || config('app.env') === 'production') {
+            $this->call([
+                DeploymentSeeder::class,
             ]);
-            $user->notify(new \App\Notifications\NewAlertNotification($alert));
+        } else {
+            // Development seeding
+            $this->call([
+                MealCategorySeeder::class,
+                MealSeeder::class,
+                UserSeeder::class,
+                OrderSeeder::class,
+                OrderItemSeeder::class,
+                RatingSeeder::class,
+                AlertSeeder::class,
+                OtpVerificationsSeeder::class,
+                NotificationSeeder::class,
+            ]);
+
+            // Seed notifications for testing
+            $user = User::first();
+            $order = Order::first();
+            if ($user && $order) {
+                $alert = Alert::create([
+                    'user_id' => $user->id,
+                    'order_id' => $order->id,
+                    'reason' => 'Test alert seeded',
+                    'resolved' => false,
+                ]);
+                $user->notify(new \App\Notifications\NewAlertNotification($alert));
+            }
         }
     }
 }
