@@ -74,7 +74,7 @@ server {
     add_header X-Content-Type-Options "nosniff" always;
     add_header X-XSS-Protection "1; mode=block" always;
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:;" always;
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.bunny.net https://cdnjs.cloudflare.com;" always;
 
     # Handle static assets
     location ~* \.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
@@ -211,6 +211,16 @@ echo "Setting up storage permissions..."
 mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views
 chown -R www-data:www-data storage bootstrap/cache
 chmod -R 775 storage bootstrap/cache
+
+# Create storage symlink for public access
+echo "Creating storage symlink..."
+ln -sf /var/www/html/storage/app/public /var/www/html/public/storage
+
+# Verify storage symlink and logo file
+echo "Verifying storage setup..."
+ls -la public/storage || echo "Storage symlink not found"
+ls -la storage/app/public/image/ || echo "Image directory not found"
+ls -la public/storage/image/ || echo "Public image directory not accessible"
 
 # Clear any existing cache files that might have wrong permissions
 rm -rf storage/framework/views/* storage/framework/cache/* storage/framework/sessions/*
