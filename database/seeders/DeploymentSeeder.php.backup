@@ -95,7 +95,7 @@ class DeploymentSeeder extends Seeder
         $pizza = MealCategory::where('name', 'Pizza')->first();
 
         $meals = [
-            // Available Meals (10)
+            // Appetizers
             [
                 'name' => 'Buffalo Wings',
                 'description' => 'Crispy chicken wings tossed in spicy buffalo sauce',
@@ -103,6 +103,22 @@ class DeploymentSeeder extends Seeder
                 'category_id' => $appetizers->id,
                 'is_available' => true,
             ],
+            [
+                'name' => 'Mozzarella Sticks',
+                'description' => 'Golden fried mozzarella cheese sticks with marinara sauce',
+                'price' => 9.99,
+                'category_id' => $appetizers->id,
+                'is_available' => true,
+            ],
+            [
+                'name' => 'Garlic Bread',
+                'description' => 'Fresh baked bread with garlic butter and herbs',
+                'price' => 6.99,
+                'category_id' => $appetizers->id,
+                'is_available' => true,
+            ],
+
+            // Main Courses
             [
                 'name' => 'Grilled Salmon',
                 'description' => 'Fresh Atlantic salmon grilled to perfection with lemon herb butter',
@@ -118,12 +134,44 @@ class DeploymentSeeder extends Seeder
                 'is_available' => true,
             ],
             [
+                'name' => 'Chicken Parmesan',
+                'description' => 'Breaded chicken breast with marinara sauce and melted mozzarella',
+                'price' => 18.99,
+                'category_id' => $mainCourses->id,
+                'is_available' => true,
+            ],
+            [
+                'name' => 'Fish and Chips',
+                'description' => 'Beer-battered cod with crispy fries and tartar sauce',
+                'price' => 16.99,
+                'category_id' => $mainCourses->id,
+                'is_available' => true,
+            ],
+
+            // Pasta
+            [
                 'name' => 'Spaghetti Carbonara',
                 'description' => 'Classic Italian pasta with eggs, cheese, and pancetta',
                 'price' => 17.99,
                 'category_id' => $pasta->id,
                 'is_available' => true,
             ],
+            [
+                'name' => 'Fettuccine Alfredo',
+                'description' => 'Creamy fettuccine pasta with parmesan cheese sauce',
+                'price' => 15.99,
+                'category_id' => $pasta->id,
+                'is_available' => true,
+            ],
+            [
+                'name' => 'Penne Arrabbiata',
+                'description' => 'Spicy penne pasta with tomato and chili sauce',
+                'price' => 14.99,
+                'category_id' => $pasta->id,
+                'is_available' => true,
+            ],
+
+            // Pizza
             [
                 'name' => 'Margherita Pizza',
                 'description' => 'Classic pizza with tomato sauce, mozzarella, and basil',
@@ -132,12 +180,37 @@ class DeploymentSeeder extends Seeder
                 'is_available' => true,
             ],
             [
+                'name' => 'Pepperoni Pizza',
+                'description' => 'Traditional pizza topped with pepperoni and mozzarella',
+                'price' => 18.99,
+                'category_id' => $pizza->id,
+                'is_available' => true,
+            ],
+            [
+                'name' => 'Supreme Pizza',
+                'description' => 'Loaded pizza with pepperoni, sausage, peppers, and onions',
+                'price' => 22.99,
+                'category_id' => $pizza->id,
+                'is_available' => true,
+            ],
+
+            // Salads
+            [
                 'name' => 'Caesar Salad',
                 'description' => 'Fresh romaine lettuce with caesar dressing and croutons',
                 'price' => 11.99,
                 'category_id' => $salads->id,
                 'is_available' => true,
             ],
+            [
+                'name' => 'Greek Salad',
+                'description' => 'Mixed greens with feta cheese, olives, and Greek dressing',
+                'price' => 13.99,
+                'category_id' => $salads->id,
+                'is_available' => true,
+            ],
+
+            // Soups
             [
                 'name' => 'Tomato Basil Soup',
                 'description' => 'Creamy tomato soup with fresh basil',
@@ -146,6 +219,15 @@ class DeploymentSeeder extends Seeder
                 'is_available' => true,
             ],
             [
+                'name' => 'Chicken Noodle Soup',
+                'description' => 'Classic comfort soup with chicken and egg noodles',
+                'price' => 9.99,
+                'category_id' => $soups->id,
+                'is_available' => true,
+            ],
+
+            // Desserts
+            [
                 'name' => 'Chocolate Cake',
                 'description' => 'Rich chocolate cake with chocolate ganache',
                 'price' => 7.99,
@@ -153,9 +235,32 @@ class DeploymentSeeder extends Seeder
                 'is_available' => true,
             ],
             [
+                'name' => 'Tiramisu',
+                'description' => 'Classic Italian dessert with coffee and mascarpone',
+                'price' => 8.99,
+                'category_id' => $desserts->id,
+                'is_available' => true,
+            ],
+            [
+                'name' => 'Ice Cream Sundae',
+                'description' => 'Vanilla ice cream with chocolate sauce and whipped cream',
+                'price' => 6.99,
+                'category_id' => $desserts->id,
+                'is_available' => true,
+            ],
+
+            // Beverages
+            [
                 'name' => 'Fresh Orange Juice',
                 'description' => 'Freshly squeezed orange juice',
                 'price' => 4.99,
+                'category_id' => $beverages->id,
+                'is_available' => true,
+            ],
+            [
+                'name' => 'Iced Tea',
+                'description' => 'Refreshing iced tea with lemon',
+                'price' => 3.99,
                 'category_id' => $beverages->id,
                 'is_available' => true,
             ],
@@ -165,43 +270,6 @@ class DeploymentSeeder extends Seeder
                 'price' => 2.99,
                 'category_id' => $beverages->id,
                 'is_available' => true,
-            ],
-
-            // Unavailable Meals (5)
-            [
-                'name' => 'Mozzarella Sticks',
-                'description' => 'Golden fried mozzarella cheese sticks with marinara sauce',
-                'price' => 9.99,
-                'category_id' => $appetizers->id,
-                'is_available' => false,
-            ],
-            [
-                'name' => 'Chicken Parmesan',
-                'description' => 'Breaded chicken breast with marinara sauce and melted mozzarella',
-                'price' => 18.99,
-                'category_id' => $mainCourses->id,
-                'is_available' => false,
-            ],
-            [
-                'name' => 'Pepperoni Pizza',
-                'description' => 'Traditional pizza topped with pepperoni and mozzarella',
-                'price' => 18.99,
-                'category_id' => $pizza->id,
-                'is_available' => false,
-            ],
-            [
-                'name' => 'Tiramisu',
-                'description' => 'Classic Italian dessert with coffee and mascarpone',
-                'price' => 8.99,
-                'category_id' => $desserts->id,
-                'is_available' => false,
-            ],
-            [
-                'name' => 'Iced Tea',
-                'description' => 'Refreshing iced tea with lemon',
-                'price' => 3.99,
-                'category_id' => $beverages->id,
-                'is_available' => false,
             ],
         ];
 
