@@ -22,17 +22,9 @@ class DatabaseSeeder extends Seeder
                 DeploymentSeeder::class,
             ]);
         } else {
-            // Development seeding
+            // Development seeding - use DeploymentSeeder for consistency
             $this->call([
-                MealCategorySeeder::class,
-                MealSeeder::class,
-                UserSeeder::class,
-                OrderSeeder::class,
-                OrderItemSeeder::class,
-                RatingSeeder::class,
-                AlertSeeder::class,
-                OtpVerificationsSeeder::class,
-                NotificationSeeder::class,
+                DeploymentSeeder::class,
             ]);
 
             // Seed notifications for testing

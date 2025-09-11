@@ -98,6 +98,7 @@ class DeploymentSeeder extends Seeder
                 'price' => 2500.00,
                 'category_id' => $starches->id,
                 'is_available' => true,
+                'image_url' => 'meals/3pFOnrP6yZtfRYNRW2xaq2CyGlBb2VG8hJCTQeQ1.jpg',
             ],
             [
                 'name' => 'Wali Maharage',
@@ -105,6 +106,7 @@ class DeploymentSeeder extends Seeder
                 'price' => 3000.00,
                 'category_id' => $starches->id,
                 'is_available' => true,
+                'image_url' => 'meals/4hp1mbOjr1R7WHzdUVhehmRqM07rFkDedzmYrH2v.jpg',
             ],
             [
                 'name' => 'Pilau',
@@ -112,6 +114,7 @@ class DeploymentSeeder extends Seeder
                 'price' => 4000.00,
                 'category_id' => $starches->id,
                 'is_available' => false,
+                'image_url' => 'meals/6D8WqWTUBQEYqYPi8zKlgzdXDBIqP14ZoiYhdnHf.jpg',
             ],
 
             // Proteins Category (3 meals: 2 available, 1 unavailable)
@@ -121,6 +124,7 @@ class DeploymentSeeder extends Seeder
                 'price' => 5000.00,
                 'category_id' => $proteins->id,
                 'is_available' => true,
+                'image_url' => 'meals/880QOj6lOFASW6PRZrTWGmvvlYMgvAkhpI5Vb7ca.jpg',
             ],
             [
                 'name' => 'Mchuzi wa Kuku',
@@ -128,6 +132,7 @@ class DeploymentSeeder extends Seeder
                 'price' => 4500.00,
                 'category_id' => $proteins->id,
                 'is_available' => true,
+                'image_url' => 'meals/9EAPEXWMDYIlwHx9e83WQzLAmnJcYh2OLxpvftxn.jpg',
             ],
             [
                 'name' => 'Beef Stew',
@@ -135,6 +140,7 @@ class DeploymentSeeder extends Seeder
                 'price' => 6000.00,
                 'category_id' => $proteins->id,
                 'is_available' => false,
+                'image_url' => 'meals/AccHXktiLI0Go5O6phTktiE1If51pFs5wFCyiRve.jpg',
             ],
 
             // Vegetables Category (3 meals: 2 available, 1 unavailable)
@@ -144,6 +150,7 @@ class DeploymentSeeder extends Seeder
                 'price' => 2000.00,
                 'category_id' => $vegetables->id,
                 'is_available' => true,
+                'image_url' => 'meals/aZ8zkdt1ZgskFpQswxAnirHpP622J5Eh5avcjqvb.jpg',
             ],
             [
                 'name' => 'Kisamvu na Nyama',
@@ -151,6 +158,7 @@ class DeploymentSeeder extends Seeder
                 'price' => 3500.00,
                 'category_id' => $vegetables->id,
                 'is_available' => true,
+                'image_url' => 'meals/C4oiMkZXiWuN1lxy2afr8bCmgwqXcyMBt53U6ruG.jpg',
             ],
             [
                 'name' => 'Mchemsho',
@@ -158,6 +166,7 @@ class DeploymentSeeder extends Seeder
                 'price' => 2500.00,
                 'category_id' => $vegetables->id,
                 'is_available' => false,
+                'image_url' => 'meals/HaJyQwGUauQM57x4AZBY9b1GYvTWNRquneD5ayTO.jpg',
             ],
 
             // Breakfast Category (3 meals: 2 available, 1 unavailable)
@@ -167,6 +176,7 @@ class DeploymentSeeder extends Seeder
                 'price' => 3000.00,
                 'category_id' => $breakfast->id,
                 'is_available' => true,
+                'image_url' => 'meals/JcEMzhEgPNIjtlLqZUOmqwdTByP6LLwFJtH6DcEg.jpg',
             ],
             [
                 'name' => 'Chapati',
@@ -174,6 +184,7 @@ class DeploymentSeeder extends Seeder
                 'price' => 1500.00,
                 'category_id' => $breakfast->id,
                 'is_available' => true,
+                'image_url' => 'meals/pWmHRcofYaigWvhmXNi5kBzp2JPboMIZ4v8od1qd.jpg',
             ],
             [
                 'name' => 'Mandazi',
@@ -181,6 +192,7 @@ class DeploymentSeeder extends Seeder
                 'price' => 1000.00,
                 'category_id' => $breakfast->id,
                 'is_available' => false,
+                'image_url' => 'meals/QIAQVDvXmW4OpYiXABW0GtHXhsD0Ixh9716KsmQv.jpg',
             ],
 
             // Beverages Category (3 meals: 2 available, 1 unavailable)
@@ -190,6 +202,7 @@ class DeploymentSeeder extends Seeder
                 'price' => 500.00,
                 'category_id' => $beverages->id,
                 'is_available' => true,
+                'image_url' => 'meals/RmaoNtYUvd7KgwRnd92fZB5gfLlQE54l7h4aAI2p.jpg',
             ],
             [
                 'name' => 'Fresh Juice',
@@ -197,6 +210,7 @@ class DeploymentSeeder extends Seeder
                 'price' => 2000.00,
                 'category_id' => $beverages->id,
                 'is_available' => true,
+                'image_url' => 'meals/srDtrvg8AuWnHADFAMvYtVrqjJ01sbuHxSHWzeCr.jpg',
             ],
             [
                 'name' => 'Coffee',
@@ -204,6 +218,7 @@ class DeploymentSeeder extends Seeder
                 'price' => 1000.00,
                 'category_id' => $beverages->id,
                 'is_available' => false,
+                'image_url' => 'meals/Ti28y0TRE7PcFIptykV6RHWOFPcuMRxm8nG6zVjg.jpg',
             ],
 
             // Specials Category (3 meals: 2 available, 1 unavailable)
@@ -213,6 +228,7 @@ class DeploymentSeeder extends Seeder
                 'price' => 4000.00,
                 'category_id' => $specials->id,
                 'is_available' => true,
+                'image_url' => 'meals/W4Rdk8O7pVtotk4BdECTnN6iabPUaoh69ou30jFD.jpg',
             ],
             [
                 'name' => 'Matoke',
@@ -220,6 +236,7 @@ class DeploymentSeeder extends Seeder
                 'price' => 3000.00,
                 'category_id' => $specials->id,
                 'is_available' => true,
+                'image_url' => 'meals/XGeUXmfeU0upk80dXW1d4AZH1Q6F5BCaVim618cc.jpg',
             ],
             [
                 'name' => 'Supu ya Ndizi',
@@ -227,6 +244,7 @@ class DeploymentSeeder extends Seeder
                 'price' => 2500.00,
                 'category_id' => $specials->id,
                 'is_available' => false,
+                'image_url' => 'meals/Z74RmsNRQ87iItvJeeFudR8sI8GuAYykDwUfATIr.jpg',
             ],
         ];
 
