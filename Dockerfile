@@ -218,9 +218,19 @@ ln -sf /var/www/html/storage/app/public /var/www/html/public/storage
 
 # Verify storage symlink and logo file
 echo "Verifying storage setup..."
-ls -la public/storage || echo "Storage symlink not found"
+echo "Checking if storage/app/public exists:"
+ls -la storage/app/public/ || echo "storage/app/public not found"
+echo "Checking if image directory exists:"
 ls -la storage/app/public/image/ || echo "Image directory not found"
-ls -la public/storage/image/ || echo "Public image directory not accessible"
+echo "Creating storage symlink (force):"
+rm -f public/storage
+ln -sf /var/www/html/storage/app/public /var/www/html/public/storage
+echo "Verifying symlink creation:"
+ls -la public/storage || echo "Storage symlink creation failed"
+echo "Checking if logo is accessible via symlink:"
+ls -la public/storage/image/logo.png || echo "Logo not accessible via symlink"
+echo "Testing direct access to logo:"
+ls -la storage/app/public/image/logo.png || echo "Logo not found in storage"
 
 # Clear any existing cache files that might have wrong permissions
 rm -rf storage/framework/views/* storage/framework/cache/* storage/framework/sessions/*
@@ -229,6 +239,30 @@ rm -rf storage/framework/views/* storage/framework/cache/* storage/framework/ses
 php artisan migrate --force || echo "Migration failed, continuing..."
 php artisan cache:clear || echo "Cache clear failed, continuing..."
 php artisan config:cache || echo "Config cache failed, continuing..."
+
+# Create storage link using Laravel artisan command
+echo "Creating storage link using Laravel artisan..."
+php artisan storage:link || echo "Storage link creation failed, using manual symlink"
+
+# Final verification of storage setup
+echo "Final storage verification..."
+echo "Symlink status:"
+ls -la public/storage
+echo "Logo file check:"
+ls -la public/storage/image/logo.png || echo "Logo still not accessible"
+
+# Fallback: Copy logo directly to public directory if symlink fails
+if [ ! -f "public/storage/image/logo.png" ]; then
+    echo "Symlink failed, creating direct copy of logo..."
+    mkdir -p public/storage/image
+    cp storage/app/public/image/logo.png public/storage/image/logo.png
+    echo "Logo copied directly to public directory"
+fi
+
+echo "File permissions:"
+ls -la storage/app/public/image/logo.png
+echo "Final logo accessibility check:"
+ls -la public/storage/image/logo.png || echo "Logo still not accessible after all attempts"
 
 # Seed database with deployment data
 echo "Seeding database with deployment data..."
@@ -259,6 +293,18 @@ echo "Test page created at /test-assets.html"
 echo "Creating PHP info page for debugging..."
 echo '<?php phpinfo(); ?>' > public/phpinfo.php
 echo "PHP info page created at /phpinfo.php"
+
+# Create a logo test page
+echo "Creating logo test page..."
+echo '<!DOCTYPE html>' > public/logo-test.html
+echo '<html><head><title>Logo Test</title></head>' >> public/logo-test.html
+echo '<body>' >> public/logo-test.html
+echo '<h1>Logo Test Page</h1>' >> public/logo-test.html
+echo '<p>If you can see the logo below, the storage link is working:</p>' >> public/logo-test.html
+echo '<img src="/storage/image/logo.png" alt="Logo" style="width: 200px; border: 1px solid #ccc;">' >> public/logo-test.html
+echo '<p>Logo path: /storage/image/logo.png</p>' >> public/logo-test.html
+echo '</body></html>' >> public/logo-test.html
+echo "Logo test page created at /logo-test.html"
 
 echo "=== Starting Services ==="
 
