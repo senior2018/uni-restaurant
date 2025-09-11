@@ -18,7 +18,7 @@ defineProps({
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
                         <span class="text-2xl font-bold text-green-600 flex items-center">
-                            <img src="/storage/image/logo.png" alt="Logo" class="h-8 w-8 mr-2" />
+                            <img src="/public/logo.png" alt="Logo" class="h-8 w-8 mr-2" />
                             Our Restaurant
                         </span>
                     </div>
