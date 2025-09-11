@@ -11,11 +11,22 @@
 import { ref, onMounted } from 'vue';
 
 const logoSrc = ref('/storage/image/logo.png');
-const fallbackLogoSrc = ref('/storage/image/logo.jpg');
+const fallbackOptions = [
+    '/storage/image/logo.jpg',
+    '/storage/image/logo.svg',
+    '/favicon.png',
+    '/favicon.ico'
+];
+let currentFallbackIndex = 0;
 
 const handleImageError = () => {
     console.log('Logo failed to load, trying fallback...');
-    logoSrc.value = fallbackLogoSrc.value;
+    if (currentFallbackIndex < fallbackOptions.length) {
+        logoSrc.value = fallbackOptions[currentFallbackIndex];
+        currentFallbackIndex++;
+    } else {
+        console.log('All logo fallbacks failed');
+    }
 };
 
 onMounted(() => {
