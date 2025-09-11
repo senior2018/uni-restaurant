@@ -4,7 +4,7 @@ vendor
 .env.*
 tests
 storage/logs/*
-storage/app/public/*
+# Keep storage/app/public/* for images and files
 .git
 .gitignore
 README.md

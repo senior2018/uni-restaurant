@@ -46,6 +46,12 @@ WORKDIR /var/www/html
 # Copy Laravel application
 COPY . .
 
+# Verify storage files are copied
+RUN echo "Verifying storage files are copied..." \
+    && ls -la storage/app/public/ || echo "storage/app/public not found" \
+    && ls -la storage/app/public/image/ || echo "storage/app/public/image not found" \
+    && ls -la storage/app/public/image/logo.png || echo "logo.png not found in container"
+
 # Copy built assets from frontend stage
 COPY --from=frontend /app/public/build ./public/build
 
@@ -255,8 +261,17 @@ ls -la public/storage/image/logo.png || echo "Logo still not accessible"
 if [ ! -f "public/storage/image/logo.png" ]; then
     echo "Symlink failed, creating direct copy of logo..."
     mkdir -p public/storage/image
-    cp storage/app/public/image/logo.png public/storage/image/logo.png
-    echo "Logo copied directly to public directory"
+
+    # Try to copy from storage first
+    if [ -f "storage/app/public/image/logo.png" ]; then
+        cp storage/app/public/image/logo.png public/storage/image/logo.png
+        echo "Logo copied from storage to public directory"
+    else
+        echo "Logo not found in storage, creating placeholder..."
+        # Create a simple placeholder logo (1x1 transparent PNG)
+        echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==" | base64 -d > public/storage/image/logo.png
+        echo "Placeholder logo created"
+    fi
 fi
 
 echo "File permissions:"
