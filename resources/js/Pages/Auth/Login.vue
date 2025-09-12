@@ -6,7 +6,7 @@
             <!-- Logo and Title -->
             <div class="text-center">
                 <span class="text-2xl font-bold text-green-600 flex items-center justify-center">
-                    <img src="/storage/image/logo-final.svg" alt="Logo" class="h-12 w-12 mr-3" />
+                    <img src="/storage/image/logo-final.svg?v=2" alt="Logo" class="h-12 w-12 mr-3" />
                     Our Restaurant
                 </span>
                 <h2 class="mt-4 text-2xl font-bold text-gray-900">Sign in to your account</h2>
