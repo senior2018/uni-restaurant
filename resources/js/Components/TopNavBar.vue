@@ -107,7 +107,25 @@ const isActive = (href) => {
                 <div class="flex items-center gap-2 sm:gap-4">
                     <span class="text-lg sm:text-xl md:text-2xl font-bold tracking-tight text-primary-dark flex items-center">
                         <slot name="brand">
-                            <img src="/storage/image/logo.jpg" alt="Logo" class="h-6 w-6 sm:h-8 sm:w-8 mr-1 sm:mr-2" />
+                            <svg class="h-6 w-6 sm:h-8 sm:w-8 mr-1 sm:mr-2" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="logoGrad7" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="16" cy="16" r="15" fill="url(#logoGrad7)" stroke="#ffffff" stroke-width="1"/>
+                                <g fill="white" stroke="white" stroke-width="0.5">
+                                    <line x1="8" y1="8" x2="8" y2="20" stroke-width="1"/>
+                                    <line x1="7" y1="8" x2="9" y2="8" stroke-width="1"/>
+                                    <line x1="7" y1="10" x2="9" y2="10" stroke-width="1"/>
+                                    <line x1="7" y1="12" x2="9" y2="12" stroke-width="1"/>
+                                    <line x1="24" y1="8" x2="24" y2="20" stroke-width="1"/>
+                                    <polygon points="24,8 26,10 24,12" fill="white"/>
+                                    <circle cx="16" cy="22" r="4" fill="none" stroke-width="1"/>
+                                    <circle cx="16" cy="22" r="2" fill="white"/>
+                                </g>
+                            </svg>
                             <span class="hidden sm:inline">{{ brand }}</span>
                             <span class="sm:hidden">UR</span>
                         </slot>

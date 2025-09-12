@@ -1,46 +1,35 @@
 <template>
-    <img
-        :src="currentLogoSrc"
-        alt="Our Restaurant Logo"
+    <!-- Simple, reliable SVG logo that works everywhere -->
+    <svg
         class="h-8 w-8 mr-2"
-        @error="handleImageError"
-        @load="handleImageLoad"
-    />
+        viewBox="0 0 32 32"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <defs>
+            <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+            </linearGradient>
+        </defs>
+        <!-- Background circle -->
+        <circle cx="16" cy="16" r="15" fill="url(#logoGrad)" stroke="#ffffff" stroke-width="1"/>
+        <!-- Restaurant icon - fork and knife -->
+        <g fill="white" stroke="white" stroke-width="0.5">
+            <!-- Fork -->
+            <line x1="8" y1="8" x2="8" y2="20" stroke-width="1"/>
+            <line x1="7" y1="8" x2="9" y2="8" stroke-width="1"/>
+            <line x1="7" y1="10" x2="9" y2="10" stroke-width="1"/>
+            <line x1="7" y1="12" x2="9" y2="12" stroke-width="1"/>
+            <!-- Knife -->
+            <line x1="24" y1="8" x2="24" y2="20" stroke-width="1"/>
+            <polygon points="24,8 26,10 24,12" fill="white"/>
+            <!-- Plate -->
+            <circle cx="16" cy="22" r="4" fill="none" stroke-width="1"/>
+            <circle cx="16" cy="22" r="2" fill="white"/>
+        </g>
+    </svg>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-
-const logoSources = [
-    '/storage/image/logo.jpg',   // Use the actual restaurant logo (JPEG)
-    '/storage/image/logo.png',   // Fallback to PNG version
-    '/storage/image/Logo.png',   // Case sensitivity fallback
-    '/storage/image/logo.svg',   // SVG fallback
-    '/favicon.png',              // Favicon fallback
-    'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZDEiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTBiOTgxO3N0b3Atb3BhY2l0eToxIiAvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMwNTk2Njk7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIGZpbGw9InVybCgjZ3JhZDEpIiByeD0iNiIvPgogIDxjaXJjbGUgY3g9IjE2IiBjeT0iMTIiIHI9IjMiIGZpbGw9IndoaXRlIi8+CiAgPHJlY3QgeD0iMTMiIHk9IjE2IiB3aWR0aD0iNiIgaGVpZ2h0PSIyIiBmaWxsPSJ3aGl0ZSIgcng9IjEiLz4KICA8cmVjdCB4PSIxMSIgeT0iMTkiIHdpZHRoPSIxMCIgaGVpZ2h0PSIyIiBmaWxsPSJ3aGl0ZSIgcng9IjEiLz4KICA8cmVjdCB4PSI5IiB5PSIyMiIgd2lkdGg9IjE0IiBoZWlnaHQ9IjIiIGZpbGw9IndoaXRlIiByeD0iMSIvPgo8L3N2Zz4K'
-];
-
-const currentLogoSrc = ref(logoSources[0]);
-const currentSourceIndex = ref(0);
-
-const handleImageError = () => {
-    console.log(`Logo failed to load: ${currentLogoSrc.value}`);
-
-    // Try next source
-    if (currentSourceIndex.value < logoSources.length - 1) {
-        currentSourceIndex.value++;
-        currentLogoSrc.value = logoSources[currentSourceIndex.value];
-        console.log(`Trying fallback: ${currentLogoSrc.value}`);
-    } else {
-        console.log('All logo sources failed, using final fallback');
-    }
-};
-
-const handleImageLoad = () => {
-    console.log(`Logo loaded successfully: ${currentLogoSrc.value}`);
-};
-
-onMounted(() => {
-    console.log('ApplicationLogo mounted, trying to load:', currentLogoSrc.value);
-});
+// No JavaScript needed - pure SVG that always works
 </script>
