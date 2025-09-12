@@ -39,8 +39,8 @@ const redirectToGoogle = () => {
         <!-- Logo and Title Section -->
         <div class="text-center space-y-4">
             <div class="flex items-center justify-center">
-                <img src="/storage/image/logo-final.svg" alt="Our Restaurant Logo" class="h-16 w-16 mr-4" />
-                <span class="text-3xl font-bold text-green-600">Our Restaurant</span>
+                <img src="/storage/image/logo-final.svg" alt="Our Restaurant Logo" class="h-12 w-12 mr-3" />
+                <span class="text-2xl font-bold text-green-600">Our Restaurant</span>
             </div>
             <h2 class="text-2xl font-extrabold text-gray-800">Create Your Account</h2>
         </div>

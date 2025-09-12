@@ -105,10 +105,10 @@ const isActive = (href) => {
             <div class="flex justify-between h-16 items-center">
                 <!-- Logo/App Name -->
                 <div class="flex items-center gap-2 sm:gap-4">
-                    <Link :href="route('dashboard')" class="text-lg sm:text-xl md:text-2xl font-bold tracking-tight text-primary-dark flex items-center hover:opacity-80 transition-opacity">
+                    <Link :href="route('dashboard')" class="text-lg sm:text-xl font-bold tracking-tight text-primary-dark flex items-center hover:opacity-80 transition-opacity">
                         <slot name="brand">
-                            <img src="/storage/image/logo-final.svg" alt="Logo" class="h-12 w-12 sm:h-16 sm:w-16" />
-                            <span class="hidden lg:inline ml-3 sm:ml-4">{{ brand }}</span>
+                            <img src="/storage/image/logo-final.svg" alt="Logo" class="h-8 w-8 sm:h-10 sm:w-10" />
+                            <span class="hidden lg:inline ml-2 sm:ml-3">{{ brand }}</span>
                         </slot>
                     </Link>
                 </div>

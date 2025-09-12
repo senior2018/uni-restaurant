@@ -3,7 +3,7 @@
     <img
         src="/storage/image/logo-final.svg"
         alt="Our Restaurant Logo"
-        class="h-16 w-16 mr-4"
+        class="h-10 w-10 mr-3"
     />
 </template>
 

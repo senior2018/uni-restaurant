@@ -134,12 +134,27 @@ echo "Checking for original logo files..."
 echo "Files in storage/app/public/image/:"
 ls -la storage/app/public/image/ || echo "Storage image directory not found"
 
-if [ -f "storage/app/public/image/logo-final.svg" ]; then
-    echo "✅ Found original logo-final.svg, copying to public directory..."
+# Force copy the original logo if it exists
+if [ -f "public/images/logo-final.svg" ]; then
+    echo "✅ Found original logo-final.svg in public/images, copying to storage directory..."
+    # Remove any existing fallback first
+    rm -f public/storage/image/logo-final.svg
+    cp public/images/logo-final.svg public/storage/image/logo-final.svg
+    echo "✅ Original logo-final.svg copied successfully"
+    echo "Verifying copy:"
+    ls -la public/storage/image/logo-final.svg
+    echo "Checking file content (first 3 lines):"
+    head -3 public/storage/image/logo-final.svg
+elif [ -f "storage/app/public/image/logo-final.svg" ]; then
+    echo "✅ Found original logo-final.svg in storage, copying to public directory..."
+    # Remove any existing fallback first
+    rm -f public/storage/image/logo-final.svg
     cp storage/app/public/image/logo-final.svg public/storage/image/logo-final.svg
     echo "✅ Original logo-final.svg copied successfully"
     echo "Verifying copy:"
     ls -la public/storage/image/logo-final.svg
+    echo "Checking file content (first 3 lines):"
+    head -3 public/storage/image/logo-final.svg
 elif [ -f "storage/app/public/image/logo.png" ]; then
     echo "Found logo.png, copying to public directory..."
     cp storage/app/public/image/logo.png public/storage/image/logo.png
@@ -150,6 +165,9 @@ elif [ -f "storage/app/public/image/logo.jpg" ]; then
     echo "✅ Logo (JPEG) copied successfully"
 else
     echo "⚠️ No original logo found in storage, creating fallback..."
+    echo "This should not happen if the logo-final.svg file is properly committed to the repository"
+    echo "Please ensure storage/app/public/image/logo-final.svg exists in your repository"
+    
     # Create a simple fallback SVG logo
     cat > public/storage/image/logo-final.svg << 'EOF'
 <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
@@ -157,7 +175,7 @@ else
   <text x="16" y="20" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="white">R</text>
 </svg>
 EOF
-    echo "⚠️ Fallback SVG logo created"
+    echo "⚠️ Fallback SVG logo created - this indicates the original logo file is missing"
 fi
 
 # Ensure placeholder image exists

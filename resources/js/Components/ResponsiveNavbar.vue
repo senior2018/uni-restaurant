@@ -4,8 +4,8 @@
             <div class="flex justify-between h-16">
                 <!-- Logo and Brand -->
                 <div class="flex items-center">
-                    <Link :href="route('home')" class="text-2xl font-bold text-green-600 hover:text-green-800 flex items-center gap-2">
-                        <img src="/storage/image/logo-final.svg" alt="Logo" class="h-12 w-12 sm:h-16 sm:w-16" />
+                    <Link :href="route('home')" class="text-xl font-bold text-green-600 hover:text-green-800 flex items-center gap-2">
+                        <img src="/storage/image/logo-final.svg" alt="Logo" class="h-8 w-8 sm:h-10 sm:w-10" />
                         <span class="hidden lg:block">Our Restaurant</span>
                     </Link>
                 </div>
