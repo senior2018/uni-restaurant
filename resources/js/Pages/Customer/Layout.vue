@@ -45,30 +45,23 @@ watchEffect(() => {
         <TopNavBar :links="navLinks" :user="user" role="customer" brand="Our Restaurant" />
 
         <!-- Flash Messages -->
-        <div v-if="page.props.flash?.success" class="w-full px-4 mt-4 relative z-10">
+        <div v-if="page.props.flash?.success" class="w-full px-responsive mt-4 relative z-10">
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 flex items-center justify-between shadow">
                 <span><i class="fas fa-check-circle mr-2"></i>{{ page.props.flash.success }}</span>
                 <button @click="page.props.flash.success = null" class="text-green-700 hover:text-green-900">&times;</button>
             </div>
         </div>
 
-        <div v-if="page.props.flash?.error" class="w-full px-4 mt-4 relative z-10">
+        <div v-if="page.props.flash?.error" class="w-full px-responsive mt-4 relative z-10">
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 flex items-center justify-between shadow">
                 <span><i class="fas fa-exclamation-circle mr-2"></i>{{ page.props.flash.error }}</span>
                 <button @click="page.props.flash.error = null" class="text-red-700 hover:text-red-900">&times;</button>
             </div>
         </div>
 
-        <!-- Main Content with Decorated Background -->
-        <main
-            class="py-10 min-h-screen w-full px-4 sm:px-8 relative bg-cover bg-center bg-fixed"
-            style="background-image: url('/storage/image/rest3.jpeg');"
-        >
-            <!-- Dark faded overlay -->
-            <div class="absolute inset-0 bg-gradient-to-b from-black/60 to-black/70 backdrop-blur-sm z-0"></div>
-
-            <!-- Content wrapper to enhance visibility -->
-            <div class="relative z-10 max-w-7xl mx-auto bg-white/70 backdrop-blur-md rounded-xl p-6 sm:p-10 shadow-lg">
+        <!-- Main Content -->
+        <main class="py-responsive bg-gray-50 min-h-screen w-full">
+            <div class="container-responsive">
                 <slot />
             </div>
         </main>

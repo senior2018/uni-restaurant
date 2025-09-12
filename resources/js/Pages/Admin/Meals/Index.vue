@@ -1,11 +1,11 @@
 <template>
     <AdminLayout>
-        <div class="p-6 bg-gray-50 min-h-screen">
-            <div class="flex justify-between mb-6">
-                <h1 class="text-3xl font-bold text-gray-800">Meal Management</h1>
+        <div class="p-responsive bg-gray-50 min-h-screen">
+            <div class="flex-responsive mb-4 sm:mb-6">
+                <h1 class="text-responsive-lg font-bold text-gray-800">Meal Management</h1>
                 <button
                     @click="openAddMeal"
-                    class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors duration-200"
+                    class="btn-responsive bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors duration-200"
                 >
                     Add New Meal
                 </button>
@@ -21,9 +21,9 @@
             />
 
             <!-- Search and Filter Section -->
-            <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
+            <div class="bg-white rounded-xl shadow-sm p-responsive mb-6 sm:mb-8">
                 <div class="flex flex-col md:flex-row md:items-end md:space-x-6 gap-4">
-                    <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <!-- Search Bar -->
                         <div>
                             <label class="block text-sm font-medium mb-1">Search</label>
@@ -110,7 +110,7 @@
             </div>
 
             <!-- Card Grid Layout -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-6">
                 <div
                     v-for="meal in filteredMeals"
                     :key="meal.id"
@@ -126,7 +126,7 @@
                         <img
                             :src="meal.image_url || '/placeholder.jpg'"
                             :alt="meal.name"
-                            class="w-full h-32 object-cover"
+                            class="w-full h-24 sm:h-32 object-cover"
                             :class="{ 'grayscale': meal.deleted_at }"
                         />
                         <!-- Status Badge -->
@@ -152,9 +152,9 @@
                     </div>
 
                     <!-- Card Content -->
-                    <div class="p-3">
+                    <div class="p-3 sm:p-4">
                         <!-- Meal Name -->
-                        <h3 class="font-bold text-base text-gray-800 mb-1 line-clamp-2">
+                        <h3 class="font-bold text-sm sm:text-base text-gray-800 mb-1 line-clamp-2">
                             {{ meal.name }}
                             <span v-if="meal.deleted_at" class="text-red-500 text-xs font-normal">(Deleted)</span>
                         </h3>
@@ -166,7 +166,7 @@
                             {{ meal.category.name }}
                         </p>
                         <div class="mb-2">
-                            <span class="text-lg font-bold text-green-600">
+                            <span class="text-base sm:text-lg font-bold text-green-600">
                                 {{ Number(meal.price).toLocaleString('sw-TZ', {
                                     style: 'currency',
                                     currency: 'TZS'
@@ -174,7 +174,7 @@
                             </span>
                         </div>
                         <!-- Action Buttons -->
-                        <div class="flex gap-1">
+                        <div class="flex flex-col sm:flex-row gap-1 sm:gap-2">
                             <template v-if="!meal.deleted_at">
                                 <!-- Toggle Button -->
                                 <button
@@ -182,16 +182,17 @@
                                     :class="meal.is_available
                                         ? 'bg-orange-100 text-orange-700 hover:bg-orange-200'
                                         : 'bg-green-100 text-green-700 hover:bg-green-200'"
-                                    class="flex-1 py-1 px-2 rounded-lg text-xs font-medium transition-colors duration-200"
+                                    class="flex-1 py-2 px-3 rounded-lg text-xs sm:text-sm font-medium transition-colors duration-200"
                                 >
-                                    {{ meal.is_available ? 'Make Unavailable' : 'Make Available' }}
+                                    <span class="hidden sm:inline">{{ meal.is_available ? 'Make Unavailable' : 'Make Available' }}</span>
+                                    <span class="sm:hidden">{{ meal.is_available ? 'Unavailable' : 'Available' }}</span>
                                 </button>
                                 <!-- Edit Button -->
                                 <button
                                     @click="openEditMeal(meal)"
-                                    class="flex-shrink-0 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 flex items-center space-x-1 text-sm"
+                                    class="flex-1 sm:flex-shrink-0 px-3 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center space-x-1 text-xs sm:text-sm"
                                 >
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                     </svg>
                                     <span>Edit</span>
@@ -200,8 +201,9 @@
                                 <button
                                     @click="deleteMeal(meal)"
                                     title="Move to Trash"
+                                    class="px-3 py-2 bg-red-100 text-red-700 hover:bg-red-200 rounded-lg transition-colors duration-200 flex items-center justify-center"
                                 >
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                     </svg>
                                 </button>

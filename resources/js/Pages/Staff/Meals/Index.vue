@@ -1,39 +1,39 @@
 <template>
     <StaffLayout :user="user">
-        <div class="p-6 bg-gray-50 min-h-screen">
+        <div class="p-responsive bg-gray-50 min-h-screen">
             <!-- Flash Message Display -->
-            <div v-if="page.props.flash?.success" class="mb-6">
+            <div v-if="page.props.flash?.success" class="mb-4 sm:mb-6">
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-sm">
                     <div class="flex items-center">
                         <i class="fas fa-check-circle mr-2"></i>
-                        <span>{{ page.props.flash.success }}</span>
+                        <span class="text-sm sm:text-base">{{ page.props.flash.success }}</span>
                     </div>
                 </div>
             </div>
 
-            <div v-if="page.props.flash?.error" class="mb-6">
+            <div v-if="page.props.flash?.error" class="mb-4 sm:mb-6">
                 <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-sm">
                     <div class="flex items-center">
                         <i class="fas fa-exclamation-circle mr-2"></i>
-                        <span>{{ page.props.flash.error }}</span>
+                        <span class="text-sm sm:text-base">{{ page.props.flash.error }}</span>
                     </div>
                 </div>
             </div>
 
-            <h1 class="text-3xl font-bold text-gray-800 mb-6">
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-6">
                 Meal Availability Management
             </h1>
 
             <!-- Search and Filter Section -->
-            <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
-                <div class="flex flex-col md:flex-row gap-4">
+            <div class="bg-white rounded-xl shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
+                <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
                     <!-- Search Bar -->
                     <div class="flex-1">
                         <input
                             v-model="searchQuery"
                             type="text"
                             placeholder="Search meals..."
-                            class="block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            class="block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base"
                         />
                     </div>
 
@@ -41,7 +41,7 @@
                     <div class="flex-shrink-0">
                         <select
                             v-model="statusFilter"
-                            class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base"
                         >
                             <option value="all">All Items</option>
                             <option value="available">Unavailable Only</option>
@@ -52,55 +52,55 @@
             </div>
 
             <!-- Stats Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white p-6 rounded-xl shadow-sm">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                <div class="card-responsive bg-white">
                     <div class="flex items-center">
-                        <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
-                            <i class="fas fa-utensils text-xl"></i>
+                        <div class="p-2 sm:p-3 rounded-full bg-blue-100 text-blue-600 mr-3 sm:mr-4">
+                            <i class="fas fa-utensils text-lg sm:text-xl"></i>
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-gray-600">Total Meals</p>
-                            <p class="text-2xl font-semibold text-gray-900">{{ meals.length }}</p>
+                            <p class="text-xs sm:text-sm font-medium text-gray-600">Total Meals</p>
+                            <p class="text-xl sm:text-2xl font-semibold text-gray-900">{{ meals.length }}</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-xl shadow-sm">
+                <div class="card-responsive bg-white">
                     <div class="flex items-center">
-                        <div class="p-3 rounded-full bg-green-100 text-green-600 mr-4">
-                            <i class="fas fa-check-circle text-xl"></i>
+                        <div class="p-2 sm:p-3 rounded-full bg-green-100 text-green-600 mr-3 sm:mr-4">
+                            <i class="fas fa-check-circle text-lg sm:text-xl"></i>
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-gray-600">Available</p>
-                            <p class="text-2xl font-semibold text-gray-900">{{ availableMeals }}</p>
+                            <p class="text-xs sm:text-sm font-medium text-gray-600">Available</p>
+                            <p class="text-xl sm:text-2xl font-semibold text-gray-900">{{ availableMeals }}</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-xl shadow-sm">
+                <div class="card-responsive bg-white">
                     <div class="flex items-center">
-                        <div class="p-3 rounded-full bg-orange-100 text-orange-600 mr-4">
-                            <i class="fas fa-times-circle text-xl"></i>
+                        <div class="p-2 sm:p-3 rounded-full bg-orange-100 text-orange-600 mr-3 sm:mr-4">
+                            <i class="fas fa-times-circle text-lg sm:text-xl"></i>
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-gray-600">Unavailable</p>
-                            <p class="text-2xl font-semibold text-gray-900">{{ unavailableMeals }}</p>
+                            <p class="text-xs sm:text-sm font-medium text-gray-600">Unavailable</p>
+                            <p class="text-xl sm:text-2xl font-semibold text-gray-900">{{ unavailableMeals }}</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- No meals message -->
-            <div v-if="filteredMeals.length === 0" class="text-center py-12">
-                <div class="text-gray-400 text-6xl mb-4">
+            <div v-if="filteredMeals.length === 0" class="text-center py-8 sm:py-12">
+                <div class="text-gray-400 text-4xl sm:text-6xl mb-4">
                     <i class="fas fa-search"></i>
                 </div>
-                <h3 class="text-lg font-medium text-gray-900 mb-2">No meals found</h3>
-                <p class="text-gray-500">Try adjusting your search or filter criteria.</p>
+                <h3 class="text-base sm:text-lg font-medium text-gray-900 mb-2">No meals found</h3>
+                <p class="text-sm sm:text-base text-gray-500">Try adjusting your search or filter criteria.</p>
             </div>
 
             <!-- Card Grid Layout -->
-            <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <div
                     v-for="meal in filteredMeals"
                     :key="meal.id"

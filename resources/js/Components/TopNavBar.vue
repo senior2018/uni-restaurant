@@ -105,31 +105,12 @@ const isActive = (href) => {
             <div class="flex justify-between h-16 items-center">
                 <!-- Logo/App Name -->
                 <div class="flex items-center gap-2 sm:gap-4">
-                    <span class="text-lg sm:text-xl md:text-2xl font-bold tracking-tight text-primary-dark flex items-center">
+                    <Link :href="route('dashboard')" class="text-lg sm:text-xl md:text-2xl font-bold tracking-tight text-primary-dark flex items-center hover:opacity-80 transition-opacity">
                         <slot name="brand">
-                            <svg class="h-6 w-6 sm:h-8 sm:w-8 mr-1 sm:mr-2" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-                                <defs>
-                                    <linearGradient id="logoGrad7" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
-                                    </linearGradient>
-                                </defs>
-                                <circle cx="16" cy="16" r="15" fill="url(#logoGrad7)" stroke="#ffffff" stroke-width="1"/>
-                                <g fill="white" stroke="white" stroke-width="0.5">
-                                    <line x1="8" y1="8" x2="8" y2="20" stroke-width="1"/>
-                                    <line x1="7" y1="8" x2="9" y2="8" stroke-width="1"/>
-                                    <line x1="7" y1="10" x2="9" y2="10" stroke-width="1"/>
-                                    <line x1="7" y1="12" x2="9" y2="12" stroke-width="1"/>
-                                    <line x1="24" y1="8" x2="24" y2="20" stroke-width="1"/>
-                                    <polygon points="24,8 26,10 24,12" fill="white"/>
-                                    <circle cx="16" cy="22" r="4" fill="none" stroke-width="1"/>
-                                    <circle cx="16" cy="22" r="2" fill="white"/>
-                                </g>
-                            </svg>
-                            <span class="hidden sm:inline">{{ brand }}</span>
-                            <span class="sm:hidden">UR</span>
+                            <img src="/storage/image/logo-final.svg" alt="Logo" class="h-12 w-12 sm:h-16 sm:w-16" />
+                            <span class="hidden lg:inline ml-3 sm:ml-4">{{ brand }}</span>
                         </slot>
-                    </span>
+                    </Link>
                 </div>
 
                 <!-- Desktop Navigation -->
@@ -150,8 +131,9 @@ const isActive = (href) => {
 
                     <!-- Desktop Notifications -->
                     <div class="relative">
-                        <button @click="showNotifDropdown = !showNotifDropdown" class="relative focus:outline-none">
+                        <button @click="showNotifDropdown = !showNotifDropdown" class="relative focus:outline-none flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors">
                             <i class="fas fa-bell text-gray-700"></i>
+                            <span class="hidden lg:inline text-sm text-gray-700">Notifications</span>
                             <span v-if="notifications.length" class="absolute -top-2 -right-2 bg-primary text-white text-xs font-bold rounded-full px-2 py-0.5">{{ notifications.length }}</span>
                         </button>
                         <div v-if="showNotifDropdown" class="absolute right-0 mt-2 w-80 bg-white border rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
@@ -236,13 +218,13 @@ const isActive = (href) => {
             </div>
 
             <!-- Mobile Navigation Menu -->
-            <div v-if="showMobileMenu" class="nav-mobile md:hidden">
-                <div class="px-4 py-2 space-y-1">
+            <div v-if="showMobileMenu" class="absolute top-16 right-4 bg-white border rounded-lg shadow-lg z-50 min-w-48">
+                <div class="py-2">
                     <Link v-for="link in links" :key="link.name" :href="link.route"
-                          :class="[isActive(link.route) ? 'text-primary-dark font-bold bg-primary-light' : 'text-gray-600 hover:text-primary-dark hover:bg-gray-100', 'flex items-center gap-3 px-3 py-2 rounded-md transition-colors']"
+                          :class="[isActive(link.route) ? 'text-primary-dark font-bold bg-primary-light' : 'text-gray-600 hover:text-primary-dark hover:bg-gray-100', 'flex items-center gap-3 px-4 py-3 transition-colors relative']"
                           @click="showMobileMenu = false">
-                        <i :class="link.icon"></i>
-                        {{ link.name }}
+                        <i :class="link.icon + ' text-lg'"></i>
+                        <span class="text-sm">{{ link.name }}</span>
                         <span v-if="link.name === 'Contact Support' && unreadSupportReplies.length > 0"
                               class="ml-auto bg-blue-600 text-white text-xs font-bold rounded-full px-2 py-0.5">
                           {{ unreadSupportReplies.length }}

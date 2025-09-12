@@ -4,7 +4,7 @@
         <button
             v-if="!category"
             @click="showModal = true"
-            class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md shadow-sm hover:shadow-md transition-all duration-200 mb-2"
+            class="btn-responsive bg-green-500 hover:bg-green-600 text-white rounded-md shadow-sm hover:shadow-md transition-all duration-200 mb-2"
         >
             Add New Category
         </button>
@@ -13,15 +13,15 @@
         <button
             v-else
             @click="showModal = true"
-            class="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-md text-sm shadow-sm hover:shadow-md transition-all duration-200"
+            class="px-3 py-1 sm:px-4 sm:py-2 bg-green-500 hover:bg-green-600 text-white rounded-md text-sm shadow-sm hover:shadow-md transition-all duration-200"
         >
             Edit
         </button>
 
         <!-- Modal -->
         <Modal :show="showModal" @close="showModal = false">
-            <form @submit.prevent="submitForm" class="p-8 max-w-4xl mx-auto bg-white rounded-lg shadow-xl">
-                <h2 class="text-2xl font-semibold mb-6 text-gray-800 border-b pb-4">
+            <form @submit.prevent="submitForm" class="p-responsive max-w-4xl mx-auto bg-white rounded-lg shadow-xl">
+                <h2 class="text-responsive-lg font-semibold mb-6 text-gray-800 border-b pb-4">
                     {{ category ? 'Edit Category' : 'Create New Category' }}
                 </h2>
 

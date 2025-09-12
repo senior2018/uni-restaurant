@@ -104,33 +104,35 @@ async function deleteSelectedAlerts() {
 
 <template>
     <AdminLayout :user="user">
-        <div class="max-w-6xl mx-auto p-6">
-            <h1 class="text-2xl font-bold text-primary-dark mb-6">Alerts Management</h1>
-            <div class="flex flex-wrap items-center gap-4 mb-4 justify-between">
-                <div class="flex flex-wrap gap-4 items-center">
-                    <div>
+        <div class="max-w-6xl mx-auto p-responsive">
+            <h1 class="text-responsive-lg font-bold text-primary-dark mb-6">Alerts Management</h1>
+            <div class="flex flex-col lg:flex-row lg:items-center gap-4 mb-4 lg:justify-between">
+                <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                    <div class="flex-1 min-w-0">
                         <label class="block text-sm font-medium mb-1">Status</label>
-                        <select v-model="filterResolved" @change="applyFilters" class="border rounded px-2 py-1">
+                        <select v-model="filterResolved" @change="applyFilters" class="border rounded px-2 py-1 w-full">
                             <option value="all">All</option>
                             <option value="0">Unresolved</option>
                             <option value="1">Resolved</option>
                         </select>
                     </div>
-                    <div>
+                    <div class="flex-1 min-w-0">
                         <label class="block text-sm font-medium mb-1">User ID</label>
-                        <input v-model="filterUser" @keyup.enter="applyFilters" type="text" class="border rounded px-2 py-1" placeholder="User ID" />
+                        <input v-model="filterUser" @keyup.enter="applyFilters" type="text" class="border rounded px-2 py-1 w-full" placeholder="User ID" />
                     </div>
                 </div>
-                <div>
-                    <button v-if="!bulkMode" @click="toggleBulkMode" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Clear</button>
-                    <div v-else class="flex items-center gap-2">
-                        <button @click="selectAllAlerts" class="px-2 py-1 bg-gray-200 rounded">Select All</button>
-                        <button @click="deselectAllAlerts" class="px-2 py-1 bg-gray-200 rounded">Deselect All</button>
-                        <button :disabled="selectedAlerts.length === 0 || deleting" @click="deleteSelectedAlerts" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 flex items-center gap-2">
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <button v-if="!bulkMode" @click="toggleBulkMode" class="btn-responsive bg-red-600 text-white rounded hover:bg-red-700">Clear</button>
+                    <div v-else class="flex flex-col sm:flex-row items-center gap-2">
+                        <div class="flex gap-2">
+                            <button @click="selectAllAlerts" class="px-2 py-1 bg-gray-200 rounded text-sm">Select All</button>
+                            <button @click="deselectAllAlerts" class="px-2 py-1 bg-gray-200 rounded text-sm">Deselect All</button>
+                        </div>
+                        <button :disabled="selectedAlerts.length === 0 || deleting" @click="deleteSelectedAlerts" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 flex items-center gap-2 text-sm">
                             <span v-if="deleting" class="loader border-white border-2 border-t-transparent rounded-full w-4 h-4 animate-spin"></span>
                             Delete Selected
                         </button>
-                        <button @click="toggleBulkMode" class="px-2 py-1 bg-gray-200 rounded">Cancel</button>
+                        <button @click="toggleBulkMode" class="px-2 py-1 bg-gray-200 rounded text-sm">Cancel</button>
                     </div>
                 </div>
             </div>
@@ -216,3 +218,4 @@ async function deleteSelectedAlerts() {
     to { transform: rotate(360deg); }
 }
 </style>
+

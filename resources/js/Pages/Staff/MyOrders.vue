@@ -82,21 +82,21 @@ const clearAllFilters = () => {
 
 <template>
     <StaffLayout :user="user">
-        <div class="space-y-8">
-            <h2 class="text-2xl font-bold text-blue-700 mb-4 flex items-center gap-2">
+        <div class="space-y-6 sm:space-y-8">
+            <h2 class="text-xl sm:text-2xl font-bold text-blue-700 mb-4 flex items-center gap-2">
                 <i class="fas fa-tasks"></i> My Orders
             </h2>
             <!-- Filters/Search -->
-            <div class="flex flex-wrap gap-4 items-end mb-4">
-                <div>
-                    <label class="block text-sm font-medium">Status</label>
-                    <select v-model="filterStatus" @change="applyFilters" class="border rounded px-2 py-1">
+            <div class="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 items-end mb-4">
+                <div class="w-full sm:w-auto">
+                    <label class="block text-xs sm:text-sm font-medium">Status</label>
+                    <select v-model="filterStatus" @change="applyFilters" class="border rounded px-2 py-1 text-sm sm:text-base w-full sm:w-auto">
                         <option v-for="opt in statusOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
                     </select>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium">Search</label>
-                    <input type="text" v-model="search" @keyup.enter="applyFilters" placeholder="Order ID or Customer" class="border rounded px-2 py-1" />
+                <div class="w-full sm:w-auto">
+                    <label class="block text-xs sm:text-sm font-medium">Search</label>
+                    <input type="text" v-model="search" @keyup.enter="applyFilters" placeholder="Order ID or Customer" class="border rounded px-2 py-1 text-sm sm:text-base w-full sm:w-auto" />
                 </div>
                 <!-- Removed Apply button; filters now apply automatically on change/enter -->
             </div>
@@ -119,13 +119,13 @@ const clearAllFilters = () => {
                 </button>
             </div>
             <!-- Order List -->
-            <div v-if="orders.data.length === 0" class="text-gray-500">No orders found.</div>
+            <div v-if="orders.data.length === 0" class="text-gray-500 text-sm sm:text-base">No orders found.</div>
             <div v-else>
-                <div v-for="order in orders.data" :key="order.id" class="p-4 border rounded-lg flex justify-between items-center hover:bg-blue-50 transition-colors mb-2">
-                    <div>
-                        <span class="font-medium">Order #{{ order.id }}</span>
-                        <span class="text-sm text-gray-500 ml-2">{{ order.created_at }}</span>
-                        <span class="ml-4 px-3 py-1 rounded-full text-xs font-semibold"
+                <div v-for="order in orders.data" :key="order.id" class="p-3 sm:p-4 border rounded-lg flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 hover:bg-blue-50 transition-colors mb-2">
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                        <span class="font-medium text-sm sm:text-base">Order #{{ order.id }}</span>
+                        <span class="text-xs sm:text-sm text-gray-500">{{ order.created_at }}</span>
+                        <span class="px-2 sm:px-3 py-1 rounded-full text-xs font-semibold"
                               :class="{
                                 'bg-orange-100 text-orange-700': order.status === 'preparing' && order.cancellation_requested,
                                 'bg-yellow-100 text-yellow-700': order.status === 'pending',
@@ -136,17 +136,17 @@ const clearAllFilters = () => {
                             {{ order.status === 'preparing' && order.cancellation_requested ? 'Preparing (Cancellation Requested)' : order.status.charAt(0).toUpperCase() + order.status.slice(1) }}
                         </span>
                     </div>
-                    <div class="flex gap-2">
-                        <button @click="openModal(order)" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">View Details</button>
-                        <button v-if="order.status === 'pending'" @click="updateOrderStatus(order.id, 'preparing')" class="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition">Start Preparing</button>
-                        <button v-if="order.status === 'preparing'" @click="updateOrderStatus(order.id, 'delivered')" class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition">Mark as Delivered</button>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <button @click="openModal(order)" class="btn-responsive bg-gray-200 rounded hover:bg-gray-300">View Details</button>
+                        <button v-if="order.status === 'pending'" @click="updateOrderStatus(order.id, 'preparing')" class="btn-responsive bg-yellow-500 text-white rounded hover:bg-yellow-600 transition">Start Preparing</button>
+                        <button v-if="order.status === 'preparing'" @click="updateOrderStatus(order.id, 'delivered')" class="btn-responsive bg-green-600 text-white rounded hover:bg-green-700 transition">Mark as Delivered</button>
                     </div>
                 </div>
                 <!-- Pagination -->
-                <div class="flex justify-center mt-6 gap-2">
-                    <button :disabled="!orders.prev_page_url" @click="router.get(orders.prev_page_url, {}, { preserveState: true, replace: true })" class="px-3 py-1 rounded border" :class="orders.prev_page_url ? 'bg-white hover:bg-gray-100' : 'bg-gray-100 text-gray-400'">Prev</button>
-                    <span class="px-2">Page {{ orders.current_page }} of {{ orders.last_page }}</span>
-                    <button :disabled="!orders.next_page_url" @click="router.get(orders.next_page_url, {}, { preserveState: true, replace: true })" class="px-3 py-1 rounded border" :class="orders.next_page_url ? 'bg-white hover:bg-gray-100' : 'bg-gray-100 text-gray-400'">Next</button>
+                <div class="flex flex-col sm:flex-row justify-center items-center mt-6 gap-2">
+                    <button :disabled="!orders.prev_page_url" @click="router.get(orders.prev_page_url, {}, { preserveState: true, replace: true })" class="btn-responsive rounded border" :class="orders.prev_page_url ? 'bg-white hover:bg-gray-100' : 'bg-gray-100 text-gray-400'">Prev</button>
+                    <span class="px-2 text-sm sm:text-base">Page {{ orders.current_page }} of {{ orders.last_page }}</span>
+                    <button :disabled="!orders.next_page_url" @click="router.get(orders.next_page_url, {}, { preserveState: true, replace: true })" class="btn-responsive rounded border" :class="orders.next_page_url ? 'bg-white hover:bg-gray-100' : 'bg-gray-100 text-gray-400'">Next</button>
                 </div>
             </div>
             <!-- Order Details Modal -->

@@ -57,43 +57,58 @@ function submitResponse() {
 
 <template>
     <AdminLayout>
-        <div class="max-w-6xl mx-auto p-6">
-            <h1 class="text-2xl font-bold text-primary-dark mb-6">Support Tickets</h1>
+        <div class="max-w-6xl mx-auto p-responsive">
+            <h1 class="text-responsive-lg font-bold text-primary-dark mb-6">Support Tickets</h1>
             <div v-if="successMessage" class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
                 {{ successMessage }}
             </div>
-            <div class="bg-white rounded shadow overflow-x-auto">
-                <table class="min-w-full text-sm">
+            <div class="table-responsive bg-white rounded shadow">
+                <table class="min-w-full text-xs sm:text-sm">
                     <thead class="bg-gray-100">
                         <tr>
-                            <th class="px-4 py-2 text-left">ID</th>
-                            <th class="px-4 py-2 text-left">Name</th>
-                            <th class="px-4 py-2 text-left">Email</th>
-                            <th class="px-4 py-2 text-left">Subject</th>
-                            <th class="px-4 py-2 text-left">User Type</th>
-                            <th class="px-4 py-2 text-left">Status</th>
-                            <th class="px-4 py-2 text-left">Created At</th>
-                            <th class="px-4 py-2 text-left">Actions</th>
+                            <th class="px-2 sm:px-4 py-2 text-left">ID</th>
+                            <th class="px-2 sm:px-4 py-2 text-left hidden sm:table-cell">Name</th>
+                            <th class="px-2 sm:px-4 py-2 text-left hidden md:table-cell">Email</th>
+                            <th class="px-2 sm:px-4 py-2 text-left">Subject</th>
+                            <th class="px-2 sm:px-4 py-2 text-left hidden lg:table-cell">User Type</th>
+                            <th class="px-2 sm:px-4 py-2 text-left">Status</th>
+                            <th class="px-2 sm:px-4 py-2 text-left hidden lg:table-cell">Created At</th>
+                            <th class="px-2 sm:px-4 py-2 text-left">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="ticket in tickets.data" :key="ticket.id" class="border-b hover:bg-blue-50">
-                            <td class="px-4 py-2 font-semibold">{{ ticket.id }}</td>
-                            <td class="px-4 py-2">{{ ticket.name }}</td>
-                            <td class="px-4 py-2">{{ ticket.email }}</td>
-                            <td class="px-4 py-2">{{ ticket.subject }}</td>
-                            <td class="px-4 py-2">
+                            <td class="px-2 sm:px-4 py-2 font-semibold">{{ ticket.id }}</td>
+                            <td class="px-2 sm:px-4 py-2 hidden sm:table-cell">{{ ticket.name }}</td>
+                            <td class="px-2 sm:px-4 py-2 hidden md:table-cell">{{ ticket.email }}</td>
+                            <td class="px-2 sm:px-4 py-2">
+                                <div class="flex flex-col gap-1">
+                                    <div class="font-medium">{{ ticket.subject }}</div>
+                                    <div class="sm:hidden text-xs text-gray-500">
+                                        <div>{{ ticket.name }}</div>
+                                        <div v-if="ticket.email">{{ ticket.email }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-2 sm:px-4 py-2 hidden lg:table-cell">
                                 <span v-if="ticket.is_registered" class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold">Registered</span>
                                 <span v-else class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-semibold">Unregistered</span>
                             </td>
-                            <td class="px-4 py-2">
-                                <span :class="ticket.status === 'open' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'" class="px-2 py-1 rounded-full text-xs font-semibold">
-                                    {{ ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1) }}
-                                </span>
+                            <td class="px-2 sm:px-4 py-2">
+                                <div class="flex flex-col gap-1">
+                                    <span :class="ticket.status === 'open' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'" class="px-2 py-1 rounded-full text-xs font-semibold">
+                                        {{ ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1) }}
+                                    </span>
+                                    <div class="lg:hidden text-xs text-gray-500">
+                                        <div v-if="ticket.is_registered" class="text-green-600">Registered</div>
+                                        <div v-else class="text-yellow-600">Unregistered</div>
+                                        <div>{{ new Date(ticket.created_at).toLocaleDateString() }}</div>
+                                    </div>
+                                </div>
                             </td>
-                            <td class="px-4 py-2">{{ new Date(ticket.created_at).toLocaleString() }}</td>
-                            <td class="px-4 py-2">
-                                <button @click="openModal(ticket)" class="px-3 py-1 bg-primary text-white rounded hover:bg-primary-dark">View</button>
+                            <td class="px-2 sm:px-4 py-2 hidden lg:table-cell">{{ new Date(ticket.created_at).toLocaleString() }}</td>
+                            <td class="px-2 sm:px-4 py-2">
+                                <button @click="openModal(ticket)" class="px-2 sm:px-3 py-1 bg-primary text-white rounded hover:bg-primary-dark text-xs sm:text-sm">View</button>
                             </td>
                         </tr>
                     </tbody>

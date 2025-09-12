@@ -6,7 +6,7 @@ import { Head, Link } from '@inertiajs/vue3';
 <template>
     <Head title="Our Reustarant" />
 
-    <div class="min-h-screen bg-gray-50">
+    <div class="min-h-screen" style="background-color: #ECFDF5;">
         <!-- Simple guest navigation -->
         <nav class="bg-white shadow">
             <div class="w-full px-4 sm:px-6 lg:px-8">

@@ -1,12 +1,12 @@
 <template>
     <!-- Modal -->
     <Modal :show="show" @close="emit('close')">
-        <form @submit.prevent="submitForm" class="p-8 max-w-6xl mx-auto bg-white rounded-lg shadow-xl">
-            <h2 class="text-2xl font-semibold mb-6 text-gray-800 border-b pb-4">
+        <form @submit.prevent="submitForm" class="p-responsive max-w-6xl mx-auto bg-white rounded-lg shadow-xl">
+            <h2 class="text-responsive-lg font-semibold mb-6 text-gray-800 border-b pb-4">
                 {{ meal ? "Edit Meal" : "Create New Meal" }}
             </h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
                 <div>
                     <InputLabel for="name" value="Meal Name" class="text-gray-700 font-medium mb-2" />
                     <TextInput

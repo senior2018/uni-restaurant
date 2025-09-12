@@ -49,8 +49,8 @@ class DeploymentSeeder extends Seeder
         // Create OTP verifications
         $this->createOtpVerifications();
 
-        $this->command->info('✅ Deployment seeding completed successfully!');
-        $this->command->info('📊 Database populated with:');
+        $this->command->info('✓ Deployment seeding completed successfully!');
+        $this->command->info('Database populated with:');
         $this->command->info('   - ' . MealCategory::count() . ' meal categories');
         $this->command->info('   - ' . Meal::count() . ' meals');
         $this->command->info('   - ' . User::count() . ' users');

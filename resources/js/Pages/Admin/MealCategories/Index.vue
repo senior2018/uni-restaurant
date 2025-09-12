@@ -1,10 +1,10 @@
 <template>
     <AdminLayout>
-        <div class="p-6 bg-white rounded shadow">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-2xl font-bold text-gray-800">Meal Categories</h1>
+        <div class="p-responsive bg-white rounded shadow">
+            <div class="flex-responsive mb-6">
+                <h1 class="text-responsive-lg font-bold text-gray-800">Meal Categories</h1>
                 <Link :href="route('meals.index')"
-                    class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded transition-colors duration-200">
+                    class="btn-responsive bg-blue-500 hover:bg-blue-600 text-white rounded transition-colors duration-200">
                     <i class="fas fa-arrow-left mr-2"></i>Back to Meals
                 </Link>
             </div>
@@ -22,25 +22,25 @@
             </div>
 
             <!-- View Mode Toggle -->
-            <div class="mb-6 flex space-x-2">
+            <div class="mb-6 flex flex-col sm:flex-row gap-2">
                 <Link
                     :href="route('meal-categories.index')"
                     :class="{ 'bg-blue-500 text-white': !showingTrashed && !trashedOnly, 'bg-gray-100 text-gray-700': showingTrashed || trashedOnly }"
-                    class="px-4 py-2 border rounded hover:bg-blue-100 transition-colors duration-200"
+                    class="btn-responsive border rounded hover:bg-blue-100 transition-colors duration-200"
                 >
                     <i class="fas fa-list mr-2"></i>Active Categories
                 </Link>
                 <Link
                     :href="route('meal-categories.with-trashed')"
                     :class="{ 'bg-blue-500 text-white': showingTrashed, 'bg-gray-100 text-gray-700': !showingTrashed }"
-                    class="px-4 py-2 border rounded hover:bg-blue-100 transition-colors duration-200"
+                    class="btn-responsive border rounded hover:bg-blue-100 transition-colors duration-200"
                 >
                     <i class="fas fa-eye mr-2"></i>All Categories
                 </Link>
                 <Link
                     :href="route('meal-categories.trashed')"
                     :class="{ 'bg-blue-500 text-white': trashedOnly, 'bg-gray-100 text-gray-700': !trashedOnly }"
-                    class="px-4 py-2 border rounded hover:bg-blue-100 transition-colors duration-200"
+                    class="btn-responsive border rounded hover:bg-blue-100 transition-colors duration-200"
                 >
                     <i class="fas fa-trash mr-2"></i>Deleted Categories
                 </Link>

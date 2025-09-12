@@ -1,6 +1,6 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
-import GuestLayout from './Layout.vue';
+import { Head } from '@inertiajs/vue3';
+import ResponsiveNavbar from '@/Components/ResponsiveNavbar.vue';
 
 defineProps({
     canLogin: Boolean,
@@ -11,60 +11,15 @@ defineProps({
 <template>
     <Head title="Welcome to Our Restaurant" />
 
-    <div class="min-h-screen bg-gradient-to-b from-green-50 to-white">
+    <div class="min-h-screen" style="background-color: #ECFDF5;">
         <!-- Navigation -->
-        <nav class="bg-white shadow">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
-                    <div class="flex items-center">
-                        <span class="text-2xl font-bold text-green-600 flex items-center">
-                            <svg class="h-8 w-8 mr-2" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-                                <defs>
-                                    <linearGradient id="logoGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
-                                    </linearGradient>
-                                </defs>
-                                <circle cx="16" cy="16" r="15" fill="url(#logoGrad4)" stroke="#ffffff" stroke-width="1"/>
-                                <g fill="white" stroke="white" stroke-width="0.5">
-                                    <line x1="8" y1="8" x2="8" y2="20" stroke-width="1"/>
-                                    <line x1="7" y1="8" x2="9" y2="8" stroke-width="1"/>
-                                    <line x1="7" y1="10" x2="9" y2="10" stroke-width="1"/>
-                                    <line x1="7" y1="12" x2="9" y2="12" stroke-width="1"/>
-                                    <line x1="24" y1="8" x2="24" y2="20" stroke-width="1"/>
-                                    <polygon points="24,8 26,10 24,12" fill="white"/>
-                                    <circle cx="16" cy="22" r="4" fill="none" stroke-width="1"/>
-                                    <circle cx="16" cy="22" r="2" fill="white"/>
-                                </g>
-                            </svg>
-                            Our Restaurant
-                        </span>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        <Link :href="route('contact')"
-                            class="px-4 py-2 border-2 border-blue-600 text-blue-600 rounded hover:bg-blue-50 transition flex items-center gap-2">
-                            <i class="fas fa-headset"></i> Contact Support
-                        </Link>
-                        <Link v-if="canLogin"
-                            :href="route('login')"
-                            class="px-4 py-2 text-green-600 hover:text-green-800 transition">
-                            Login
-                        </Link>
-                        <Link v-if="canRegister"
-                            :href="route('register')"
-                            class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
-                            Register
-                        </Link>
-                    </div>
-                </div>
-            </div>
-        </nav>
+        <ResponsiveNavbar :can-login="canLogin" :can-register="canRegister" />
 
         <!-- Hero Section -->
-        <section class="py-20 text-center">
+        <section class="pt-32 pb-20 text-center">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <h1 class="text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
-                    Campus Dining Made Simple 🍽️
+                    Campus Dining Made Simple
                 </h1>
                 <p class="text-lg text-gray-600 mb-8">
                     Order fresh meals from your university restaurant, track your orders in real-time,

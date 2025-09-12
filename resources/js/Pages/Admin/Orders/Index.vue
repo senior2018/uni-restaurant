@@ -174,8 +174,8 @@ const clearAllFilters = () => {
 </script>
 
 <template>
-    <div class="max-w-7xl mx-auto p-6">
-        <h1 class="text-3xl font-bold text-gray-800 mb-8">Order Management</h1>
+    <div class="max-w-7xl mx-auto p-responsive">
+        <h1 class="text-responsive-lg font-bold text-gray-800 mb-6 sm:mb-8">Order Management</h1>
         <div v-if="page.props.flash?.warning" class="mb-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded">
             <i class="fas fa-exclamation-triangle mr-2"></i>{{ page.props.flash.warning }}
         </div>
@@ -186,9 +186,9 @@ const clearAllFilters = () => {
             <i class="fas fa-exclamation-circle mr-2"></i>{{ page.props.flash.error }}
         </div>
         <!-- Filters -->
-        <div class="bg-white rounded-lg shadow p-4 mb-6">
+        <div class="bg-white rounded-lg shadow p-responsive mb-6">
             <div class="flex flex-col md:flex-row md:items-end md:space-x-6 gap-4">
-                <div class="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div>
                         <label class="block text-sm font-medium mb-1">Status</label>
                         <select v-model="filterStatus" @change="applyFilters" class="border rounded px-2 py-1 w-full">
@@ -273,42 +273,50 @@ const clearAllFilters = () => {
             </div>
         </div>
         <!-- Orders Table -->
-        <div class="overflow-x-auto bg-white rounded-lg shadow">
-            <table class="min-w-full text-sm">
+        <div class="table-responsive bg-white rounded-lg shadow">
+            <table class="min-w-full text-xs sm:text-sm">
                 <thead class="bg-gray-100">
                     <tr>
-                        <th class="px-4 py-3 text-left">Order #</th>
-                        <th class="px-4 py-3 text-left">Customer</th>
-                        <th class="px-4 py-3 text-left">Staff</th>
-                        <th class="px-4 py-3 text-left">Status</th>
-                        <th class="px-4 py-3 text-left">Date</th>
-                        <th class="px-4 py-3 text-left">Actions</th>
+                        <th class="px-2 sm:px-4 py-3 text-left">Order #</th>
+                        <th class="px-2 sm:px-4 py-3 text-left hidden sm:table-cell">Customer</th>
+                        <th class="px-2 sm:px-4 py-3 text-left hidden md:table-cell">Staff</th>
+                        <th class="px-2 sm:px-4 py-3 text-left">Status</th>
+                        <th class="px-2 sm:px-4 py-3 text-left hidden lg:table-cell">Date</th>
+                        <th class="px-2 sm:px-4 py-3 text-left">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="order in orders.data" :key="order.id" :class="['border-b', 'hover:bg-blue-50 transition']">
-                        <td class="px-4 py-3 font-semibold">{{ order.id }}</td>
-                        <td class="px-4 py-3">{{ order.user?.name || 'N/A' }}</td>
-                        <td class="px-4 py-3">
+                        <td class="px-2 sm:px-4 py-3 font-semibold">{{ order.id }}</td>
+                        <td class="px-2 sm:px-4 py-3 hidden sm:table-cell">{{ order.user?.name || 'N/A' }}</td>
+                        <td class="px-2 sm:px-4 py-3 hidden md:table-cell">
                             {{ order.staff?.name || 'Unassigned' }}
                         </td>
-                        <td class="px-4 py-3">
-                            <span class="px-3 py-1 rounded-full text-xs font-semibold" :class="{
-                                'bg-yellow-100 text-yellow-700': order.status === 'pending',
-                                'bg-blue-100 text-blue-700': order.status === 'preparing',
-                                'bg-green-100 text-green-700': order.status === 'delivered',
-                                'bg-red-100 text-red-700': order.status === 'cancelled'
-                            }">
-                                {{ order.status === 'preparing' && order.cancellation_requested ? 'Preparing (Cancellation Requested)' : order.status.charAt(0).toUpperCase() + order.status.slice(1) }}
-                            </span>
-                            <i v-if="order.status === 'preparing' && order.cancellation_requested" class="fas fa-question-circle text-orange-500 ml-2" title="Cancellation Requested"></i>
-                            <button v-if="order.status === 'pending' && !order.staff_id && order.similar_orders && order.similar_orders.length" @click="openSimilarModal(order)" class="ml-2 px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-200 text-blue-800 hover:bg-blue-300 transition">
-                                {{ order.similar_orders.length }} similar order{{ order.similar_orders.length > 1 ? 's' : '' }}
-                            </button>
+                        <td class="px-2 sm:px-4 py-3">
+                            <div class="flex flex-col gap-1">
+                                <span class="px-2 sm:px-3 py-1 rounded-full text-xs font-semibold" :class="{
+                                    'bg-yellow-100 text-yellow-700': order.status === 'pending',
+                                    'bg-blue-100 text-blue-700': order.status === 'preparing',
+                                    'bg-green-100 text-green-700': order.status === 'delivered',
+                                    'bg-red-100 text-red-700': order.status === 'cancelled'
+                                }">
+                                    {{ order.status === 'preparing' && order.cancellation_requested ? 'Preparing (Cancellation Requested)' : order.status.charAt(0).toUpperCase() + order.status.slice(1) }}
+                                </span>
+                                <div class="flex items-center gap-1">
+                                    <i v-if="order.status === 'preparing' && order.cancellation_requested" class="fas fa-question-circle text-orange-500 text-xs" title="Cancellation Requested"></i>
+                                    <button v-if="order.status === 'pending' && !order.staff_id && order.similar_orders && order.similar_orders.length" @click="openSimilarModal(order)" class="px-1 py-0.5 rounded-full text-xs font-semibold bg-blue-200 text-blue-800 hover:bg-blue-300 transition">
+                                        {{ order.similar_orders.length }} similar
+                                    </button>
+                                </div>
+                                <div class="sm:hidden text-xs text-gray-500">
+                                    <div>{{ order.user?.name || 'N/A' }}</div>
+                                    <div v-if="order.staff?.name">{{ order.staff.name }}</div>
+                                </div>
+                            </div>
                         </td>
-                        <td class="px-4 py-3 text-gray-500">{{ order.created_at }}</td>
-                        <td class="px-4 py-3">
-                            <button @click="openModal(order)" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">View Details</button>
+                        <td class="px-2 sm:px-4 py-3 text-gray-500 hidden lg:table-cell">{{ order.created_at }}</td>
+                        <td class="px-2 sm:px-4 py-3">
+                            <button @click="openModal(order)" class="px-2 sm:px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 text-xs sm:text-sm">View</button>
                         </td>
                     </tr>
                 </tbody>

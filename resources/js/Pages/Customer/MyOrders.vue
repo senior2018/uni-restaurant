@@ -210,38 +210,38 @@ async function submitAlert() {
                 <span><i class="fas fa-exclamation-circle mr-2"></i>{{ page.props.flash.error }}</span>
             </div>
         </div>
-        <div class="min-h-screen bg-gray-50 p-6 w-full px-4">
-            <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">My Orders</h1>
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
-                <div class="flex items-center gap-2">
-                    <label for="statusFilter" class="font-medium text-gray-700">Filter by Status:</label>
-                    <select id="statusFilter" v-model="statusFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+        <div class="space-y-6 sm:space-y-8">
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-6 text-center">My Orders</h1>
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-3 sm:gap-4">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                    <label for="statusFilter" class="font-medium text-gray-700 text-sm sm:text-base">Filter by Status:</label>
+                    <select id="statusFilter" v-model="statusFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-sm sm:text-base w-full sm:w-auto">
                         <option v-for="option in statusOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
                     </select>
                 </div>
-                <div v-if="filteredOrders.length > 0" class="text-gray-500 text-sm mt-2 md:mt-0">
+                <div v-if="filteredOrders.length > 0" class="text-gray-500 text-xs sm:text-sm">
                     Showing {{ filteredOrders.length }} of {{ orders.length }} orders
                 </div>
             </div>
-            <div v-if="filteredOrders.length === 0" class="text-center py-12">
-                <div class="text-gray-400 text-6xl mb-4">
+            <div v-if="filteredOrders.length === 0" class="text-center py-8 sm:py-12">
+                <div class="text-gray-400 text-4xl sm:text-6xl mb-4">
                     <i class="fas fa-box-open"></i>
                 </div>
-                <h3 class="text-lg font-medium text-gray-900 mb-2">No orders found for this filter</h3>
-                <button @click="$inertia.visit(route('menu.public'))" class="mt-4 px-6 py-2 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 transition-colors">
+                <h3 class="text-base sm:text-lg font-medium text-gray-900 mb-2">No orders found for this filter</h3>
+                <button @click="$inertia.visit(route('menu.public'))" class="mt-4 btn-responsive bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 transition-colors">
                     Go to Menu
                 </button>
             </div>
-            <div v-else class="space-y-8">
-                <div v-for="order in filteredOrders" :key="order.id" class="bg-white rounded-xl shadow p-6">
+            <div v-else class="space-y-6 sm:space-y-8">
+                <div v-for="order in filteredOrders" :key="order.id" class="bg-white rounded-xl shadow p-4 sm:p-6">
                     <!-- Order summary row -->
-                    <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-2">
-                        <div class="flex items-center gap-4">
-                            <span class="font-semibold text-gray-700">Order #{{ order.id }}</span>
-                            <span class="text-sm text-gray-500">{{ formatDate(order.created_at) }}</span>
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2 gap-2">
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                            <span class="font-semibold text-gray-700 text-sm sm:text-base">Order #{{ order.id }}</span>
+                            <span class="text-xs sm:text-sm text-gray-500">{{ formatDate(order.created_at) }}</span>
                         </div>
-                        <div class="flex items-center gap-2 mt-2 md:mt-0">
-                            <span class="px-3 py-1 rounded-full text-xs font-semibold"
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                            <span class="px-2 sm:px-3 py-1 rounded-full text-xs font-semibold"
                                   :class="{
                                     'bg-orange-100 text-orange-700': order.status === 'preparing' && order.cancellation_requested,
                                     'bg-yellow-100 text-yellow-700': order.status === 'pending',
@@ -252,8 +252,8 @@ async function submitAlert() {
                                   }">
                                 {{ order.status === 'preparing' && order.cancellation_requested ? 'Preparing (Cancellation Requested)' : order.status.charAt(0).toUpperCase() + order.status.slice(1) }}
                             </span>
-                            <span class="font-bold text-green-700 ml-2">{{ formatPrice(order.total_price) }}</span>
-                            <button @click="toggleOrder(order.id)" class="ml-4 text-green-600 hover:underline text-xs">
+                            <span class="font-bold text-green-700 text-sm sm:text-base">{{ formatPrice(order.total_price) }}</span>
+                            <button @click="toggleOrder(order.id)" class="text-green-600 hover:underline text-xs sm:text-sm">
                                 {{ expandedOrders.includes(order.id) ? 'Hide Details' : 'Show Details' }}
                             </button>
                         </div>

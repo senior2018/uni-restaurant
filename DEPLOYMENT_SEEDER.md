@@ -6,34 +6,34 @@ The Deployment Seeder is a comprehensive database seeding solution designed spec
 
 ## Features
 
-### 🍽️ **Restaurant Data**
+### **Restaurant Data**
 - **8 Meal Categories**: Appetizers, Main Courses, Desserts, Beverages, Salads, Soups, Pasta, Pizza
 - **25+ Meals**: Realistic menu items with descriptions, prices, and preparation times
 - **Varied Pricing**: $2.99 - $32.99 range for different meal types
 
-### 👥 **User Management**
+### **User Management**
 - **1 Super Admin**: Full system access
 - **1 Admin**: Restaurant management access
 - **5 Staff Members**: Kitchen and service staff
 - **20 Customers**: Diverse customer base with realistic profiles
 
-### 📋 **Order System**
+### **Order System**
 - **50 Orders**: Historical order data with realistic statuses
 - **1-4 Items per Order**: Varied order complexity
 - **Multiple Statuses**: pending, confirmed, preparing, ready, delivered, cancelled
 - **Realistic Timestamps**: Orders spread over the last 30 days
 
-### ⭐ **Reviews & Feedback**
+### **Reviews & Feedback**
 - **Customer Ratings**: 3-5 star ratings with realistic comments
 - **70% Rating Rate**: Based on delivered orders
 - **Contextual Comments**: Rating-appropriate feedback
 
-### 🚨 **Support System**
+### **Support System**
 - **15 Alerts**: Various customer issues and complaints
 - **20 Support Tickets**: Different priority levels and statuses
 - **Realistic Scenarios**: Common restaurant management issues
 
-### 🔐 **Security**
+### **Security**
 - **OTP Verifications**: Email verification records
 - **Secure Passwords**: All users have 'password' as default (change in production)
 

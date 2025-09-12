@@ -53,40 +53,40 @@ const avgRating = computed(() => {
 
 <template>
     <AdminLayout :user="user">
-        <div class="max-w-6xl mx-auto p-6">
-            <h1 class="text-2xl font-bold text-primary-dark mb-6">Ratings Management</h1>
-            <div class="flex flex-wrap gap-4 mb-6">
-                <div>
+        <div class="max-w-6xl mx-auto p-responsive">
+            <h1 class="text-responsive-lg font-bold text-primary-dark mb-6">Ratings Management</h1>
+            <div class="flex flex-col sm:flex-row sm:flex-wrap gap-4 mb-6">
+                <div class="flex-1 min-w-0">
                     <label class="block text-sm font-medium mb-1">Meal ID</label>
-                    <input v-model="filterMeal" @keyup.enter="applyFilters" type="text" class="border rounded px-2 py-1" placeholder="Meal ID" />
+                    <input v-model="filterMeal" @keyup.enter="applyFilters" type="text" class="border rounded px-2 py-1 w-full" placeholder="Meal ID" />
                 </div>
-                <div>
+                <div class="flex-1 min-w-0">
                     <label class="block text-sm font-medium mb-1">User ID</label>
-                    <input v-model="filterUser" @keyup.enter="applyFilters" type="text" class="border rounded px-2 py-1" placeholder="User ID" />
+                    <input v-model="filterUser" @keyup.enter="applyFilters" type="text" class="border rounded px-2 py-1 w-full" placeholder="User ID" />
                 </div>
-                <div>
+                <div class="flex-1 min-w-0">
                     <label class="block text-sm font-medium mb-1">Rating</label>
-                    <select v-model="filterValue" @change="applyFilters" class="border rounded px-2 py-1">
+                    <select v-model="filterValue" @change="applyFilters" class="border rounded px-2 py-1 w-full">
                         <option value="all">All</option>
                         <option v-for="n in 5" :key="n" :value="n">{{ n }} stars</option>
                     </select>
                 </div>
-                <div class="ml-auto flex items-center gap-2">
+                <div class="flex-1 sm:ml-auto flex items-center gap-2">
                     <span class="text-sm text-gray-600">Average rating (page):</span>
                     <span class="font-bold text-green-700">{{ avgRating }}</span>
                 </div>
             </div>
-            <div class="bg-white rounded shadow overflow-x-auto">
-                <table class="min-w-full text-sm">
+            <div class="table-responsive bg-white rounded shadow">
+                <table class="min-w-full text-xs sm:text-sm">
                     <thead class="bg-gray-100">
                         <tr>
-                            <th class="px-4 py-2 text-left">ID</th>
-                            <th class="px-4 py-2 text-left">Order</th>
-                            <th class="px-4 py-2 text-left">Meal</th>
-                            <th class="px-4 py-2 text-left">User</th>
-                            <th class="px-4 py-2 text-left">Rating</th>
-                            <th class="px-4 py-2 text-left">Comment</th>
-                            <th class="px-4 py-2 text-left">Actions</th>
+                            <th class="px-2 sm:px-4 py-2 text-left">ID</th>
+                            <th class="px-2 sm:px-4 py-2 text-left hidden sm:table-cell">Order</th>
+                            <th class="px-2 sm:px-4 py-2 text-left">Meal</th>
+                            <th class="px-2 sm:px-4 py-2 text-left hidden md:table-cell">User</th>
+                            <th class="px-2 sm:px-4 py-2 text-left">Rating</th>
+                            <th class="px-2 sm:px-4 py-2 text-left hidden lg:table-cell">Comment</th>
+                            <th class="px-2 sm:px-4 py-2 text-left">Actions</th>
                         </tr>
                     </thead>
                     <tbody>

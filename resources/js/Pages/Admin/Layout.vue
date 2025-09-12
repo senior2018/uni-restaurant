@@ -38,20 +38,24 @@ watch(
 <template>
     <BaseLayout title="Admin Dashboard">
         <TopNavBar :links="navLinks" :user="page.props.user" role="admin" brand="Admin Panel" />
-        <!-- Flash Message + Main Content -->
-        <main class="py-8">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <!-- Flash messages -->
-                <div v-if="showSuccess && flash.success" class="mb-4">
-                  <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative transition-opacity duration-500" role="alert">
-                    <span class="block sm:inline">{{ flash.success }}</span>
-                  </div>
-                </div>
-                <div v-if="flash.error" class="bg-accent-pink text-white p-2 mb-4 rounded">
-                    {{ flash.error }}
-                </div>
+        <!-- Flash Messages -->
+        <div v-if="showSuccess && flash.success" class="w-full px-responsive mt-4 relative z-10">
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 flex items-center justify-between shadow">
+                <span><i class="fas fa-check-circle mr-2"></i>{{ flash.success }}</span>
+                <button @click="showSuccess = false" class="text-green-700 hover:text-green-900">&times;</button>
+            </div>
+        </div>
 
-                <!-- Main slot content -->
+        <div v-if="flash.error" class="w-full px-responsive mt-4 relative z-10">
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 flex items-center justify-between shadow">
+                <span><i class="fas fa-exclamation-circle mr-2"></i>{{ flash.error }}</span>
+                <button @click="flash.error = null" class="text-red-700 hover:text-red-900">&times;</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="py-responsive bg-gray-50 min-h-screen w-full">
+            <div class="container-responsive">
                 <slot />
             </div>
         </main>
