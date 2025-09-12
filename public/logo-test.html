@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Logo Test - Our Restaurant</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .logo-test { margin: 20px 0; padding: 20px; border: 2px solid #ddd; border-radius: 8px; }
+        .logo-test img { max-width: 200px; height: auto; border: 1px solid #ccc; }
+        .success { border-color: #10b981; background-color: #ecfdf5; }
+        .error { border-color: #ef4444; background-color: #fef2f2; }
+        h1 { color: #10b981; }
+        h2 { color: #374151; }
+        .path { font-family: monospace; background: #f3f4f6; padding: 5px 10px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍽️ Logo Test Page - Our Restaurant</h1>
+
+        <div class="logo-test success">
+            <h2>✅ Logo Test 1: Direct Storage Path</h2>
+            <p>Testing: <span class="path">/storage/image/logo-final.svg</span></p>
+            <img src="/storage/image/logo-final.svg" alt="Our Restaurant Logo" onload="this.parentElement.classList.add('success')" onerror="this.parentElement.classList.add('error'); this.parentElement.querySelector('p').innerHTML += ' <strong>❌ FAILED</strong>'">
+        </div>
+
+        <div class="logo-test success">
+            <h2>✅ Logo Test 2: Application Logo Component</h2>
+            <p>Testing: <span class="path">/storage/image/logo-final.svg</span> (as used in ApplicationLogo.vue)</p>
+            <img src="/storage/image/logo-final.svg" alt="Our Restaurant Logo" class="h-16 w-16 mr-4" onload="this.parentElement.classList.add('success')" onerror="this.parentElement.classList.add('error'); this.parentElement.querySelector('p').innerHTML += ' <strong>❌ FAILED</strong>'">
+        </div>
+
+        <div class="logo-test success">
+            <h2>✅ Logo Test 3: Top Navigation Bar</h2>
+            <p>Testing: <span class="path">/storage/image/logo-final.svg</span> (as used in TopNavBar.vue)</p>
+            <img src="/storage/image/logo-final.svg" alt="Logo" class="h-12 w-12 sm:h-16 sm:w-16" onload="this.parentElement.classList.add('success')" onerror="this.parentElement.classList.add('error'); this.parentElement.querySelector('p').innerHTML += ' <strong>❌ FAILED</strong>'">
+        </div>
+
+        <div class="logo-test success">
+            <h2>✅ Logo Test 4: Guest Layout</h2>
+            <p>Testing: <span class="path">/storage/image/logo-final.svg</span> (as used in GuestLayout.vue)</p>
+            <img src="/storage/image/logo-final.svg" alt="Logo" class="h-20 w-20" onload="this.parentElement.classList.add('success')" onerror="this.parentElement.classList.add('error'); this.parentElement.querySelector('p').innerHTML += ' <strong>❌ FAILED</strong>'">
+        </div>
+
+        <div class="logo-test success">
+            <h2>✅ Logo Test 5: Responsive Navbar</h2>
+            <p>Testing: <span class="path">/storage/image/logo-final.svg</span> (as used in ResponsiveNavbar.vue)</p>
+            <img src="/storage/image/logo-final.svg" alt="Logo" class="h-12 w-12 sm:h-16 sm:w-16" onload="this.parentElement.classList.add('success')" onerror="this.parentElement.classList.add('error'); this.parentElement.querySelector('p').innerHTML += ' <strong>❌ FAILED</strong>'">
+        </div>
+
+        <div style="margin-top: 30px; padding: 20px; background: #f0f9ff; border-radius: 8px; border-left: 4px solid #0ea5e9;">
+            <h3>📋 Test Results Summary</h3>
+            <p>If all logos above are displaying correctly, your storage symlink is working properly!</p>
+            <p><strong>Expected behavior:</strong> All 5 logo images should display the same green restaurant logo with fork and knife design.</p>
+            <p><strong>If logos are broken:</strong> The storage symlink may not be working correctly in your deployment environment.</p>
+        </div>
+
+        <div style="margin-top: 20px; padding: 20px; background: #fef3c7; border-radius: 8px; border-left: 4px solid #f59e0b;">
+            <h3>🔧 Troubleshooting</h3>
+            <p>If you see broken image icons:</p>
+            <ul>
+                <li>Check that the file exists: <span class="path">storage/app/public/image/logo-final.svg</span></li>
+                <li>Verify the symlink: <span class="path">public/storage -> storage/app/public</span></li>
+                <li>Ensure proper permissions on the storage directory</li>
+                <li>Check your web server configuration allows serving SVG files</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

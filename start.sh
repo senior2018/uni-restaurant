@@ -96,9 +96,9 @@ ln -sf /var/www/html/storage/app/public /var/www/html/public/storage
 echo "Verifying symlink creation:"
 ls -la public/storage || echo "Storage symlink creation failed"
 echo "Checking if logo is accessible via symlink:"
-ls -la public/storage/image/logo.png || echo "Logo not accessible via symlink"
+ls -la public/storage/image/logo-final.svg || echo "Logo not accessible via symlink"
 echo "Testing direct access to logo:"
-ls -la storage/app/public/image/logo.png || echo "Logo not found in storage"
+ls -la storage/app/public/image/logo-final.svg || echo "Logo not found in storage"
 
 # Clear any existing cache files that might have wrong permissions
 rm -rf storage/framework/views/* storage/framework/cache/* storage/framework/sessions/*
@@ -119,36 +119,37 @@ echo "Final storage verification..."
 echo "Symlink status:"
 ls -la public/storage
 echo "Logo file check:"
-ls -la public/storage/image/logo.png || echo "Logo still not accessible"
+ls -la public/storage/image/logo-final.svg || echo "Logo still not accessible"
 echo "All files in public/storage/image/:"
 ls -la public/storage/image/ || echo "No image directory found"
 echo "All files in storage/app/public/image/:"
 ls -la storage/app/public/image/ || echo "No storage image directory found"
 
 # Fallback: Copy logo directly to public directory if symlink fails
-if [ ! -f "public/storage/image/logo.png" ]; then
+if [ ! -f "public/storage/image/logo-final.svg" ]; then
     echo "Symlink failed, creating direct copy of logo..."
     mkdir -p public/storage/image
 
-    # Try to copy from storage first
-    if [ -f "storage/app/public/image/logo.png" ]; then
+    # Try to copy from storage first - check for logo-final.svg
+    if [ -f "storage/app/public/image/logo-final.svg" ]; then
+        cp storage/app/public/image/logo-final.svg public/storage/image/logo-final.svg
+        echo "Logo-final.svg copied from storage to public directory"
+    elif [ -f "storage/app/public/image/logo.png" ]; then
         cp storage/app/public/image/logo.png public/storage/image/logo.png
-        echo "Logo copied from storage to public directory"
+        echo "Logo.png copied from storage to public directory"
     elif [ -f "storage/app/public/image/logo.jpg" ]; then
         cp storage/app/public/image/logo.jpg public/storage/image/logo.jpg
         echo "Logo (JPEG) copied from storage to public directory"
     else
         echo "Logo not found in storage, creating SVG logo..."
         # Create a simple SVG logo
-        cat > public/storage/image/logo.svg << 'EOF'
+        cat > public/storage/image/logo-final.svg << 'EOF'
 <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
   <rect width="32" height="32" fill="#10b981" rx="4"/>
   <text x="16" y="20" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="white">R</text>
 </svg>
 EOF
-        # Also create PNG version
-        echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==" | base64 -d > public/storage/image/logo.png
-        echo "SVG and PNG placeholder logos created"
+        echo "SVG placeholder logo created"
     fi
 fi
 
@@ -167,8 +168,13 @@ fi
 
 # Simple logo setup
 echo "Setting up logo files..."
-# Use the actual restaurant logo (logo.png contains the restaurant image)
-if [ -f "storage/app/public/image/logo.png" ]; then
+# Use the actual restaurant logo (logo-final.svg contains the restaurant image)
+if [ -f "storage/app/public/image/logo-final.svg" ]; then
+    echo "Using logo-final.svg as main logo"
+    cp storage/app/public/image/logo-final.svg public/favicon.png
+    cp storage/app/public/image/logo-final.svg public/logo.png
+    echo "Favicon and public logo created from logo-final.svg"
+elif [ -f "storage/app/public/image/logo.png" ]; then
     echo "Using logo.png as main logo (copying to logo.jpg for proper format)"
     cp storage/app/public/image/logo.png storage/app/public/image/logo.jpg
     cp storage/app/public/image/logo.jpg public/favicon.png
@@ -197,11 +203,11 @@ echo -e '\x00\x00\x01\x00\x01\x00\x10\x10\x00\x00\x01\x00\x20\x00\x68\x04\x00\x0
 echo "Simple favicon.ico created"
 
 echo "File permissions:"
-ls -la storage/app/public/image/logo.png
+ls -la storage/app/public/image/logo-final.svg
 echo "Final logo accessibility check:"
-ls -la public/storage/image/logo.png || echo "Logo still not accessible after all attempts"
+ls -la public/storage/image/logo-final.svg || echo "Logo still not accessible after all attempts"
 echo "All available logo files:"
-ls -la public/storage/image/logo.* || echo "No logo files found"
+ls -la public/storage/image/logo* || echo "No logo files found"
 
 # Seed database with deployment data (optimized)
 echo "Seeding database with deployment data..."
@@ -250,8 +256,8 @@ echo '<html><head><title>Logo Test</title></head>' >> public/logo-test.html
 echo '<body>' >> public/logo-test.html
 echo '<h1>Logo Test Page</h1>' >> public/logo-test.html
 echo '<p>If you can see the logo below, the storage link is working:</p>' >> public/logo-test.html
-echo '<img src="/storage/image/logo.png" alt="Logo" style="width: 200px; border: 1px solid #ccc;">' >> public/logo-test.html
-echo '<p>Logo path: /storage/image/logo.png</p>' >> public/logo-test.html
+echo '<img src="/storage/image/logo-final.svg" alt="Logo" style="width: 200px; border: 1px solid #ccc;">' >> public/logo-test.html
+echo '<p>Logo path: /storage/image/logo-final.svg</p>' >> public/logo-test.html
 echo '</body></html>' >> public/logo-test.html
 echo "Logo test page created at /logo-test.html"
 
