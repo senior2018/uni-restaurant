@@ -167,7 +167,7 @@ else
     echo "⚠️ No original logo found in storage, creating fallback..."
     echo "This should not happen if the logo-final.svg file is properly committed to the repository"
     echo "Please ensure storage/app/public/image/logo-final.svg exists in your repository"
-    
+
     # Create a simple fallback SVG logo
     cat > public/storage/image/logo-final.svg << 'EOF'
 <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
