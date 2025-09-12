@@ -167,25 +167,25 @@ fi
 
 # Simple logo setup
 echo "Setting up logo files..."
-# Use the actual restaurant logo (rest.jpg) as the main logo
-if [ -f "storage/app/public/image/rest.jpg" ]; then
-    echo "Using rest.jpg as main logo (copying to logo.jpg)"
-    cp storage/app/public/image/rest.jpg storage/app/public/image/logo.jpg
+# Use the actual restaurant logo (logo.png contains the restaurant image)
+if [ -f "storage/app/public/image/logo.png" ]; then
+    echo "Using logo.png as main logo (copying to logo.jpg for proper format)"
+    cp storage/app/public/image/logo.png storage/app/public/image/logo.jpg
     cp storage/app/public/image/logo.jpg public/favicon.png
-    echo "logo.jpg and favicon created from rest.jpg"
+    cp storage/app/public/image/logo.jpg public/logo.png
+    echo "logo.jpg, favicon.png, and public/logo.png created from logo.png"
 elif [ -f "storage/app/public/image/logo.jpg" ]; then
     echo "Using logo.jpg as main logo"
     cp storage/app/public/image/logo.jpg public/favicon.png
-    echo "Favicon created from logo.jpg"
-elif [ -f "storage/app/public/image/logo.png" ]; then
-    echo "Using logo.png as main logo"
-    cp storage/app/public/image/logo.png public/favicon.png
-    echo "Favicon created from logo.png"
+    cp storage/app/public/image/logo.jpg public/logo.png
+    echo "Favicon and public logo created from logo.jpg"
 elif [ -f "storage/app/public/image/Logo.png" ]; then
-    echo "Using Logo.png as main logo (copying to logo.png)"
+    echo "Using Logo.png as main logo (copying to logo.png and logo.jpg)"
     cp storage/app/public/image/Logo.png storage/app/public/image/logo.png
-    cp storage/app/public/image/logo.png public/favicon.png
-    echo "logo.png and favicon created from Logo.png"
+    cp storage/app/public/image/logo.png storage/app/public/image/logo.jpg
+    cp storage/app/public/image/logo.jpg public/favicon.png
+    cp storage/app/public/image/logo.jpg public/logo.png
+    echo "All logo files created from Logo.png"
 else
     echo "No logo found, creating simple fallback"
     # Create a simple green square as fallback
