@@ -125,32 +125,39 @@ ls -la public/storage/image/ || echo "No image directory found"
 echo "All files in storage/app/public/image/:"
 ls -la storage/app/public/image/ || echo "No storage image directory found"
 
-# Fallback: Copy logo directly to public directory if symlink fails
-if [ ! -f "public/storage/image/logo-final.svg" ]; then
-    echo "Symlink failed, creating direct copy of logo..."
-    mkdir -p public/storage/image
+# Ensure logo is accessible - copy from storage if symlink fails
+echo "Ensuring logo accessibility..."
+mkdir -p public/storage/image
 
-    # Try to copy from storage first - check for logo-final.svg
-    if [ -f "storage/app/public/image/logo-final.svg" ]; then
-        cp storage/app/public/image/logo-final.svg public/storage/image/logo-final.svg
-        echo "Logo-final.svg copied from storage to public directory"
-    elif [ -f "storage/app/public/image/logo.png" ]; then
-        cp storage/app/public/image/logo.png public/storage/image/logo.png
-        echo "Logo.png copied from storage to public directory"
-    elif [ -f "storage/app/public/image/logo.jpg" ]; then
-        cp storage/app/public/image/logo.jpg public/storage/image/logo.jpg
-        echo "Logo (JPEG) copied from storage to public directory"
-    else
-        echo "Logo not found in storage, creating SVG logo..."
-        # Create a simple SVG logo
-        cat > public/storage/image/logo-final.svg << 'EOF'
+# Always try to copy the original logo first
+echo "Checking for original logo files..."
+echo "Files in storage/app/public/image/:"
+ls -la storage/app/public/image/ || echo "Storage image directory not found"
+
+if [ -f "storage/app/public/image/logo-final.svg" ]; then
+    echo "✅ Found original logo-final.svg, copying to public directory..."
+    cp storage/app/public/image/logo-final.svg public/storage/image/logo-final.svg
+    echo "✅ Original logo-final.svg copied successfully"
+    echo "Verifying copy:"
+    ls -la public/storage/image/logo-final.svg
+elif [ -f "storage/app/public/image/logo.png" ]; then
+    echo "Found logo.png, copying to public directory..."
+    cp storage/app/public/image/logo.png public/storage/image/logo.png
+    echo "✅ Logo.png copied successfully"
+elif [ -f "storage/app/public/image/logo.jpg" ]; then
+    echo "Found logo.jpg, copying to public directory..."
+    cp storage/app/public/image/logo.jpg public/storage/image/logo.jpg
+    echo "✅ Logo (JPEG) copied successfully"
+else
+    echo "⚠️ No original logo found in storage, creating fallback..."
+    # Create a simple fallback SVG logo
+    cat > public/storage/image/logo-final.svg << 'EOF'
 <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
   <rect width="32" height="32" fill="#10b981" rx="4"/>
   <text x="16" y="20" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="white">R</text>
 </svg>
 EOF
-        echo "SVG placeholder logo created"
-    fi
+    echo "⚠️ Fallback SVG logo created"
 fi
 
 # Ensure placeholder image exists
