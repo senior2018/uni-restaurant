@@ -27,7 +27,7 @@ onMounted(() => {
     <header class="relative z-20 w-full flex justify-center pt-8 pb-4">
       <slot name="header">
         <div class="flex items-center gap-2">
-          <img src="/storage/image/logo.png" alt="Logo" class="h-10 w-10" />
+          <img src="/storage/image/logo.jpg" alt="Logo" class="h-10 w-10" />
           <span class="text-2xl font-bold text-white tracking-wide drop-shadow">Our Restaurant</span>
         </div>
       </slot>

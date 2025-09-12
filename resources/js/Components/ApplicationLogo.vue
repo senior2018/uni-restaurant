@@ -12,11 +12,11 @@
 import { ref, onMounted } from 'vue';
 
 const logoSources = [
-    '/storage/image/logo.svg',   // Try SVG first (more reliable)
-    '/storage/image/logo.png',
+    '/storage/image/logo.jpg',   // Use the actual restaurant logo (JPEG)
+    '/storage/image/logo.png',   // Fallback to PNG version
     '/storage/image/Logo.png',   // Case sensitivity fallback
-    '/storage/image/logo.jpg',
-    '/favicon.png',
+    '/storage/image/logo.svg',   // SVG fallback
+    '/favicon.png',              // Favicon fallback
     'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZDEiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTBiOTgxO3N0b3Atb3BhY2l0eToxIiAvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMwNTk2Njk7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIGZpbGw9InVybCgjZ3JhZDEpIiByeD0iNiIvPgogIDxjaXJjbGUgY3g9IjE2IiBjeT0iMTIiIHI9IjMiIGZpbGw9IndoaXRlIi8+CiAgPHJlY3QgeD0iMTMiIHk9IjE2IiB3aWR0aD0iNiIgaGVpZ2h0PSIyIiBmaWxsPSJ3aGl0ZSIgcng9IjEiLz4KICA8cmVjdCB4PSIxMSIgeT0iMTkiIHdpZHRoPSIxMCIgaGVpZ2h0PSIyIiBmaWxsPSJ3aGl0ZSIgcng9IjEiLz4KICA8cmVjdCB4PSI5IiB5PSIyMiIgd2lkdGg9IjE0IiBoZWlnaHQ9IjIiIGZpbGw9IndoaXRlIiByeD0iMSIvPgo8L3N2Zz4K'
 ];
 

@@ -5,7 +5,7 @@
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
                     <Link :href="route('home')" class="text-2xl font-bold text-green-600 hover:text-green-800 flex items-center gap-2">
-                        <img src="/storage/image/logo.png" alt="Logo" class="h-8 w-8 mr-2" />
+                        <img src="/storage/image/logo.jpg" alt="Logo" class="h-8 w-8 mr-2" />
                         Our Restaurant
                     </Link>
                 </div>
@@ -28,7 +28,7 @@
             <!-- Logo and Title -->
             <div class="text-center">
                 <span class="text-3xl font-bold text-green-600 flex items-center justify-center">
-                    <img src="/storage/image/logo.png" alt="Logo" class="h-10 w-10 mr-3" />
+                    <img src="/storage/image/logo.jpg" alt="Logo" class="h-10 w-10 mr-3" />
                     Our Restaurant
                 </span>
                 <h2 class="mt-4 text-2xl font-bold text-gray-900">Sign in to your account</h2>

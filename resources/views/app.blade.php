@@ -8,9 +8,9 @@
 
         <!-- Favicon with cache busting -->
         <link rel="icon" type="image/x-icon" href="/favicon.ico?v={{ time() }}">
-        <link rel="icon" type="image/png" sizes="32x32" href="/storage/image/logo.png?v={{ time() }}">
-        <link rel="icon" type="image/png" sizes="16x16" href="/storage/image/logo.png?v={{ time() }}">
-        <link rel="apple-touch-icon" sizes="180x180" href="/storage/image/logo.png?v={{ time() }}">
+        <link rel="icon" type="image/jpeg" sizes="32x32" href="/storage/image/logo.jpg?v={{ time() }}">
+        <link rel="icon" type="image/jpeg" sizes="16x16" href="/storage/image/logo.jpg?v={{ time() }}">
+        <link rel="apple-touch-icon" sizes="180x180" href="/storage/image/logo.jpg?v={{ time() }}">
         <link rel="manifest" href="/site.webmanifest?v={{ time() }}">
         <meta name="theme-color" content="#ffffff">
 

@@ -167,10 +167,18 @@ fi
 
 # Simple logo setup
 echo "Setting up logo files..."
-# Use logo.png as the main logo (it's a proper PNG file)
-if [ -f "storage/app/public/image/logo.png" ]; then
+# Use the actual restaurant logo (rest.jpg) as the main logo
+if [ -f "storage/app/public/image/rest.jpg" ]; then
+    echo "Using rest.jpg as main logo (copying to logo.jpg)"
+    cp storage/app/public/image/rest.jpg storage/app/public/image/logo.jpg
+    cp storage/app/public/image/logo.jpg public/favicon.png
+    echo "logo.jpg and favicon created from rest.jpg"
+elif [ -f "storage/app/public/image/logo.jpg" ]; then
+    echo "Using logo.jpg as main logo"
+    cp storage/app/public/image/logo.jpg public/favicon.png
+    echo "Favicon created from logo.jpg"
+elif [ -f "storage/app/public/image/logo.png" ]; then
     echo "Using logo.png as main logo"
-    # Copy logo.png as favicon.png for fallback
     cp storage/app/public/image/logo.png public/favicon.png
     echo "Favicon created from logo.png"
 elif [ -f "storage/app/public/image/Logo.png" ]; then

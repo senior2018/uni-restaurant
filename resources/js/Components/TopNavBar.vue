@@ -107,7 +107,7 @@ const isActive = (href) => {
                 <div class="flex items-center gap-2 sm:gap-4">
                     <span class="text-lg sm:text-xl md:text-2xl font-bold tracking-tight text-primary-dark flex items-center">
                         <slot name="brand">
-                            <img src="/storage/image/logo.png" alt="Logo" class="h-6 w-6 sm:h-8 sm:w-8 mr-1 sm:mr-2" />
+                            <img src="/storage/image/logo.jpg" alt="Logo" class="h-6 w-6 sm:h-8 sm:w-8 mr-1 sm:mr-2" />
                             <span class="hidden sm:inline">{{ brand }}</span>
                             <span class="sm:hidden">UR</span>
                         </slot>

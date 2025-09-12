@@ -4,14 +4,14 @@
     "description": "Restaurant Management System",
     "icons": [
         {
-            "src": "/storage/image/logo.png",
+            "src": "/storage/image/logo.jpg",
             "sizes": "192x192",
-            "type": "image/png"
+            "type": "image/jpeg"
         },
         {
-            "src": "/storage/image/logo.png",
+            "src": "/storage/image/logo.jpg",
             "sizes": "512x512",
-            "type": "image/png"
+            "type": "image/jpeg"
         }
     ],
     "theme_color": "#ffffff",
