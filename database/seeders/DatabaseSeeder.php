@@ -19,11 +19,13 @@ class DatabaseSeeder extends Seeder
         // Check if we're in production/deployment mode
         if (app()->environment('production') || config('app.env') === 'production') {
             $this->call([
+                RestaurantConfigSeeder::class,
                 DeploymentSeeder::class,
             ]);
         } else {
             // Development seeding - use DeploymentSeeder for consistency
             $this->call([
+                RestaurantConfigSeeder::class,
                 DeploymentSeeder::class,
             ]);
 

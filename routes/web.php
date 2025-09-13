@@ -147,13 +147,27 @@ Route::middleware(['auth', 'super_admin', 'profile.completed'])->prefix('super-a
     Route::put('/users/{user}/role', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'updateUserRole'])
         ->name('users.role');
 
-    // System Management
-    Route::get('/system-config', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'systemConfig'])
-        ->name('system.config');
-    Route::get('/analytics', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'analytics'])
-        ->name('analytics');
-    Route::get('/system-logs', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'systemLogs'])
-        ->name('system.logs');
+            // System Management
+            Route::get('/system-config', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'systemConfig'])
+                ->name('system.config');
+            Route::get('/analytics', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'analytics'])
+                ->name('analytics');
+            Route::get('/system-logs', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'systemLogs'])
+                ->name('system.logs');
+
+            // Restaurant Configuration
+            Route::get('/restaurant-config', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'restaurantConfig'])
+                ->name('restaurant.config');
+            Route::put('/restaurant-config', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'updateRestaurantConfig'])
+                ->name('restaurant.config.update');
+            Route::put('/restaurant-config/business-hours', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'updateBusinessHours'])
+                ->name('restaurant.config.business-hours');
+            Route::put('/restaurant-config/payment-methods', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'updatePaymentMethods'])
+                ->name('restaurant.config.payment-methods');
+            Route::put('/restaurant-config/notifications', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'updateNotificationSettings'])
+                ->name('restaurant.config.notifications');
+            Route::put('/restaurant-config/system-settings', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'updateSystemSettings'])
+                ->name('restaurant.config.system-settings');
 });
 
 // Profile Management

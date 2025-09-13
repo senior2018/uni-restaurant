@@ -9,6 +9,7 @@ use App\Models\Meal;
 use App\Models\Alert;
 use App\Models\SupportTicket;
 use App\Models\Rating;
+use App\Models\RestaurantConfig;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -350,6 +351,174 @@ class SuperAdminController extends Controller
         return Inertia::render('SuperAdmin/SystemLogs', [
             'logs' => $logs,
         ]);
+    }
+
+    /**
+     * Display restaurant configuration management
+     */
+    public function restaurantConfig()
+    {
+        $this->authorize('viewAny', User::class);
+
+        $config = RestaurantConfig::current();
+
+        return Inertia::render('SuperAdmin/RestaurantConfig', [
+            'config' => $config,
+        ]);
+    }
+
+    /**
+     * Update restaurant configuration
+     */
+    public function updateRestaurantConfig(Request $request)
+    {
+        $this->authorize('viewAny', User::class);
+
+        $validator = Validator::make($request->all(), [
+            'restaurant_name' => 'required|string|max:255',
+            'restaurant_slug' => 'required|string|max:255|regex:/^[a-z0-9-]+$/',
+            'description' => 'nullable|string',
+            'email' => 'nullable|email|max:255',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string',
+            'city' => 'nullable|string|max:100',
+            'state' => 'nullable|string|max:100',
+            'postal_code' => 'nullable|string|max:20',
+            'country' => 'nullable|string|max:2',
+            'primary_color' => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
+            'secondary_color' => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
+            'accent_color' => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
+            'currency' => 'required|string|max:3',
+            'currency_symbol' => 'required|string|max:5',
+            'tax_rate' => 'required|numeric|min:0|max:1',
+            'tax_name' => 'required|string|max:100',
+            'delivery_fee' => 'nullable|numeric|min:0',
+            'minimum_order' => 'nullable|numeric|min:0',
+            'preparation_time' => 'required|integer|min:1|max:480',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator);
+        }
+
+        $config = RestaurantConfig::current();
+        $config->update($request->all());
+
+        return back()->with('success', 'Restaurant configuration updated successfully.');
+    }
+
+    /**
+     * Update business hours
+     */
+    public function updateBusinessHours(Request $request)
+    {
+        $this->authorize('viewAny', User::class);
+
+        $validator = Validator::make($request->all(), [
+            'business_hours' => 'required|array',
+            'business_hours.*.open' => 'required|date_format:H:i',
+            'business_hours.*.close' => 'required|date_format:H:i',
+            'business_hours.*.closed' => 'required|boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator);
+        }
+
+        $config = RestaurantConfig::current();
+        $config->update(['business_hours' => $request->business_hours]);
+
+        return back()->with('success', 'Business hours updated successfully.');
+    }
+
+    /**
+     * Update payment methods
+     */
+    public function updatePaymentMethods(Request $request)
+    {
+        $this->authorize('viewAny', User::class);
+
+        $validator = Validator::make($request->all(), [
+            'payment_methods' => 'required|array',
+            'payment_methods.*' => 'in:cash,card,digital_wallet',
+            'cash_payment' => 'required|boolean',
+            'card_payment' => 'required|boolean',
+            'digital_wallet' => 'required|boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator);
+        }
+
+        $config = RestaurantConfig::current();
+        $config->update([
+            'payment_methods' => $request->payment_methods,
+            'cash_payment' => $request->cash_payment,
+            'card_payment' => $request->card_payment,
+            'digital_wallet' => $request->digital_wallet,
+        ]);
+
+        return back()->with('success', 'Payment methods updated successfully.');
+    }
+
+    /**
+     * Update notification settings
+     */
+    public function updateNotificationSettings(Request $request)
+    {
+        $this->authorize('viewAny', User::class);
+
+        $validator = Validator::make($request->all(), [
+            'email_notifications' => 'required|boolean',
+            'sms_notifications' => 'required|boolean',
+            'push_notifications' => 'required|boolean',
+            'notification_settings' => 'nullable|array',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator);
+        }
+
+        $config = RestaurantConfig::current();
+        $config->update([
+            'email_notifications' => $request->email_notifications,
+            'sms_notifications' => $request->sms_notifications,
+            'push_notifications' => $request->push_notifications,
+            'notification_settings' => $request->notification_settings,
+        ]);
+
+        return back()->with('success', 'Notification settings updated successfully.');
+    }
+
+    /**
+     * Update system settings
+     */
+    public function updateSystemSettings(Request $request)
+    {
+        $this->authorize('viewAny', User::class);
+
+        $validator = Validator::make($request->all(), [
+            'maintenance_mode' => 'required|boolean',
+            'maintenance_message' => 'nullable|string',
+            'registration_enabled' => 'required|boolean',
+            'guest_checkout' => 'required|boolean',
+            'session_timeout' => 'required|integer|min:5|max:1440',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator);
+        }
+
+        $config = RestaurantConfig::current();
+        $config->update([
+            'maintenance_mode' => $request->maintenance_mode,
+            'maintenance_message' => $request->maintenance_message,
+            'registration_enabled' => $request->registration_enabled,
+            'guest_checkout' => $request->guest_checkout,
+            'session_timeout' => $request->session_timeout,
+        ]);
+
+        return back()->with('success', 'System settings updated successfully.');
     }
 
     // Helper methods for system information
