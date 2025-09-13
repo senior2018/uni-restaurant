@@ -117,7 +117,7 @@
                                 <span class="ml-2">One special character (!@#$%^&*)</span>
                             </li>
                         </ul>
-                    </div>
+    </div>
     </div>
 
                 <!-- Confirm Password -->

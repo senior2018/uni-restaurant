@@ -122,13 +122,38 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard');
 
 // SUPER ADMIN ROUTES
-Route::middleware(['auth', 'super_admin'])->group(function () {
-    Route::get('/super-admin/dashboard', [DashboardController::class, 'index'])
-        ->name('superadmin.dashboard');
-});
+Route::middleware(['auth', 'super_admin', 'profile.completed'])->prefix('super-admin')->name('superadmin.')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'dashboard'])
+        ->name('dashboard');
 
-Route::middleware(['auth', 'super_admin'])->group(function () {
-    Route::get('/super-admin/admins', [DashboardController::class, 'listAdmins'])->name('admin.list');
+    // Admin Management
+    Route::get('/admins', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'listAdmins'])
+        ->name('admins');
+    Route::get('/admins/create', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'createAdmin'])
+        ->name('admins.create');
+    Route::post('/admins', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'storeAdmin'])
+        ->name('admins.store');
+    Route::get('/admins/{admin}/edit', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'editAdmin'])
+        ->name('admins.edit');
+    Route::put('/admins/{admin}', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'updateAdmin'])
+        ->name('admins.update');
+    Route::delete('/admins/{admin}', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'destroyAdmin'])
+        ->name('admins.destroy');
+
+    // User Management
+    Route::get('/users', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'manageUsers'])
+        ->name('users');
+    Route::put('/users/{user}/role', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'updateUserRole'])
+        ->name('users.role');
+
+    // System Management
+    Route::get('/system-config', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'systemConfig'])
+        ->name('system.config');
+    Route::get('/analytics', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'analytics'])
+        ->name('analytics');
+    Route::get('/system-logs', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'systemLogs'])
+        ->name('system.logs');
 });
 
 // Profile Management

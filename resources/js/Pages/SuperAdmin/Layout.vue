@@ -7,8 +7,12 @@ const page = usePage();
 const user = page.props.user;
 
 const navLinks = [
-    { name: 'Dashboard', route: route('superadmin.dashboard'), icon: 'fas fa-crown' },
-    { name: 'Manage Admins', route: route('admin.list'), icon: 'fas fa-users-cog' },
+    { name: 'Dashboard', route: route('superadmin.dashboard'), icon: 'fas fa-tachometer-alt' },
+    { name: 'Admin Management', route: route('superadmin.admins'), icon: 'fas fa-users-cog' },
+    { name: 'User Management', route: route('superadmin.users'), icon: 'fas fa-users' },
+    { name: 'Analytics', route: route('superadmin.analytics'), icon: 'fas fa-chart-line' },
+    { name: 'System Config', route: route('superadmin.system.config'), icon: 'fas fa-cogs' },
+    { name: 'System Logs', route: route('superadmin.system.logs'), icon: 'fas fa-file-alt' },
 ];
 </script>
 

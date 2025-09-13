@@ -21,18 +21,8 @@ class DashboardController extends Controller
 
         switch ($user->role) {
             case 'super_admin':
-                return Inertia::render('SuperAdmin/Dashboard', [
-                    'user' => $user,
-                    'stats' => [
-                        'total_users' => \App\Models\User::count(),
-                        'total_admins' => \App\Models\User::where('role', 'admin')->count(),
-                        'active_orders' => \App\Models\Order::where('status', '!=', 'delivered')->count(),
-                    ],
-                    'recentAdmins' => \App\Models\User::where('role', 'admin')
-                        ->latest()
-                        ->take(5)
-                        ->get(['id', 'name', 'created_at']),
-                ]);
+                // Redirect to dedicated super admin dashboard
+                return redirect()->route('superadmin.dashboard');
             case 'admin':
                 return Inertia::render('Admin/Dashboard', [
                     'user' => $user,

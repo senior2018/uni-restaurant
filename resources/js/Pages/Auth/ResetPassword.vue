@@ -89,18 +89,18 @@ const submit = () => {
             <form @submit.prevent="submit" class="space-y-6">
                 <!-- New Password -->
                 <div>
-                    <InputLabel for="password" value="New Password" />
+                <InputLabel for="password" value="New Password" />
                     <div class="mt-1 relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fas fa-lock text-green-600"></i>
                         </div>
-                        <TextInput
-                            id="password"
+                <TextInput
+                    id="password"
                             :type="showPassword ? 'text' : 'password'"
                             class="pl-10 pr-12 block w-full"
-                            v-model="form.password"
-                            required
-                            autocomplete="new-password"
+                    v-model="form.password"
+                    required
+                    autocomplete="new-password"
                             placeholder="Enter your new password"
                         />
                         <button
@@ -139,22 +139,22 @@ const submit = () => {
                             </li>
                         </ul>
                     </div>
-                </div>
+            </div>
 
                 <!-- Confirm New Password -->
                 <div>
-                    <InputLabel for="password_confirmation" value="Confirm New Password" />
+                <InputLabel for="password_confirmation" value="Confirm New Password" />
                     <div class="mt-1 relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fas fa-lock text-green-600"></i>
                         </div>
-                        <TextInput
-                            id="password_confirmation"
+                <TextInput
+                    id="password_confirmation"
                             :type="showConfirmPassword ? 'text' : 'password'"
                             class="pl-10 pr-12 block w-full"
-                            v-model="form.password_confirmation"
-                            required
-                            autocomplete="new-password"
+                    v-model="form.password_confirmation"
+                    required
+                    autocomplete="new-password"
                             placeholder="Confirm your new password"
                         />
                         <button
@@ -166,7 +166,7 @@ const submit = () => {
                         </button>
                     </div>
                     <InputError class="mt-2" :message="form.errors.password_confirmation" />
-                </div>
+            </div>
 
                 <!-- Submit Button -->
                 <div class="flex items-center justify-center">
@@ -177,9 +177,9 @@ const submit = () => {
                     >
                         <i :class="context === 'locked_account' ? 'fas fa-unlock' : 'fas fa-key'" class="mr-2"></i>
                         {{ form.processing ? 'Processing...' : (context === 'locked_account' ? 'Unlock Account' : 'Reset Password') }}
-                    </PrimaryButton>
-                </div>
-            </form>
+                </PrimaryButton>
+            </div>
+        </form>
         </div>
     </div>
 </template>
