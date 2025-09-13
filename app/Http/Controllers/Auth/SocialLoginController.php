@@ -14,12 +14,19 @@ class SocialLoginController extends Controller
 {
     public function redirectToGoogle()
     {
-        return Socialite::driver('google')->redirect();
+        try {
+            Log::info('Redirecting to Google OAuth, APP_URL: ' . config('app.url'));
+            return Socialite::driver('google')->redirect();
+        } catch (\Exception $e) {
+            Log::error('Google OAuth redirect failed: ' . $e->getMessage());
+            return redirect('/login')->with('error', 'Google login is currently unavailable. Please try again later.');
+        }
     }
 
     public function handleGoogleCallback()
     {
         try {
+            Log::info('Google OAuth callback received, APP_URL: ' . config('app.url'));
             $googleUser = Socialite::driver('google')->stateless()->user();
 
             $user = User::where('email', $googleUser->getEmail())->first();
