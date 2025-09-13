@@ -39,6 +39,21 @@
                             />
                         </div>
                         <InputError class="mt-2" :message="form.errors.email" />
+                        
+                        <!-- Show registration link if user doesn't exist -->
+                        <div v-if="form.errors.email && form.errors.email.includes('No account found')" class="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                            <div class="flex items-center">
+                                <i class="fas fa-info-circle text-blue-600 mr-2"></i>
+                                <span class="text-sm text-blue-800">Don't have an account yet?</span>
+                            </div>
+                            <Link
+                                :href="route('register')"
+                                class="mt-2 inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800"
+                            >
+                                <i class="fas fa-user-plus mr-1"></i>
+                                Create your account now
+                            </Link>
+                        </div>
                     </div>
 
                     <!-- Password Input -->

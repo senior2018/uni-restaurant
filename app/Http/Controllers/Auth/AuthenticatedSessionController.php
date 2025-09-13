@@ -78,11 +78,17 @@ class AuthenticatedSessionController extends Controller
 
                     return redirect()->route('account.locked');
                 }
-            }
 
+                // User exists but wrong password
                 return back()->withErrors([
-                'email' => 'These credentials do not match our records.',
-            ]);
+                    'email' => 'The password you entered is incorrect. Please try again.',
+                ]);
+            } else {
+                // User doesn't exist
+                return back()->withErrors([
+                    'email' => 'No account found with this email address. Please create an account first.',
+                ]);
+            }
         }
 
         // Reset on successful login
