@@ -16,6 +16,8 @@ class SocialLoginController extends Controller
     {
         try {
             Log::info('Redirecting to Google OAuth, APP_URL: ' . config('app.url'));
+            Log::info('Google redirect URI: ' . config('services.google.redirect'));
+            Log::info('Expected callback URL: ' . config('app.url') . '/auth/google/callback');
             return Socialite::driver('google')->redirect();
         } catch (\Exception $e) {
             Log::error('Google OAuth redirect failed: ' . $e->getMessage());
