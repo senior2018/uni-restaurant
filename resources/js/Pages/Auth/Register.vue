@@ -20,6 +20,9 @@ const form = useForm({
     password_confirmation: '',
 });
 
+const showPassword = ref(false);
+const showConfirmPassword = ref(false);
+
 const submit = () => {
     form.post(route('register'), {
         onFinish: () => form.reset('password', 'password_confirmation'),
@@ -126,27 +129,45 @@ const redirectToGoogle = () => {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <InputLabel for="password" value="Password" />
-                        <TextInput
-                            id="password"
-                            type="password"
-                            class="mt-1 block w-full rounded-lg"
-                            v-model="form.password"
-                            required
-                            autocomplete="new-password"
-                        />
+                        <div class="mt-1 relative">
+                            <TextInput
+                                id="password"
+                                :type="showPassword ? 'text' : 'password'"
+                                class="block w-full pr-12 rounded-lg"
+                                v-model="form.password"
+                                required
+                                autocomplete="new-password"
+                            />
+                            <button
+                                type="button"
+                                @click="showPassword = !showPassword"
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-green-600 transition-colors"
+                            >
+                                <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                            </button>
+                        </div>
                         <InputError class="mt-2" :message="form.errors.password" />
                     </div>
 
                     <div>
                         <InputLabel for="password_confirmation" value="Confirm Password" />
-                        <TextInput
-                            id="password_confirmation"
-                            type="password"
-                            class="mt-1 block w-full rounded-lg"
-                            v-model="form.password_confirmation"
-                            required
-                            autocomplete="new-password"
-                        />
+                        <div class="mt-1 relative">
+                            <TextInput
+                                id="password_confirmation"
+                                :type="showConfirmPassword ? 'text' : 'password'"
+                                class="block w-full pr-12 rounded-lg"
+                                v-model="form.password_confirmation"
+                                required
+                                autocomplete="new-password"
+                            />
+                            <button
+                                type="button"
+                                @click="showConfirmPassword = !showConfirmPassword"
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-green-600 transition-colors"
+                            >
+                                <i :class="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                            </button>
+                        </div>
                         <InputError class="mt-2" :message="form.errors.password_confirmation" />
                     </div>
                 </div>

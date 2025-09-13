@@ -65,12 +65,19 @@
                             </div>
                             <TextInput
                                 id="password"
-                                type="password"
-                                class="block w-full pl-10 pr-3 py-3 border-green-300 focus:ring-green-500 focus:border-green-500"
+                                :type="showPassword ? 'text' : 'password'"
+                                class="block w-full pl-10 pr-12 py-3 border-green-300 focus:ring-green-500 focus:border-green-500"
                                 placeholder="••••••••"
                                 v-model="form.password"
                                 required
                             />
+                            <button
+                                type="button"
+                                @click="showPassword = !showPassword"
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-green-600 transition-colors"
+                            >
+                                <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                            </button>
                         </div>
                         <InputError class="mt-2" :message="form.errors.password" />
                     </div>
@@ -160,6 +167,7 @@ const form = useForm({
 });
 
 const status = ref(null);
+const showPassword = ref(false);
 
 function submit() {
     form.post(route('login'), {
