@@ -36,7 +36,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         .header {
-            background-color: #007bff; /* A nice blue for a welcoming brand color */
+            background-color: #16a34a; /* Green color for Our Restaurant brand */
             padding: 20px 30px;
             text-align: center;
         }
@@ -50,8 +50,8 @@
             background-color: #ffffff;
         }
         .otp-box {
-            background-color: #f0f8ff; /* Light blue background for OTP */
-            border: 1px solid #cceeff;
+            background-color: #f0fdf4; /* Light green background for OTP */
+            border: 1px solid #bbf7d0;
             border-radius: 5px;
             padding: 15px 20px;
             text-align: center;
@@ -72,7 +72,7 @@
             border-top: 1px solid #eeeeee;
         }
         .subcopy a {
-            color: #007bff;
+            color: #16a34a;
             text-decoration: underline;
         }
     </style>
@@ -84,14 +84,14 @@
                 <table class="container" cellpadding="0" cellspacing="0" border="0">
                     <tr>
                         <td class="header">
-                            <h1>Email Verification</h1>
+                            <h1>🍽️ Our Restaurant - Email Verification</h1>
                         </td>
                     </tr>
                     <tr>
                         <td class="content">
                             <p style="font-size: 16px;">Hello {{ $name ?? 'User' }} 👋</p>
 
-                            <p>Thank you for registering with **{{ config('app.name') }}**! To complete your registration, please verify your email using the 6-digit One-Time Password (OTP) below:</p>
+                            <p>Welcome to <strong>Our Restaurant</strong>! 🎉 Thank you for joining our community. To complete your registration and start enjoying our delicious meals, please verify your email using the 6-digit One-Time Password (OTP) below:</p>
 
                             <table class="otp-box" width="100%" cellpadding="0" cellspacing="0" border="0">
                                 <tr>
@@ -101,14 +101,22 @@
                                 </tr>
                             </table>
 
-                            <p>For your security, this code will expire in **10 minutes**.</p>
+                            <p><strong>⏰ Important:</strong> This verification code will expire in <strong>10 minutes</strong> for your security.</p>
 
-                            <p>If you didn't request this, you can safely ignore this email.</p>
+                            <p>Once verified, you'll be able to:</p>
+                            <ul style="margin: 10px 0; padding-left: 20px;">
+                                <li>🍽️ Browse our delicious menu</li>
+                                <li>🛒 Place orders for pickup or delivery</li>
+                                <li>⭐ Rate and review your favorite dishes</li>
+                                <li>📱 Track your order status in real-time</li>
+                            </ul>
+
+                            <p>If you didn't create an account with us, you can safely ignore this email.</p>
 
                             <br>
 
-                            <p>Thanks,<br>
-                            <strong style="color: #333333;">The {{ config('app.name') }} Team</strong></p>
+                            <p>Bon appétit! 🍴<br>
+                            <strong style="color: #16a34a;">The Our Restaurant Team</strong></p>
                         </td>
                     </tr>
                     <tr>
@@ -116,8 +124,8 @@
                             @php
                                 $supportEmail = 'support@' . parse_url(config('app.url'), PHP_URL_HOST);
                             @endphp
-                            <p>Having trouble? Contact support at <a href="mailto:{{ $supportEmail }}" style="color: #007bff; text-decoration: underline;">{{ $supportEmail }}</a></p>
-                            <p>&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
+                            <p>Having trouble? Contact our support team at <a href="mailto:{{ $supportEmail }}" style="color: #16a34a; text-decoration: underline;">{{ $supportEmail }}</a></p>
+                            <p>&copy; {{ date('Y') }} Our Restaurant. All rights reserved. | <a href="{{ url('/privacy-policy') }}" style="color: #16a34a; text-decoration: underline;">Privacy Policy</a> | <a href="{{ url('/terms') }}" style="color: #16a34a; text-decoration: underline;">Terms of Service</a></p>
                         </td>
                     </tr>
                 </table>

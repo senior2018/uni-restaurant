@@ -21,7 +21,7 @@ class SendPasswordResetOTP extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Password Reset Verification Code',
+            subject: '🔐 Our Restaurant - Password Reset Verification',
         );
     }
 

@@ -36,7 +36,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         .header {
-            background-color: #4CAF50; /* A nice green for a friendly brand color */
+            background-color: #16a34a; /* Green color for Our Restaurant brand */
             padding: 20px 30px;
             text-align: center;
         }
@@ -50,8 +50,8 @@
             background-color: #ffffff;
         }
         .otp-box {
-            background-color: #f0f0f0;
-            border: 1px solid #dddddd;
+            background-color: #fef2f2; /* Light red background for security */
+            border: 1px solid #fecaca;
             border-radius: 5px;
             padding: 15px 20px;
             text-align: center;
@@ -80,14 +80,14 @@
                 <table class="container" cellpadding="0" cellspacing="0" border="0">
                     <tr>
                         <td class="header">
-                            <h1>Password Reset Request</h1>
+                            <h1>🔐 Our Restaurant - Password Reset</h1>
                         </td>
                     </tr>
                     <tr>
                         <td class="content">
-                            <p>Hello {{ $name ?? 'User' }},</p>
+                            <p style="font-size: 16px;">Hello {{ $name ?? 'User' }} 👋</p>
 
-                            <p>You recently requested to reset your password. To verify your identity, please use the One-Time Password (OTP) below:</p>
+                            <p>We received a request to reset your password for your <strong>Our Restaurant</strong> account. To verify your identity and secure your account, please use the One-Time Password (OTP) below:</p>
 
                             <table class="otp-box" width="100%" cellpadding="0" cellspacing="0" border="0">
                                 <tr>
@@ -97,21 +97,31 @@
                                 </tr>
                             </table>
 
-                            <p>For your security, this OTP is valid for a limited time and will expire **{{ $expires }}**.</p>
+                            <p><strong>⏰ Security Notice:</strong> This OTP is valid for a limited time and will expire <strong>{{ $expires }}</strong>.</p>
 
-                            <p>If you did not request a password reset, please ignore this email. Your account security is important to us.</p>
+                            <p><strong>🛡️ Important Security Information:</strong></p>
+                            <ul style="margin: 10px 0; padding-left: 20px;">
+                                <li>Never share this code with anyone</li>
+                                <li>Our Restaurant will never ask for your password via email</li>
+                                <li>If you didn't request this reset, please ignore this email</li>
+                                <li>Consider enabling two-factor authentication for extra security</li>
+                            </ul>
+
+                            <p>If you have any concerns about your account security, please contact our support team immediately.</p>
 
                             <br>
 
-                            <p>Regards,<br>The [Your App/Company Name] Team</p>
+                            <p>Stay secure! 🔒<br>
+                            <strong style="color: #16a34a;">The Our Restaurant Security Team</strong></p>
                         </td>
                     </tr>
                     <tr>
                         <td class="footer">
-                            <p>&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
+                            <p>&copy; {{ date('Y') }} Our Restaurant. All rights reserved.</p>
                             <p>
-                                <a href="{{ url('/privacy-policy') }}" style="color: #777777; text-decoration: underline;">Privacy Policy</a> |
-                                <a href="{{ url('/terms-of-service') }}" style="color: #777777; text-decoration: underline;">Terms of Service</a>
+                                <a href="{{ url('/privacy-policy') }}" style="color: #16a34a; text-decoration: underline;">Privacy Policy</a> |
+                                <a href="{{ url('/terms') }}" style="color: #16a34a; text-decoration: underline;">Terms of Service</a> |
+                                <a href="{{ url('/contact') }}" style="color: #16a34a; text-decoration: underline;">Contact Support</a>
                             </p>
                         </td>
                     </tr>

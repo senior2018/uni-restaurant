@@ -34,8 +34,13 @@ class PasswordResetOtpNotification extends Notification implements ShouldQueue
         ]);
 
         return (new MailMessage)
-            ->subject('Password Reset Verification Code')
+            ->subject('🔐 Our Restaurant - Password Reset Verification')
+            ->line("Hello {$notifiable->name},")
+            ->line("We received a request to reset your password for your Our Restaurant account.")
             ->line("Your password reset code is: **{$this->plainOtp}**")
-            ->line('This code will expire in 15 minutes');
+            ->line('This code will expire in 15 minutes for your security.')
+            ->line('If you did not request this reset, please ignore this email.')
+            ->line('Stay secure!')
+            ->line('The Our Restaurant Security Team');
     }
 }

@@ -39,8 +39,11 @@ class NewOrderPlacedNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('New Order Placed')
+            ->subject('🍽️ New Order Placed - Our Restaurant')
             ->line("A new order #{$this->order->id} has been placed by {$this->customerName}.")
-            ->action('View Order', url('/admin/orders/' . $this->order->id));
+            ->line("Order total: $" . number_format($this->order->total_amount, 2))
+            ->line("Please prepare the order for pickup/delivery.")
+            ->action('View Order Details', url('/admin/orders/' . $this->order->id))
+            ->line('Thank you for using Our Restaurant!');
     }
 }

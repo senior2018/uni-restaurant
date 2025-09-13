@@ -42,8 +42,12 @@ class OrderStatusChangedNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Order Status Updated')
-            ->line("Your order #{$this->order->id} status changed from {$this->oldStatus} to {$this->newStatus}.")
-            ->action('View Order', url('/orders/' . $this->order->id));
+            ->subject('📦 Order Status Update - Our Restaurant')
+            ->line("Hello! Your order #{$this->order->id} status has been updated.")
+            ->line("Status changed from: {$this->oldStatus}")
+            ->line("New status: {$this->newStatus}")
+            ->line("We're working hard to get your delicious meal to you!")
+            ->action('Track Your Order', url('/orders/' . $this->order->id))
+            ->line('Thank you for choosing Our Restaurant!');
     }
 }

@@ -59,7 +59,7 @@ class SendVerificationOTP extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Verify Your Email Address',
+            subject: '🍽️ Welcome to Our Restaurant - Verify Your Email',
         );
     }
 
@@ -69,7 +69,7 @@ class SendVerificationOTP extends Mailable
     public function content(): content
     {
         return new Content(
-            view: 'auth.email.verification-plain',
+            view: 'emails.verify-otp',
             with: [
                 'otp' => $this->plainOtp,
                 'expires' => $this->expires,
