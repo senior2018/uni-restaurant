@@ -40,7 +40,7 @@ class SupportTicketResponded extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('🎧 Support Response - Our Restaurant: ' . $this->ticket->subject)
+            ->subject('Support Response - Our Restaurant: ' . $this->ticket->subject)
             ->markdown('emails.support-ticket-response', [
                 'ticket' => $this->ticket,
                 'name' => $this->ticket->name,

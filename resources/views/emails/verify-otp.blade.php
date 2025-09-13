@@ -84,38 +84,38 @@
                 <table class="container" cellpadding="0" cellspacing="0" border="0">
                     <tr>
                         <td class="header">
-                            <h1>🍽️ Our Restaurant - Email Verification</h1>
+                            <h1><i class="fas fa-utensils"></i> Our Restaurant - Email Verification</h1>
                         </td>
                     </tr>
                     <tr>
                         <td class="content">
-                            <p style="font-size: 16px;">Hello {{ $name ?? 'User' }} 👋</p>
+                            <p style="font-size: 16px;">Hello {{ $name ?? 'User' }} <i class="fas fa-hand-wave"></i></p>
 
-                            <p>Welcome to <strong>Our Restaurant</strong>! 🎉 Thank you for joining our community. To complete your registration and start enjoying our delicious meals, please verify your email using the 6-digit One-Time Password (OTP) below:</p>
+                            <p>Welcome to <strong>Our Restaurant</strong>! <i class="fas fa-star"></i> Thank you for joining our community. To complete your registration and start enjoying our delicious meals, please verify your email using the 6-digit One-Time Password (OTP) below:</p>
 
                             <table class="otp-box" width="100%" cellpadding="0" cellspacing="0" border="0">
                                 <tr>
                                     <td>
-                                        <h2 style="font-size: 36px; color: #333333; margin: 0; font-weight: bold;">🔐 {{ $otp }}</h2>
+                                        <h2 style="font-size: 36px; color: #333333; margin: 0; font-weight: bold;"><i class="fas fa-key"></i> {{ $otp }}</h2>
                                     </td>
                                 </tr>
                             </table>
 
-                            <p><strong>⏰ Important:</strong> This verification code will expire in <strong>10 minutes</strong> for your security.</p>
+                            <p><strong><i class="fas fa-clock"></i> Important:</strong> This verification code will expire in <strong>10 minutes</strong> for your security.</p>
 
                             <p>Once verified, you'll be able to:</p>
                             <ul style="margin: 10px 0; padding-left: 20px;">
-                                <li>🍽️ Browse our delicious menu</li>
-                                <li>🛒 Place orders for pickup or delivery</li>
-                                <li>⭐ Rate and review your favorite dishes</li>
-                                <li>📱 Track your order status in real-time</li>
+                                <li><i class="fas fa-utensils"></i> Browse our delicious menu</li>
+                                <li><i class="fas fa-shopping-cart"></i> Place orders for pickup or delivery</li>
+                                <li><i class="fas fa-star"></i> Rate and review your favorite dishes</li>
+                                <li><i class="fas fa-mobile-alt"></i> Track your order status in real-time</li>
                             </ul>
 
                             <p>If you didn't create an account with us, you can safely ignore this email.</p>
 
                             <br>
 
-                            <p>Bon appétit! 🍴<br>
+                            <p>Bon appétit! <i class="fas fa-utensils"></i><br>
                             <strong style="color: #16a34a;">The Our Restaurant Team</strong></p>
                         </td>
                     </tr>

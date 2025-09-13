@@ -40,7 +40,7 @@ class EmailVerificationNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-        ->subject('🍽️ Welcome to Our Restaurant - Verify Your Email')
+        ->subject('Welcome to Our Restaurant - Verify Your Email')
         ->markdown('emails.verify-otp', [
             'name' => $notifiable->name,
             'otp' => $this->otp,

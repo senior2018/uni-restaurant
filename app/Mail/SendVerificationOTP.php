@@ -59,7 +59,7 @@ class SendVerificationOTP extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '🍽️ Welcome to Our Restaurant - Verify Your Email',
+            subject: 'Welcome to Our Restaurant - Verify Your Email',
         );
     }
 

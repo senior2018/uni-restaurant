@@ -23,33 +23,33 @@
                 <table class="container" cellpadding="0" cellspacing="0" border="0">
                     <tr>
                         <td class="header">
-                            <h1>🎧 Our Restaurant - Support Response</h1>
+                            <h1><i class="fas fa-headset"></i> Our Restaurant - Support Response</h1>
                         </td>
                     </tr>
                     <tr>
                         <td class="content">
-                            <p style="font-size: 16px;">Hello {{ $name ?? 'User' }} 👋</p>
+                            <p style="font-size: 16px;">Hello {{ $name ?? 'User' }} <i class="fas fa-hand-wave"></i></p>
                             <p>Thank you for contacting <strong>Our Restaurant</strong> support team! We've reviewed your inquiry and provided a response below. Your satisfaction is our priority, and we're here to help with any questions or concerns you may have.</p>
                             <div class="box">
-                                <h2>📝 Your Original Message</h2>
+                                <h2><i class="fas fa-edit"></i> Your Original Message</h2>
                                 <p style="margin-bottom: 0;">{{ $ticket->message }}</p>
                             </div>
                             <div class="box">
-                                <h2>💬 Our Response</h2>
+                                <h2><i class="fas fa-comment"></i> Our Response</h2>
                                 <p style="margin-bottom: 0;">{{ $admin_response }}</p>
                             </div>
 
                             <p><strong>Need more help?</strong> We're here for you! You can:</p>
                             <ul style="margin: 10px 0; padding-left: 20px;">
-                                <li>📧 Reply directly to this email</li>
-                                <li>🌐 Visit our support center on our website</li>
-                                <li>📞 Call us during business hours</li>
-                                <li>💬 Chat with us live on our website</li>
+                                <li><i class="fas fa-reply"></i> Reply directly to this email</li>
+                                <li><i class="fas fa-globe"></i> Visit our support center on our website</li>
+                                <li><i class="fas fa-phone"></i> Call us during business hours</li>
+                                <li><i class="fas fa-comments"></i> Chat with us live on our website</li>
                             </ul>
 
                             <p>We appreciate your feedback and look forward to serving you again soon!</p>
                             <br>
-                            <p>Happy dining! 🍽️<br>
+                            <p>Happy dining! <i class="fas fa-utensils"></i><br>
                             <strong style="color: #16a34a;">The Our Restaurant Support Team</strong></p>
                         </td>
                     </tr>

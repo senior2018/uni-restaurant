@@ -80,12 +80,12 @@
                 <table class="container" cellpadding="0" cellspacing="0" border="0">
                     <tr>
                         <td class="header">
-                            <h1>🔐 Our Restaurant - Password Reset</h1>
+                            <h1><i class="fas fa-lock"></i> Our Restaurant - Password Reset</h1>
                         </td>
                     </tr>
                     <tr>
                         <td class="content">
-                            <p style="font-size: 16px;">Hello {{ $name ?? 'User' }} 👋</p>
+                            <p style="font-size: 16px;">Hello {{ $name ?? 'User' }} <i class="fas fa-hand-wave"></i></p>
 
                             <p>We received a request to reset your password for your <strong>Our Restaurant</strong> account. To verify your identity and secure your account, please use the One-Time Password (OTP) below:</p>
 
@@ -97,21 +97,21 @@
                                 </tr>
                             </table>
 
-                            <p><strong>⏰ Security Notice:</strong> This OTP is valid for a limited time and will expire <strong>{{ $expires }}</strong>.</p>
+                            <p><strong><i class="fas fa-clock"></i> Security Notice:</strong> This OTP is valid for a limited time and will expire <strong>{{ $expires }}</strong>.</p>
 
-                            <p><strong>🛡️ Important Security Information:</strong></p>
+                            <p><strong><i class="fas fa-shield-alt"></i> Important Security Information:</strong></p>
                             <ul style="margin: 10px 0; padding-left: 20px;">
-                                <li>Never share this code with anyone</li>
-                                <li>Our Restaurant will never ask for your password via email</li>
-                                <li>If you didn't request this reset, please ignore this email</li>
-                                <li>Consider enabling two-factor authentication for extra security</li>
+                                <li><i class="fas fa-exclamation-triangle"></i> Never share this code with anyone</li>
+                                <li><i class="fas fa-envelope"></i> Our Restaurant will never ask for your password via email</li>
+                                <li><i class="fas fa-ban"></i> If you didn't request this reset, please ignore this email</li>
+                                <li><i class="fas fa-lock"></i> Consider enabling two-factor authentication for extra security</li>
                             </ul>
 
                             <p>If you have any concerns about your account security, please contact our support team immediately.</p>
 
                             <br>
 
-                            <p>Stay secure! 🔒<br>
+                            <p>Stay secure! <i class="fas fa-lock"></i><br>
                             <strong style="color: #16a34a;">The Our Restaurant Security Team</strong></p>
                         </td>
                     </tr>
