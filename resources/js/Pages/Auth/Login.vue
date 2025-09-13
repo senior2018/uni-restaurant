@@ -39,7 +39,7 @@
                             />
                         </div>
                         <InputError class="mt-2" :message="form.errors.email" />
-                        
+
                         <!-- Show registration link if user doesn't exist -->
                         <div v-if="form.errors.email && form.errors.email.includes('No account found')" class="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                             <div class="flex items-center">
