@@ -12,26 +12,29 @@ class CompleteProfileController extends Controller
     public function edit()
     {
         $user = Auth::user();
+
+        // Redirect to login if not authenticated
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Please log in to complete your profile.');
+        }
+
         return inertia('Auth/CompleteProfile', ['user' => $user]);
     }
 
     public function update(Request $request)
     {
-        $request->validate([
-            'phone' => 'required|string|unique:users,phone,' . Auth::id(),
-            'permanent_location' => 'required|string|max:255',
-            'password' => 'nullable|string|confirmed|min:8',
-        ]);
-
         $user = Auth::user();
 
-        $rules = [
+        // Redirect to login if not authenticated
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Please log in to complete your profile.');
+        }
+
+        $request->validate([
             'phone' => 'required|string|unique:users,phone,' . $user->id,
             'permanent_location' => 'required|string|max:255',
             'password' => 'required|string|confirmed|min:8',
-        ];
-
-        $request->validate($rules);
+        ]);
 
         $user->update([
             'phone' => $request->phone,

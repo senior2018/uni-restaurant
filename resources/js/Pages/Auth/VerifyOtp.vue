@@ -1,10 +1,10 @@
 <script setup>
 import { Head, useForm } from '@inertiajs/vue3';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import ResponsiveNavbar from '@/Components/ResponsiveNavbar.vue';
 import { ref } from 'vue';
 
 const props = defineProps({
@@ -116,47 +116,77 @@ const contextMessages = {
 
 
 <template>
-  <GuestLayout>
-    <template #header />
     <Head title="Verify OTP" />
-    <div class="mb-4 text-sm text-gray-600">
-      <h2 class="font-semibold text-lg mb-2">
-        {{ contextMessages[normalizedContext]?.heading || 'Verify Your Email' }}
-      </h2>
-      <span v-html="contextMessages[normalizedContext]?.message(props.email) || `Welcome! To activate your account, please verify your email address. We've sent a <strong>verification code</strong> to <strong>${email}</strong>.
-        Please check your inbox (and spam folder). If you haven’t received the email, we’ll gladly send you a new one.
-        <br><br>
-        Enter the code below to complete your registration.`" />
+    <ResponsiveNavbar :can-login="true" :can-register="true" />
+    <div class="flex justify-center pt-32 pb-12 px-4 sm:px-6 lg:px-8" style="background-color: #ECFDF5; min-height: 100vh;">
+        <div class="w-full max-w-[48rem] bg-white p-10 rounded-2xl shadow-lg border border-green-100 space-y-8">
+            <!-- Logo and Title -->
+            <div class="text-center">
+                <span class="text-2xl font-bold text-green-600 flex items-center justify-center">
+                    <img src="/storage/image/logo-final.svg?v=2" alt="Logo" class="h-12 w-12 mr-3" />
+                    Our Restaurant
+                </span>
+                <h2 class="mt-4 text-2xl font-bold text-gray-900">
+                    {{ contextMessages[normalizedContext]?.heading || 'Verify Your Email' }}
+                </h2>
+            </div>
+
+            <!-- Description -->
+            <div class="text-center text-gray-600">
+                <div v-html="contextMessages[normalizedContext]?.message(props.email) || `Welcome! To activate your account, please verify your email address. We've sent a <strong>verification code</strong> to <strong>${email}</strong>.
+                    Please check your inbox (and spam folder). If you haven't received the email, we'll gladly send you a new one.
+                    <br><br>
+                    Enter the code below to complete your registration.`" />
+            </div>
+
+            <!-- Success Message -->
+            <div v-if="otpResent" class="p-4 bg-green-100 text-green-700 rounded-lg flex items-center">
+                <i class="fas fa-check-circle mr-2"></i>
+                A new OTP has been sent to the email address you provided.
+            </div>
+
+            <!-- OTP Verification Form -->
+            <form @submit.prevent="submit" class="space-y-6">
+                <div>
+                    <InputLabel for="otp" value="Verification Code" />
+                    <div class="mt-1 relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-key text-green-600"></i>
+                        </div>
+                        <TextInput
+                            id="otp"
+                            type="text"
+                            inputmode="numeric"
+                            pattern="\d{6}"
+                            class="pl-10 block w-full text-center text-xl tracking-[0.5em]"
+                            v-model="form.otp"
+                            required
+                            autofocus
+                            placeholder="000000"
+                        />
+                    </div>
+                    <InputError class="mt-2" :message="form.errors.otp" />
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <button
+                        type="button"
+                        @click="resendOtp"
+                        class="text-sm text-green-600 hover:text-green-800 font-medium"
+                    >
+                        <i class="fas fa-redo mr-1"></i>
+                        Didn't get the code? Resend
+                    </button>
+                    <PrimaryButton
+                        :class="{ 'opacity-25': form.processing }"
+                        :disabled="form.processing"
+                        class="px-6 py-2"
+                    >
+                        <i class="fas fa-check mr-2"></i>
+                        {{ form.processing ? 'Verifying...' : 'Verify OTP' }}
+                    </PrimaryButton>
+                </div>
+            </form>
+        </div>
     </div>
-    <div v-if="otpResent" class="mb-4 text-sm font-medium text-green-600">
-      A new OTP has been sent to the email address you provided.
-    </div>
-    <form @submit.prevent="submit" class="space-y-4">
-      <div>
-        <InputLabel for="otp" value="Verification Code" />
-        <TextInput
-          id="otp"
-          type="text"
-          inputmode="numeric"
-          pattern="\d{6}"
-          class="mt-1 block w-full text-center text-xl tracking-[0.5em]"
-          v-model="form.otp"
-          required
-          autofocus
-        />
-        <InputError class="mt-2" :message="form.errors.otp" />
-      </div>
-      <div class="flex items-center justify-between">
-        <PrimaryButton :disabled="form.processing">Verify OTP</PrimaryButton>
-        <button
-          type="button"
-          @click="resendOtp"
-          class="text-sm text-green-600 hover:text-green-800 ml-4"
-        >
-          Didn't get the code? Resend
-        </button>
-      </div>
-    </form>
-    <template #footer />
-  </GuestLayout>
 </template>

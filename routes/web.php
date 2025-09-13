@@ -34,10 +34,9 @@ Route::get('/email/verify-otp', function (Request $request) {
 Route::get('/auth/google/redirect', [SocialLoginController::class, 'redirectToGoogle'])->name('google.redirect');
 Route::get('/auth/google/callback', [SocialLoginController::class, 'handleGoogleCallback'])->name('google.callback');
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/complete-profile', [\App\Http\Controllers\Auth\CompleteProfileController::class, 'edit'])->name('complete-profile');
-    Route::post('/complete-profile', [\App\Http\Controllers\Auth\CompleteProfileController::class, 'update'])->name('complete-profile.update');
-});
+// Complete profile routes - accessible after Google login
+Route::get('/complete-profile', [\App\Http\Controllers\Auth\CompleteProfileController::class, 'edit'])->name('complete-profile');
+Route::post('/complete-profile', [\App\Http\Controllers\Auth\CompleteProfileController::class, 'update'])->name('complete-profile.update');
 
 Route::post('/email/verify', [VerifyEmailController::class, 'verify'])
     ->name('verification.verify');
@@ -118,7 +117,9 @@ Route::get('/register', function () {
 })->name('register');
 
 // SINGLE DASHBOARD ROUTE FOR ALL ROLES
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'profile.completed'])
+    ->name('dashboard');
 
 // SUPER ADMIN ROUTES
 Route::middleware(['auth', 'super_admin'])->group(function () {
@@ -131,14 +132,14 @@ Route::middleware(['auth', 'super_admin'])->group(function () {
 });
 
 // Profile Management
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'profile.completed'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 //ADMIN & STAFF
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'profile.completed'])->group(function () {
     // Shared toggle route for both admin and staff
     // Route::post('/meals/{meal}/toggle', [MealController::class, 'toggleAvailability'])
     //     ->name('meals.toggle')
@@ -146,7 +147,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 // ADMIN ROUTES
-Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'verified', 'profile.completed'])->prefix('admin')->group(function () {
     // Meals
     Route::get('/meals', [MealController::class, 'index'])->name('meals.index');
     Route::post('/meals', [MealController::class, 'store'])->name('meals.store');
@@ -173,7 +174,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
 });
 
 // Admin Order Management
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'admin', 'profile.completed'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/orders', [\App\Http\Controllers\Admin\AdminOrderController::class, 'index'])->name('orders.index');
     Route::post('/orders/{order}/assign-staff', [\App\Http\Controllers\Admin\AdminOrderController::class, 'assignStaff'])->name('orders.assignStaff');
     Route::get('/orders/{order}', [\App\Http\Controllers\Admin\AdminOrderController::class, 'show'])->name('orders.show');
@@ -185,7 +186,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 });
 
 //STAFF ROUTES
-Route::middleware(['auth', 'verified'])->prefix('staff')->name('staff.')->group(function () {
+Route::middleware(['auth', 'verified', 'profile.completed'])->prefix('staff')->name('staff.')->group(function () {
     // Staff meals index page - only toggle functionality
     Route::get('/meals', [MealController::class, 'staffIndex'])
         ->name('meals.index')
@@ -207,7 +208,7 @@ Route::middleware(['auth', 'verified'])->prefix('staff')->name('staff.')->group(
 });
 
 // CUSTOMER ROUTES (if needed)
-Route::middleware(['auth', 'verified', 'role:customer'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:customer', 'profile.completed'])->group(function () {
     Route::get('/menu', [MealController::class, 'customerIndex'])->name('menu.index');
 });
 
@@ -215,40 +216,40 @@ Route::middleware(['auth', 'verified', 'role:customer'])->group(function () {
 Route::get('/menu', [\App\Http\Controllers\CustomerMenuController::class, 'index'])->name('menu.public');
 
 // Customer cart page (must be logged in)
-Route::middleware(['auth', 'verified'])->get('/cart', function () {
+Route::middleware(['auth', 'verified', 'profile.completed'])->get('/cart', function () {
     return Inertia::render('Customer/Cart', [
         'user' => request()->user(),
     ]);
 })->name('cart');
 
 // Customer checkout page (must be logged in)
-Route::middleware(['auth', 'verified'])->get('/checkout', function () {
+Route::middleware(['auth', 'verified', 'profile.completed'])->get('/checkout', function () {
     return Inertia::render('Customer/Checkout', [
         'user' => request()->user(),
     ]);
 })->name('checkout');
 
 // Customer order placement (POST)
-Route::middleware(['auth', 'verified'])->post('/checkout', [\App\Http\Controllers\CustomerOrderController::class, 'store'])->name('checkout.store');
+Route::middleware(['auth', 'verified', 'profile.completed'])->post('/checkout', [\App\Http\Controllers\CustomerOrderController::class, 'store'])->name('checkout.store');
 
 // Customer order cancel (POST with reason)
-Route::middleware(['auth', 'verified'])->post('/orders/{order}/cancel', [\App\Http\Controllers\CustomerOrderController::class, 'cancel'])->name('customer.orders.cancel');
+Route::middleware(['auth', 'verified', 'profile.completed'])->post('/orders/{order}/cancel', [\App\Http\Controllers\CustomerOrderController::class, 'cancel'])->name('customer.orders.cancel');
 // Customer order tracking (My Orders)
-Route::middleware(['auth', 'verified'])->get('/my-orders', [\App\Http\Controllers\CustomerOrderController::class, 'index'])->name('customer.orders');
+Route::middleware(['auth', 'verified', 'profile.completed'])->get('/my-orders', [\App\Http\Controllers\CustomerOrderController::class, 'index'])->name('customer.orders');
 // Customer update order (POST)
-Route::middleware(['auth', 'verified'])->post('/my-orders/{order}/edit', [\App\Http\Controllers\CustomerOrderController::class, 'update'])->name('customer.orders.update');
+Route::middleware(['auth', 'verified', 'profile.completed'])->post('/my-orders/{order}/edit', [\App\Http\Controllers\CustomerOrderController::class, 'update'])->name('customer.orders.update');
 // Customer withdraw cancellation request (POST)
-Route::middleware(['auth', 'verified'])->post('/orders/{order}/cancel-request', [\App\Http\Controllers\CustomerOrderController::class, 'cancelRequest'])->name('customer.orders.cancelRequest');
+Route::middleware(['auth', 'verified', 'profile.completed'])->post('/orders/{order}/cancel-request', [\App\Http\Controllers\CustomerOrderController::class, 'cancelRequest'])->name('customer.orders.cancelRequest');
 require __DIR__.'/auth.php';
 
 // Ratings & Alerts (Customer)
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'profile.completed'])->group(function () {
     Route::post('/ratings', [\App\Http\Controllers\RatingController::class, 'store'])->name('ratings.store');
     Route::post('/alerts', [\App\Http\Controllers\AlertController::class, 'store'])->name('alerts.store');
 });
 
 // Ratings & Alerts (Admin/Staff)
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'admin', 'profile.completed'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/ratings', [\App\Http\Controllers\RatingController::class, 'index'])->name('ratings.index');
     Route::get('/ratings/{rating}', [\App\Http\Controllers\RatingController::class, 'show'])->name('ratings.show');
     Route::patch('/ratings/{rating}/respond', [\App\Http\Controllers\RatingController::class, 'respond'])->name('ratings.respond');
@@ -260,7 +261,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 });
 
 // Admin alerts management
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'profile.completed'])->group(function () {
     Route::get('/admin/alerts', [\App\Http\Controllers\AlertController::class, 'adminIndex'])
         ->name('admin.alerts.index')
         ->middleware('can:viewAny,App\\Models\\Alert');
@@ -278,7 +279,7 @@ Route::middleware(['auth'])->group(function () {
         ->middleware('can:delete,alert');
 });
 // Staff alerts management
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'profile.completed'])->group(function () {
     Route::get('/staff/alerts', [\App\Http\Controllers\AlertController::class, 'staffIndex'])
         ->name('staff.alerts.index')
         ->middleware('can:viewAny,App\\Models\\Alert');
@@ -289,12 +290,12 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Notification mark as read
-Route::middleware(['auth', 'verified'])->post('/notifications/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.read');
-Route::middleware(['auth', 'verified'])->post('/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead']);
+Route::middleware(['auth', 'verified', 'profile.completed'])->post('/notifications/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.read');
+Route::middleware(['auth', 'verified', 'profile.completed'])->post('/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead']);
 
 // Support ticket/contact routes
 Route::post('/contact', [\App\Http\Controllers\SupportTicketController::class, 'store'])->name('contact.store');
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'profile.completed'])->group(function () {
     Route::get('/admin/support-tickets', [\App\Http\Controllers\SupportTicketController::class, 'index'])->name('admin.support-tickets.index');
     Route::patch('/support-tickets/{ticket}/respond', [\App\Http\Controllers\SupportTicketController::class, 'adminRespond'])->name('support-tickets.respond');
 });

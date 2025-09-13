@@ -50,9 +50,11 @@ class SocialLoginController extends Controller
 
             // Redirect to profile completion if needed
             if (!$user->phone || !$user->permanent_location) {
+                Log::info('Redirecting to complete-profile for user: ' . $user->email);
                 return redirect()->route('complete-profile');
             }
 
+            Log::info('Redirecting to dashboard for user: ' . $user->email);
             return redirect()->intended('/dashboard');
 
         } catch (\Exception $e) {
