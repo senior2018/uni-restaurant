@@ -104,7 +104,20 @@ ls -la storage/app/public/image/logo-final.svg || echo "Logo not found in storag
 rm -rf storage/framework/views/* storage/framework/cache/* storage/framework/sessions/*
 
 # Run Laravel setup (optimized)
-php artisan migrate:fresh --force --no-interaction || echo "Migration failed, continuing..."
+# Check if this is first deployment or if migrations are needed
+echo "Checking if migrations are needed..."
+if [ ! -f "storage/framework/.deployed" ]; then
+    echo "First deployment detected, running fresh migrations and seeding..."
+    php artisan migrate:fresh --force --no-interaction || echo "Migration failed, continuing..."
+    php artisan db:seed --class=DeploymentSeeder --force --no-interaction || echo "Seeding failed, continuing..."
+    touch storage/framework/.deployed
+    echo "First deployment completed, marker created"
+else
+    echo "Subsequent deployment detected, running only new migrations..."
+    php artisan migrate --force --no-interaction || echo "Migration failed, continuing..."
+    echo "Migrations completed (preserving existing data)"
+fi
+
 php artisan cache:clear --no-interaction || echo "Cache clear failed, continuing..."
 php artisan config:cache --no-interaction || echo "Config cache failed, continuing..."
 
@@ -234,20 +247,18 @@ ls -la public/storage/image/logo-final.svg || echo "Logo still not accessible af
 echo "All available logo files:"
 ls -la public/storage/image/logo* || echo "No logo files found"
 
-# Seed database with deployment data (optimized)
-echo "Seeding database with deployment data..."
-php artisan db:seed --class=DeploymentSeeder --force --no-interaction
-echo "Seeding completed successfully!"
-
-# Verify the seeded data
-echo "Verifying seeded data..."
-php artisan tinker --execute="
-echo 'Categories: ' . App\Models\MealCategory::count() . PHP_EOL;
-echo 'Meals: ' . App\Models\Meal::count() . PHP_EOL;
-echo 'Available meals: ' . App\Models\Meal::where('is_available', true)->count() . PHP_EOL;
-echo 'Unavailable meals: ' . App\Models\Meal::where('is_available', false)->count() . PHP_EOL;
-echo 'Meals with images: ' . App\Models\Meal::whereNotNull('image_url')->count() . PHP_EOL;
-" || echo "Verification failed, continuing..."
+# Verify the seeded data (only on first deployment)
+if [ ! -f "storage/framework/.deployed" ] || [ -f "storage/framework/.deployed" ] && [ ! -f "storage/framework/.verified" ]; then
+    echo "Verifying seeded data..."
+    php artisan tinker --execute="
+    echo 'Categories: ' . App\Models\MealCategory::count() . PHP_EOL;
+    echo 'Meals: ' . App\Models\Meal::count() . PHP_EOL;
+    echo 'Available meals: ' . App\Models\Meal::where('is_available', true)->count() . PHP_EOL;
+    echo 'Unavailable meals: ' . App\Models\Meal::where('is_available', false)->count() . PHP_EOL;
+    echo 'Meals with images: ' . App\Models\Meal::whereNotNull('image_url')->count() . PHP_EOL;
+    " || echo "Verification failed, continuing..."
+    touch storage/framework/.verified
+fi
 
 # Create a simple test page to verify assets
 echo "Creating test page to verify assets..."
