@@ -5,6 +5,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import ResponsiveNavbar from '@/Components/ResponsiveNavbar.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { ref, computed } from 'vue';
 
 defineProps({
     canLogin: Boolean,
@@ -22,6 +23,24 @@ const form = useForm({
 
 const showPassword = ref(false);
 const showConfirmPassword = ref(false);
+
+// Password strength validation
+const passwordChecks = computed(() => {
+    const password = form.password;
+    return {
+        length: password.length >= 8,
+        uppercase: /[A-Z]/.test(password),
+        lowercase: /[a-z]/.test(password),
+        number: /\d/.test(password),
+        special: /[\W_]/.test(password)
+    };
+});
+
+// Check if password meets all requirements
+const isPasswordValid = computed(() => {
+    const checks = passwordChecks.value;
+    return checks.length && checks.uppercase && checks.lowercase && checks.number && checks.special;
+});
 
 const submit = () => {
     form.post(route('register'), {
@@ -147,6 +166,33 @@ const redirectToGoogle = () => {
                             </button>
                         </div>
                         <InputError class="mt-2" :message="form.errors.password" />
+
+                        <!-- Password Requirements Warning (only show when password doesn't meet requirements) -->
+                        <div v-if="form.password && !isPasswordValid" class="mt-2 text-xs text-red-600 bg-red-50 p-3 rounded-lg border border-red-200">
+                            <p class="font-medium mb-2 text-red-800">Password must contain:</p>
+                            <ul class="space-y-1">
+                                <li class="flex items-center">
+                                    <i :class="passwordChecks.length ? 'fas fa-check text-green-500' : 'fas fa-times text-red-500'"></i>
+                                    <span class="ml-2">At least 8 characters</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i :class="passwordChecks.uppercase ? 'fas fa-check text-green-500' : 'fas fa-times text-red-500'"></i>
+                                    <span class="ml-2">One uppercase letter (A-Z)</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i :class="passwordChecks.lowercase ? 'fas fa-check text-green-500' : 'fas fa-times text-red-500'"></i>
+                                    <span class="ml-2">One lowercase letter (a-z)</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i :class="passwordChecks.number ? 'fas fa-check text-green-500' : 'fas fa-times text-red-500'"></i>
+                                    <span class="ml-2">One number (0-9)</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i :class="passwordChecks.special ? 'fas fa-check text-green-500' : 'fas fa-times text-red-500'"></i>
+                                    <span class="ml-2">One special character (!@#$%^&*)</span>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
 
                     <div>

@@ -37,7 +37,7 @@ class RegisteredUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'phone' => 'required|string|unique:users',
-            'permanent_location' => 'nullable|string|max:255',
+            'permanent_location' => 'required|string|max:255',
             'password' => [
                 'required',
                 'confirmed',
@@ -45,6 +45,12 @@ class RegisteredUserController extends Controller
                 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/'
             ],
         ], [
+            'name.required' => 'Full name is required.',
+            'email.required' => 'Email address is required.',
+            'phone.required' => 'Phone number is required.',
+            'permanent_location.required' => 'Campus location is required.',
+            'password.required' => 'Password is required.',
+            'password.confirmed' => 'Password confirmation does not match.',
             'password.regex' => 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
         ]);
 

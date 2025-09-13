@@ -89,9 +89,36 @@
                         >
                             <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
                         </button>
-                    </div>
+    </div>
                     <InputError class="mt-2" :message="form.errors.password" />
-                </div>
+
+                    <!-- Password Requirements Warning (only show when password doesn't meet requirements) -->
+                    <div v-if="form.password && !isPasswordValid" class="mt-2 text-xs text-red-600 bg-red-50 p-3 rounded-lg border border-red-200">
+                        <p class="font-medium mb-2 text-red-800">Password must contain:</p>
+                        <ul class="space-y-1">
+                            <li class="flex items-center">
+                                <i :class="passwordChecks.length ? 'fas fa-check text-green-500' : 'fas fa-times text-red-500'"></i>
+                                <span class="ml-2">At least 8 characters</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i :class="passwordChecks.uppercase ? 'fas fa-check text-green-500' : 'fas fa-times text-red-500'"></i>
+                                <span class="ml-2">One uppercase letter (A-Z)</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i :class="passwordChecks.lowercase ? 'fas fa-check text-green-500' : 'fas fa-times text-red-500'"></i>
+                                <span class="ml-2">One lowercase letter (a-z)</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i :class="passwordChecks.number ? 'fas fa-check text-green-500' : 'fas fa-times text-red-500'"></i>
+                                <span class="ml-2">One number (0-9)</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i :class="passwordChecks.special ? 'fas fa-check text-green-500' : 'fas fa-times text-red-500'"></i>
+                                <span class="ml-2">One special character (!@#$%^&*)</span>
+                            </li>
+                        </ul>
+                    </div>
+    </div>
 
                 <!-- Confirm Password -->
                 <div>
@@ -99,7 +126,7 @@
                     <div class="mt-1 relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fas fa-lock text-green-600"></i>
-                        </div>
+    </div>
                         <TextInput
                             id="password_confirmation"
                             :type="showConfirmPassword ? 'text' : 'password'"
@@ -115,7 +142,7 @@
                             class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-green-600 transition-colors"
                         >
                             <i :class="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-                        </button>
+        </button>
                     </div>
                     <InputError class="mt-2" :message="form.errors.password_confirmation" />
                 </div>
@@ -131,14 +158,14 @@
                         {{ form.processing ? 'Saving...' : 'Complete Profile' }}
                     </PrimaryButton>
                 </div>
-            </form>
+    </form>
         </div>
     </div>
 </template>
 
 <script setup>
 import { Head, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
@@ -156,6 +183,24 @@ const form = useForm({
 
 const showPassword = ref(false);
 const showConfirmPassword = ref(false);
+
+// Password strength validation
+const passwordChecks = computed(() => {
+    const password = form.password;
+    return {
+        length: password.length >= 8,
+        uppercase: /[A-Z]/.test(password),
+        lowercase: /[a-z]/.test(password),
+        number: /\d/.test(password),
+        special: /[\W_]/.test(password)
+    };
+});
+
+// Check if password meets all requirements
+const isPasswordValid = computed(() => {
+    const checks = passwordChecks.value;
+    return checks.length && checks.uppercase && checks.lowercase && checks.number && checks.special;
+});
 
 function submit() {
     form.post(route('complete-profile.update'));

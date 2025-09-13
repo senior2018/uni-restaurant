@@ -33,7 +33,18 @@ class CompleteProfileController extends Controller
         $request->validate([
             'phone' => 'required|string|unique:users,phone,' . $user->id,
             'permanent_location' => 'required|string|max:255',
-            'password' => 'required|string|confirmed|min:8',
+            'password' => [
+                'required',
+                'confirmed',
+                'min:8',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/'
+            ],
+        ], [
+            'phone.required' => 'Phone number is required.',
+            'permanent_location.required' => 'Permanent location is required.',
+            'password.required' => 'Password is required.',
+            'password.confirmed' => 'Password confirmation does not match.',
+            'password.regex' => 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
         ]);
 
         $user->update([
