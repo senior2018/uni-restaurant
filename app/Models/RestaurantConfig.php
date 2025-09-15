@@ -120,8 +120,8 @@ class RestaurantConfig extends Model
             'accent_color' => '#F59E0B',
             'text_color' => '#1F2937',
             'background_color' => '#FFFFFF',
-            'currency' => 'USD',
-            'currency_symbol' => '$',
+            'currency' => 'TZS',
+            'currency_symbol' => 'TSh',
             'tax_rate' => 0.0875, // 8.75%
             'tax_name' => 'Sales Tax',
             'business_hours' => [
