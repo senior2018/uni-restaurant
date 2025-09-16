@@ -1,5 +1,8 @@
 <script setup>
 import CustomerLayout from './Layout.vue';
+import MetricCard from '@/Components/UI/MetricCard.vue';
+import StatusBadge from '@/Components/UI/StatusBadge.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { usePage, Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 
@@ -20,36 +23,65 @@ const recentOrders = computed(() => props.orders.slice(0, 5));
         <div class="space-y-6 sm:space-y-8">
             <h1 class="text-responsive-lg font-bold text-gray-800 mb-4">Welcome, {{ user.name }}!</h1>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
-                <div class="card-responsive bg-white">
-                    <i class="fas fa-receipt text-xl sm:text-2xl text-green-600 mb-2"></i>
-                    <div class="text-xs sm:text-sm text-gray-500">Total Orders</div>
-                    <div class="text-xl sm:text-2xl font-bold text-gray-800">{{ totalOrders }}</div>
-                </div>
-                <div class="card-responsive bg-white">
-                    <i class="fas fa-hourglass-half text-xl sm:text-2xl text-yellow-500 mb-2"></i>
-                    <div class="text-xs sm:text-sm text-gray-500">Pending</div>
-                    <div class="text-xl sm:text-2xl font-bold text-gray-800">{{ pendingOrders }}</div>
-                </div>
-                <div class="card-responsive bg-white">
-                    <i class="fas fa-check-circle text-xl sm:text-2xl text-green-500 mb-2"></i>
-                    <div class="text-xs sm:text-sm text-gray-500">Completed</div>
-                    <div class="text-xl sm:text-2xl font-bold text-gray-800">{{ completedOrders }}</div>
-                </div>
-                <div class="card-responsive bg-white">
-                    <i class="fas fa-times-circle text-xl sm:text-2xl text-red-500 mb-2"></i>
-                    <div class="text-xs sm:text-sm text-gray-500">Cancelled</div>
-                    <div class="text-xl sm:text-2xl font-bold text-gray-800">{{ cancelledOrders }}</div>
-                </div>
+                <MetricCard
+                    title="Total Orders"
+                    :value="totalOrders"
+                    subtitle="All your orders"
+                    icon="fas fa-receipt"
+                    variant="default"
+                />
+                <MetricCard
+                    title="Pending"
+                    :value="pendingOrders"
+                    subtitle="Orders in progress"
+                    icon="fas fa-hourglass-half"
+                    variant="warning"
+                />
+                <MetricCard
+                    title="Completed"
+                    :value="completedOrders"
+                    subtitle="Successfully delivered"
+                    icon="fas fa-check-circle"
+                    variant="success"
+                />
+                <MetricCard
+                    title="Cancelled"
+                    :value="cancelledOrders"
+                    subtitle="Cancelled orders"
+                    icon="fas fa-times-circle"
+                    variant="danger"
+                />
             </div>
             <div class="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mb-6 sm:mb-8">
-                <Link :href="route('menu.public')" class="btn-responsive bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center justify-center gap-2">
-                    <i class="fas fa-utensils"></i> Menu
+                <Link :href="route('menu.public')">
+                    <PrimaryButton
+                        variant="primary"
+                        size="lg"
+                        icon="fas fa-utensils"
+                        full-width
+                    >
+                        Menu
+                    </PrimaryButton>
                 </Link>
-                <Link :href="route('cart')" class="btn-responsive bg-green-100 text-green-700 rounded-lg font-semibold hover:bg-green-200 transition-colors flex items-center justify-center gap-2">
-                    <i class="fas fa-plate-wheat"></i> My Plate
+                <Link :href="route('cart')">
+                    <PrimaryButton
+                        variant="secondary"
+                        size="lg"
+                        icon="fas fa-plate-wheat"
+                        full-width
+                    >
+                        My Plate
+                    </PrimaryButton>
                 </Link>
-                <Link :href="route('customer.orders')" class="btn-responsive bg-blue-100 text-blue-700 rounded-lg font-semibold hover:bg-blue-200 transition-colors flex items-center justify-center gap-2">
-                    <i class="fas fa-receipt"></i> My Orders
+                <Link :href="route('customer.orders')">
+                    <PrimaryButton
+                        variant="info"
+                        size="lg"
+                        icon="fas fa-receipt"
+                        full-width
+                    >
+                        My Orders
+                    </PrimaryButton>
                 </Link>
             </div>
             <div class="card-responsive bg-white">

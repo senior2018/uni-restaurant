@@ -1,6 +1,9 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
 import ResponsiveNavbar from '@/Components/ResponsiveNavbar.vue';
+import BackgroundContainer from '@/Components/UI/BackgroundContainer.vue';
+import HeroSection from '@/Components/UI/HeroSection.vue';
+import ActionButtonGroup from '@/Components/UI/ActionButtonGroup.vue';
 
 defineProps({
     canLogin: Boolean,
@@ -11,36 +14,33 @@ defineProps({
 <template>
     <Head title="Welcome to Our Restaurant" />
 
-    <div class="min-h-screen" style="background-color: #ECFDF5;">
+    <BackgroundContainer variant="primary" min-height="screen">
         <!-- Navigation -->
         <ResponsiveNavbar :can-login="canLogin" :can-register="canRegister" />
 
         <!-- Hero Section -->
-        <section class="pt-32 pb-20 text-center">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h1 class="text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
-                    Campus Dining Made Simple
-                </h1>
-                <p class="text-lg text-gray-600 mb-8">
-                    Order fresh meals from your university restaurant, track your orders in real-time,
-                    and enjoy convenient delivery to your location — whether you're a student, lecturer, or staff.
-                </p>
-                <div class="flex justify-center space-x-4">
+        <HeroSection
+            title="Campus Dining Made Simple"
+            subtitle="Order fresh meals from your university restaurant, track your orders in real-time, and enjoy convenient delivery to your location — whether you're a student, lecturer, or staff."
+            size="lg"
+        >
+            <template #actions>
+                <ActionButtonGroup layout="horizontal" alignment="center" spacing="md">
                     <Link :href="route('login')"
-                        class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                        class="px-4 py-2 sm:px-6 sm:py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm sm:text-base">
                         Order Now
                     </Link>
                     <Link :href="route('register')"
-                        class="px-6 py-3 border-2 border-green-600 text-green-600 rounded-lg hover:bg-green-50 transition">
+                        class="px-4 py-2 sm:px-6 sm:py-3 border-2 border-green-600 text-green-600 rounded-lg hover:bg-green-50 transition text-sm sm:text-base">
                         Create Account
                     </Link>
                     <Link :href="route('contact')"
-                        class="px-6 py-3 border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition flex items-center gap-2">
+                        class="px-4 py-2 sm:px-6 sm:py-3 border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition flex items-center gap-2 text-sm sm:text-base">
                         <i class="fas fa-headset"></i> Contact Support
                     </Link>
-                </div>
-            </div>
-        </section>
+                </ActionButtonGroup>
+            </template>
+        </HeroSection>
 
         <!-- Features Section -->
         <section class="bg-white py-12">
@@ -67,5 +67,5 @@ defineProps({
         <footer class="text-center py-6 text-sm text-gray-500">
             &copy; {{ new Date().getFullYear() }} Our Restaurant. Built for Campus Life.
         </footer>
-    </div>
+    </BackgroundContainer>
 </template>

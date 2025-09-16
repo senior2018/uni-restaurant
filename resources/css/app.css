@@ -2,6 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Dark mode support */
+@layer base {
+  :root {
+    --color-primary: 16 185 129;
+    --color-secondary: 245 158 11;
+    --color-background: 249 250 251;
+    --color-surface: 255 255 255;
+    --color-text: 31 41 55;
+    --color-text-secondary: 107 114 128;
+    --color-border: 229 231 235;
+  }
+
+  .dark {
+    --color-primary: 52 211 153;
+    --color-secondary: 251 191 36;
+    --color-background: 17 24 39;
+    --color-surface: 31 41 55;
+    --color-text: 249 250 251;
+    --color-text-secondary: 209 213 219;
+    --color-border: 55 65 81;
+  }
+
+  html {
+    @apply transition-colors duration-300;
+  }
+
+  body {
+    @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white;
+  }
+}
+
 /* Enhanced Responsive Design */
 @layer components {
   /* Mobile-first responsive containers */

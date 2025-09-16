@@ -16,6 +16,11 @@ use App\Http\Controllers\Admin\MealController;
 use App\Http\Controllers\Admin\MealCategoryController;
 
 
+// Component Playground Route (for development/testing)
+Route::get('/component-playground', function () {
+    return Inertia::render('ComponentPlayground');
+})->name('component.playground');
+
 Route::get('/verify/email', function (Request $request) {
     return Inertia::render('Auth/VerifyOtp', [
         'email' => $request->query('email'),
@@ -154,6 +159,16 @@ Route::middleware(['auth', 'super_admin', 'profile.completed'])->prefix('super-a
                 ->name('analytics');
             Route::get('/system-logs', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'systemLogs'])
                 ->name('system.logs');
+
+            // Reports and Analytics
+            Route::get('/reports/sales', [\App\Http\Controllers\ReportController::class, 'salesReport'])
+                ->name('reports.sales');
+            Route::get('/reports/feedback', [\App\Http\Controllers\ReportController::class, 'feedbackReport'])
+                ->name('reports.feedback');
+            Route::get('/reports/inventory', [\App\Http\Controllers\ReportController::class, 'inventoryReport'])
+                ->name('reports.inventory');
+            Route::get('/reports/analytics', [\App\Http\Controllers\ReportController::class, 'analyticsReport'])
+                ->name('reports.analytics');
 
             // Restaurant Configuration
             Route::get('/restaurant-config', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'restaurantConfig'])
@@ -297,6 +312,13 @@ Route::middleware(['auth', 'admin', 'profile.completed'])->prefix('admin')->name
     Route::get('/alerts/{alert}', [\App\Http\Controllers\AlertController::class, 'show'])->name('alerts.show');
     Route::patch('/alerts/{alert}/respond', [\App\Http\Controllers\AlertController::class, 'respond'])->name('alerts.respond');
     Route::patch('/alerts/{alert}/resolve', [\App\Http\Controllers\AlertController::class, 'resolve'])->name('alerts.resolve');
+
+    // Admin Reports
+    Route::get('/reports', [\App\Http\Controllers\ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/sales', [\App\Http\Controllers\ReportController::class, 'salesReport'])->name('reports.sales');
+    Route::get('/reports/feedback', [\App\Http\Controllers\ReportController::class, 'feedbackReport'])->name('reports.feedback');
+    Route::get('/reports/inventory', [\App\Http\Controllers\ReportController::class, 'inventoryReport'])->name('reports.inventory');
+    Route::get('/reports/analytics', [\App\Http\Controllers\ReportController::class, 'analyticsReport'])->name('reports.analytics');
 });
 
 // Admin alerts management

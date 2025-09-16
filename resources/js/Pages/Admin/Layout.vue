@@ -4,6 +4,8 @@ import BaseLayout from "../Shared/BaseLayout.vue";
 import NavLink from "@/Components/NavLink.vue";
 import { Link, usePage } from "@inertiajs/vue3";
 import TopNavBar from '@/Components/TopNavBar.vue';
+import FlashMessage from '@/Components/UI/FlashMessage.vue';
+import PageContainer from '@/Components/UI/PageContainer.vue';
 
 const page = usePage();
 
@@ -19,6 +21,7 @@ const navLinks = [
     { name: 'Requests', route: route('admin.pendingCancellations'), icon: 'fas fa-question-circle', badge: unseenCancellationCount },
     { name: 'Alerts', route: route('admin.alerts.index'), icon: 'fas fa-exclamation-triangle', badge: page.props.unresolvedAlertCount || 0 },
     { name: 'Support Tickets', route: route('admin.support-tickets.index'), icon: 'fas fa-envelope-open-text' },
+    { name: 'Reports', route: route('admin.reports.index'), icon: 'fas fa-chart-line' },
 ];
 
 // Flash message auto-dismiss logic
@@ -39,25 +42,22 @@ watch(
     <BaseLayout title="Admin Dashboard">
         <TopNavBar :links="navLinks" :user="page.props.user" role="admin" brand="Admin Panel" />
         <!-- Flash Messages -->
-        <div v-if="showSuccess && flash.success" class="w-full px-responsive mt-4 relative z-10">
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 flex items-center justify-between shadow">
-                <span><i class="fas fa-check-circle mr-2"></i>{{ flash.success }}</span>
-                <button @click="showSuccess = false" class="text-green-700 hover:text-green-900">&times;</button>
-            </div>
-        </div>
-
-        <div v-if="flash.error" class="w-full px-responsive mt-4 relative z-10">
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 flex items-center justify-between shadow">
-                <span><i class="fas fa-exclamation-circle mr-2"></i>{{ flash.error }}</span>
-                <button @click="flash.error = null" class="text-red-700 hover:text-red-900">&times;</button>
-            </div>
-        </div>
+        <FlashMessage
+            v-if="showSuccess && flash.success"
+            type="success"
+            :message="flash.success"
+            @close="showSuccess = false"
+        />
+        <FlashMessage
+            v-if="flash.error"
+            type="error"
+            :message="flash.error"
+            @close="flash.error = null"
+        />
 
         <!-- Main Content -->
-        <main class="py-responsive bg-gray-50 min-h-screen w-full">
-            <div class="container-responsive">
-                <slot />
-            </div>
-        </main>
+        <PageContainer background="gray" padding="responsive">
+            <slot />
+        </PageContainer>
     </BaseLayout>
 </template>

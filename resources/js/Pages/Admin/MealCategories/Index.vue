@@ -10,16 +10,20 @@
             </div>
 
             <!-- Success Message -->
-            <div v-if="flash.success"
-                    class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
-                {{ flash.success }}
-            </div>
+            <FlashMessage
+                v-if="flash.success"
+                type="success"
+                :message="flash.success"
+                @close="flash.success = null"
+            />
 
             <!-- Error Message -->
-            <div v-if="flash.error"
-                    class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-                {{ flash.error }}
-            </div>
+            <FlashMessage
+                v-if="flash.error"
+                type="error"
+                :message="flash.error"
+                @close="flash.error = null"
+            />
 
             <!-- View Mode Toggle -->
             <div class="mb-6 flex flex-col sm:flex-row gap-2">
@@ -64,7 +68,8 @@
                     <p class="text-sm" v-else>No deleted categories to show.</p>
                 </div>
 
-                <table v-else class="min-w-full">
+                <div v-else class="overflow-x-auto">
+                    <table class="min-w-full">
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -167,6 +172,7 @@
                         </tr>
                     </tbody>
                 </table>
+                </div>
             </div>
 
             <!-- Pagination -->
@@ -253,6 +259,7 @@ import axios from 'axios';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import AdminLayout from '@/Pages/Admin/Layout.vue';
 import CategoryForm from './CategoryForm.vue';
+import FlashMessage from '@/Components/UI/FlashMessage.vue';
 
 const page = usePage();
 

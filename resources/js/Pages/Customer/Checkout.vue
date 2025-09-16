@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from 'vue';
 import CustomerLayout from './Layout.vue';
 import { router } from '@inertiajs/vue3';
 import { usePage } from '@inertiajs/vue3';
+import FlashMessage from '@/Components/UI/FlashMessage.vue';
 const page = usePage();
 
 const props = defineProps({
@@ -65,12 +66,18 @@ function placeOrder() {
     <CustomerLayout :user="user">
         <div class="min-h-screen bg-gray-50 p-4 sm:p-6 w-full">
             <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-6 text-center">Checkout</h1>
-            <div v-if="page.props.flash?.success" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 sm:mb-6 text-center text-sm sm:text-base">
-                {{ page.props.flash.success }}
-            </div>
-            <div v-if="page.props.flash?.error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 sm:mb-6 text-center text-sm sm:text-base">
-                {{ page.props.flash.error }}
-            </div>
+            <FlashMessage
+                v-if="page.props.flash?.success"
+                type="success"
+                :message="page.props.flash.success"
+                @close="page.props.flash.success = null"
+            />
+            <FlashMessage
+                v-if="page.props.flash?.error"
+                type="error"
+                :message="page.props.flash.error"
+                @close="page.props.flash.error = null"
+            />
             <div v-if="error && !page.props.flash?.error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 sm:mb-6 text-center text-sm sm:text-base">
                 {{ error }}
             </div>

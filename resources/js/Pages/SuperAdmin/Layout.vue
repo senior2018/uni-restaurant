@@ -2,6 +2,7 @@
 import BaseLayout from '../Shared/BaseLayout.vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import TopNavBar from '@/Components/TopNavBar.vue';
+import PageContainer from '@/Components/UI/PageContainer.vue';
 
 const page = usePage();
 const user = page.props.user;
@@ -21,10 +22,8 @@ const navLinks = [
     <BaseLayout title="Super Admin">
         <TopNavBar :links="navLinks" :user="user" role="superadmin" brand="Super Admin" />
 
-        <main class="py-responsive bg-gray-50 min-h-screen w-full">
-            <div class="container-responsive">
-                <slot />
-            </div>
-        </main>
+        <PageContainer background="gray" padding="responsive">
+            <slot />
+        </PageContainer>
     </BaseLayout>
 </template>

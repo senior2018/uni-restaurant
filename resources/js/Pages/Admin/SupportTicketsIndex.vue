@@ -4,6 +4,7 @@ import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import axios from 'axios';
 import { router } from '@inertiajs/vue3';
+import FlashMessage from '@/Components/UI/FlashMessage.vue';
 
 const props = defineProps({
     tickets: Object, // paginated
@@ -59,9 +60,12 @@ function submitResponse() {
     <AdminLayout>
         <div class="max-w-6xl mx-auto p-responsive">
             <h1 class="text-responsive-lg font-bold text-primary-dark mb-6">Support Tickets</h1>
-            <div v-if="successMessage" class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
-                {{ successMessage }}
-            </div>
+            <FlashMessage
+                v-if="successMessage"
+                type="success"
+                :message="successMessage"
+                @close="successMessage = null"
+            />
             <div class="table-responsive bg-white rounded shadow">
                 <table class="min-w-full text-xs sm:text-sm">
                     <thead class="bg-gray-100">

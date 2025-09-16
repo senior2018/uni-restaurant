@@ -1,8 +1,7 @@
 <template>
     <Head title="Log in" />
     <ResponsiveNavbar :can-login="false" :can-register="canRegister" />
-    <div class="flex justify-center pt-32 pb-12 px-4 sm:px-6 lg:px-8" style="background-color: #ECFDF5; min-height: 100vh;">
-        <div class="w-full max-w-[48rem] bg-white p-10 rounded-2xl shadow-lg border border-green-100 space-y-8">
+    <FormContainer size="xl" variant="centered" padding="xl" class="space-y-8">
             <!-- Logo and Title -->
             <div class="text-center">
                 <span class="text-2xl font-bold text-green-600 flex items-center justify-center">
@@ -100,11 +99,13 @@
 
                 <!-- Submit Button -->
                 <PrimaryButton
-                    class="w-full justify-center py-3 text-sm font-medium bg-green-600 hover:bg-green-700 transition-colors"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
+                    variant="primary"
+                    size="lg"
+                    :loading="form.processing"
+                    icon="fas fa-sign-in-alt"
+                    full-width
                 >
-                    <i class="fas fa-sign-in-alt mr-2"></i> Sign In
+                    Sign In
                 </PrimaryButton>
 
                 <!-- Register Prompt -->
@@ -140,8 +141,7 @@
                     Google
                 </PrimaryButton>
             </div>
-        </div>
-    </div>
+    </FormContainer>
 </template>
 
 <script setup>
@@ -153,6 +153,7 @@ import InputError from '@/Components/InputError.vue';
 import ResponsiveNavbar from '@/Components/ResponsiveNavbar.vue';
 import Checkbox from '@/Components/Checkbox.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import FormContainer from '@/Components/UI/FormContainer.vue';
 
 defineProps({
     canLogin: Boolean,

@@ -4,6 +4,7 @@ import { router, usePage, Head, Link } from '@inertiajs/vue3';
 import CustomerLayout from '../Customer/Layout.vue';
 import ResponsiveNavbar from '@/Components/ResponsiveNavbar.vue';
 import axios from 'axios';
+import FlashMessage from '@/Components/UI/FlashMessage.vue';
 
 defineProps({
     canLogin: Boolean,
@@ -79,11 +80,14 @@ function submit() {
                         <i class="fas fa-paper-plane"></i> Send
                     </button>
                 </form>
-                <div v-if="success" class="mt-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded text-center">
-                    {{ success }}
-                </div>
+                <FlashMessage
+                    v-if="success"
+                    type="success"
+                    :message="success"
+                    @close="success = null"
+                />
                 <div v-if="tickets.length" class="mt-10">
-                    <h3 class="text-lg font-semibold mb-2">Your Previous Support Issues</h3>
+                    <h3 class="text-base sm:text-lg font-semibold mb-2">Your Previous Support Issues</h3>
                     <div class="max-h-80 overflow-y-auto pr-1">
                         <div v-for="ticket in tickets" :key="ticket.id" class="border rounded mb-3 bg-gray-50">
                             <button type="button" class="w-full flex justify-between items-center px-4 py-3 focus:outline-none" @click="expandedTicket = expandedTicket === ticket.id ? null : ticket.id">
@@ -148,9 +152,12 @@ function submit() {
                         <i class="fas fa-paper-plane"></i> Send
                     </button>
                 </form>
-                <div v-if="success" class="mt-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded text-center">
-                    {{ success }}
-                </div>
+                <FlashMessage
+                    v-if="success"
+                    type="success"
+                    :message="success"
+                    @close="success = null"
+                />
                 <div class="mt-8 text-center text-gray-400 text-xs">
                     Need urgent help? Email <a href="mailto:support@unirestaurant.com" class="text-blue-600 underline">support@unirestaurant.com</a>
                 </div>

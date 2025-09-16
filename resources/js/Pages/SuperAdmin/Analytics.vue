@@ -1,9 +1,46 @@
 <script setup>
 import SuperAdminLayout from './Layout.vue';
+import { ref } from 'vue';
 
 defineProps({
     analytics: Object
 });
+
+const isExporting = ref(false);
+
+const exportReport = (format) => {
+    isExporting.value = true;
+
+    const params = {
+        period: 'monthly',
+        format: format,
+    };
+
+    let routeName = 'superadmin.reports.analytics';
+
+    if (format === 'csv') {
+        // For CSV downloads, create a direct download link
+        const url = new URL(route(routeName), window.location.origin);
+        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+
+        const link = document.createElement('a');
+        link.href = url.toString();
+        link.download = `analytics_report_${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        isExporting.value = false;
+    } else if (format === 'pdf') {
+        // For PDF, show message that it's not implemented yet
+        alert('PDF export is not yet implemented. Please use CSV export for now.');
+        isExporting.value = false;
+    } else {
+        // For analytics data
+        window.open(route(routeName) + '?' + new URLSearchParams(params), '_blank');
+        isExporting.value = false;
+    }
+};
 </script>
 
 <template>
@@ -138,7 +175,7 @@ defineProps({
                         <div v-for="rating in analytics.rating_distribution" :key="rating.rating"
                              class="flex items-center">
                             <div class="w-8 text-sm font-medium text-gray-600">
-                                {{ rating.rating }} ⭐
+                                <i class="fas fa-star text-yellow-500 mr-1"></i>{{ rating.rating }}
                             </div>
                             <div class="flex-1 mx-4">
                                 <div class="w-full bg-gray-200 rounded-full h-2">
@@ -215,7 +252,8 @@ defineProps({
                             <div class="flex justify-between items-center">
                                 <span class="text-sm text-gray-600">Customer Satisfaction</span>
                                 <span class="text-sm font-medium text-yellow-600">
-                                    {{ (() => { const totalRating = analytics.rating_distribution?.reduce((sum, r) => sum + (r.rating * r.count), 0); const totalCount = analytics.rating_distribution?.reduce((sum, r) => sum + r.count, 0); return totalRating && totalCount ? Number(totalRating / totalCount).toFixed(1) : 'N/A'; })() }} ⭐
+                                    <i class="fas fa-star text-yellow-500 mr-1"></i>
+                                    {{ (() => { const totalRating = analytics.rating_distribution?.reduce((sum, r) => sum + (r.rating * r.count), 0); const totalCount = analytics.rating_distribution?.reduce((sum, r) => sum + r.count, 0); return totalRating && totalCount ? Number(totalRating / totalCount).toFixed(1) : 'N/A'; })() }}
                                 </span>
                             </div>
                             <div class="flex justify-between items-center">
@@ -237,20 +275,29 @@ defineProps({
                 </div>
                 <div class="p-6">
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <button class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-center">
+                        <button
+                            @click="exportReport('csv')"
+                            class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-center"
+                        >
                             <i class="fas fa-file-csv text-green-600 text-2xl mb-2"></i>
                             <div class="font-medium">Export CSV</div>
                             <div class="text-sm text-gray-600">Download data</div>
                         </button>
-                        <button class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-center">
+                        <button
+                            @click="exportReport('pdf')"
+                            class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-center"
+                        >
                             <i class="fas fa-file-pdf text-red-600 text-2xl mb-2"></i>
                             <div class="font-medium">Export PDF</div>
                             <div class="text-sm text-gray-600">Generate report</div>
                         </button>
-                        <button class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-center">
+                        <button
+                            @click="exportReport('analytics')"
+                            class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-center"
+                        >
                             <i class="fas fa-chart-line text-blue-600 text-2xl mb-2"></i>
-                            <div class="font-medium">Schedule Report</div>
-                            <div class="text-sm text-gray-600">Automated reports</div>
+                            <div class="font-medium">Full Analytics</div>
+                            <div class="text-sm text-gray-600">Complete report</div>
                         </button>
                     </div>
                 </div>

@@ -1,5 +1,6 @@
 <script setup>
 import AdminLayout from './Layout.vue';
+import MetricCard from '@/Components/UI/MetricCard.vue';
 import { Link } from '@inertiajs/vue3';
 
 defineProps({
@@ -16,40 +17,55 @@ defineProps({
 
             <!-- Key Metrics Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6">
-                <div class="card-responsive">
-                    <h3 class="text-base sm:text-lg font-semibold mb-2">System Users</h3>
-                    <p class="text-2xl sm:text-3xl text-purple-600">{{ stats.total_users }}</p>
-                    <p class="text-xs sm:text-sm text-gray-500 mt-1">Registered users</p>
-                </div>
-                <div class="bg-blue-100 card-responsive">
-                    <h3 class="text-base sm:text-lg font-semibold mb-2">Pending Orders</h3>
-                    <p class="text-2xl sm:text-3xl text-blue-700">{{ stats.pending_orders }}</p>
-                    <p class="text-xs sm:text-sm text-gray-500 mt-1">Awaiting processing</p>
-                </div>
-                <div class="bg-orange-100 card-responsive">
-                    <h3 class="text-base sm:text-lg font-semibold mb-2">Preparing Orders</h3>
-                    <p class="text-2xl sm:text-3xl text-orange-700">{{ stats.preparing_orders }}</p>
-                    <p class="text-xs sm:text-sm text-gray-500 mt-1">Being prepared</p>
-                </div>
-                <div class="bg-green-100 card-responsive">
-                    <h3 class="text-base sm:text-lg font-semibold mb-2">Delivered Orders</h3>
-                    <p class="text-2xl sm:text-3xl text-green-700">{{ stats.delivered_orders }}</p>
-                    <p class="text-xs sm:text-sm text-gray-500 mt-1">Completed</p>
-                </div>
-                <div class="bg-red-100 card-responsive">
-                    <h3 class="text-base sm:text-lg font-semibold mb-2">Cancelled Orders</h3>
-                    <p class="text-2xl sm:text-3xl text-red-700">{{ stats.cancelled_orders }}</p>
-                    <p class="text-xs sm:text-sm text-gray-500 mt-1">Cancelled by user or staff</p>
-                </div>
-                <div class="bg-yellow-100 card-responsive flex flex-col items-center relative">
-                    <i class="fas fa-ban text-xl sm:text-2xl text-yellow-600 mb-2"></i>
-                    <div class="text-xs sm:text-sm text-gray-500">Pending Cancellation Requests</div>
-                    <div class="text-xl sm:text-2xl font-bold text-yellow-800">{{ stats.pending_cancellation_count || 0 }}</div>
-                    <span v-if="stats.unseen_cancellation_count > 0"
-                          class="absolute top-2 right-2 sm:right-4 bg-red-600 text-white text-xs font-bold rounded-full px-2 py-0.5">
-                        {{ stats.unseen_cancellation_count }}
-                    </span>
-                </div>
+                <MetricCard
+                    title="System Users"
+                    :value="stats.total_users"
+                    subtitle="Registered users"
+                    icon="fas fa-users"
+                    variant="default"
+                />
+                <MetricCard
+                    title="Pending Orders"
+                    :value="stats.pending_orders"
+                    subtitle="Awaiting processing"
+                    icon="fas fa-clock"
+                    variant="info"
+                />
+                <MetricCard
+                    title="Preparing Orders"
+                    :value="stats.preparing_orders"
+                    subtitle="Being prepared"
+                    icon="fas fa-utensils"
+                    variant="warning"
+                />
+                <MetricCard
+                    title="Delivered Orders"
+                    :value="stats.delivered_orders"
+                    subtitle="Completed"
+                    icon="fas fa-check-circle"
+                    variant="success"
+                />
+                <MetricCard
+                    title="Cancelled Orders"
+                    :value="stats.cancelled_orders"
+                    subtitle="Cancelled by user or staff"
+                    icon="fas fa-times-circle"
+                    variant="danger"
+                />
+                <MetricCard
+                    title="Pending Cancellation Requests"
+                    :value="stats.pending_cancellation_count || 0"
+                    subtitle="Awaiting review"
+                    icon="fas fa-ban"
+                    variant="warning"
+                >
+                    <template #badge>
+                        <span v-if="stats.unseen_cancellation_count > 0"
+                              class="bg-red-600 text-white text-xs font-bold rounded-full px-2 py-0.5">
+                          {{ stats.unseen_cancellation_count }}
+                        </span>
+                    </template>
+                </MetricCard>
             </div>
 
             <!-- Analytics and Business Insights Section -->

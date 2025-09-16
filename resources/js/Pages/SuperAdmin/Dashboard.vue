@@ -1,5 +1,8 @@
 <script setup>
 import SuperAdminLayout from './Layout.vue';
+import MetricCard from '@/Components/UI/MetricCard.vue';
+import Card from '@/Components/UI/Card.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { Link } from '@inertiajs/vue3';
 
 defineProps({
@@ -19,9 +22,14 @@ defineProps({
             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                 <h2 class="text-responsive-lg font-bold text-gray-800">Super Admin Dashboard</h2>
                 <div class="flex gap-2">
-                    <Link :href="route('superadmin.admins.create')"
-                          class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                        <i class="fas fa-plus mr-2"></i>Create Admin
+                    <Link :href="route('superadmin.admins.create')">
+                        <PrimaryButton
+                            variant="primary"
+                            size="md"
+                            icon="fas fa-plus"
+                        >
+                            Create Admin
+                        </PrimaryButton>
                     </Link>
                 </div>
             </div>
@@ -101,49 +109,34 @@ defineProps({
 
             <!-- Main Statistics -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                <div class="card-responsive bg-white">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h3 class="text-base sm:text-lg font-semibold mb-2">Total Users</h3>
-                            <p class="text-2xl sm:text-3xl text-blue-600">{{ stats.total_users }}</p>
-                            <p class="text-xs sm:text-sm text-gray-500 mt-1">All registered users</p>
-                        </div>
-                        <i class="fas fa-users text-blue-600 text-2xl"></i>
-                    </div>
-                </div>
-
-                <div class="card-responsive bg-white">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h3 class="text-base sm:text-lg font-semibold mb-2">Admins</h3>
-                            <p class="text-2xl sm:text-3xl text-purple-600">{{ stats.total_admins }}</p>
-                            <p class="text-xs sm:text-sm text-gray-500 mt-1">System administrators</p>
-                        </div>
-                        <i class="fas fa-user-shield text-purple-600 text-2xl"></i>
-                    </div>
-                </div>
-
-                <div class="card-responsive bg-white">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h3 class="text-base sm:text-lg font-semibold mb-2">Active Orders</h3>
-                            <p class="text-2xl sm:text-3xl text-green-600">{{ stats.active_orders }}</p>
-                            <p class="text-xs sm:text-sm text-gray-500 mt-1">In progress</p>
-                        </div>
-                        <i class="fas fa-shopping-cart text-green-600 text-2xl"></i>
-                    </div>
-                </div>
-
-                <div class="card-responsive bg-white">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h3 class="text-base sm:text-lg font-semibold mb-2">Revenue</h3>
-                            <p class="text-2xl sm:text-3xl text-yellow-600">${{ stats.total_revenue || 0 }}</p>
-                            <p class="text-xs sm:text-sm text-gray-500 mt-1">Total earnings</p>
-                        </div>
-                        <i class="fas fa-dollar-sign text-yellow-600 text-2xl"></i>
-                    </div>
-                </div>
+                <MetricCard
+                    title="Total Users"
+                    :value="stats.total_users"
+                    subtitle="All registered users"
+                    icon="fas fa-users"
+                    variant="info"
+                />
+                <MetricCard
+                    title="Admins"
+                    :value="stats.total_admins"
+                    subtitle="System administrators"
+                    icon="fas fa-user-shield"
+                    variant="primary"
+                />
+                <MetricCard
+                    title="Active Orders"
+                    :value="stats.active_orders"
+                    subtitle="In progress"
+                    icon="fas fa-shopping-cart"
+                    variant="success"
+                />
+                <MetricCard
+                    title="Revenue"
+                    :value="`$${stats.total_revenue || 0}`"
+                    subtitle="Total earnings"
+                    icon="fas fa-dollar-sign"
+                    variant="warning"
+                />
             </div>
 
             <!-- Detailed Statistics -->
@@ -187,7 +180,10 @@ defineProps({
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="text-sm">Average Rating</span>
-                            <span class="font-semibold text-yellow-600">{{ stats.average_rating ? Number(stats.average_rating).toFixed(1) : 'N/A' }} ⭐</span>
+                            <span class="font-semibold text-yellow-600">
+                                <i class="fas fa-star text-yellow-500 mr-1"></i>
+                                {{ stats.average_rating ? Number(stats.average_rating).toFixed(1) : 'N/A' }}
+                            </span>
                         </div>
                     </div>
                 </div>

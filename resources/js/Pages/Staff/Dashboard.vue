@@ -1,5 +1,8 @@
 <script setup>
 import StaffLayout from './Layout.vue';
+import MetricCard from '@/Components/UI/MetricCard.vue';
+import StatusBadge from '@/Components/UI/StatusBadge.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { computed, ref, nextTick } from 'vue';
 import axios from 'axios';
 
@@ -51,35 +54,48 @@ function scrollToCancellationRequests() {
 
             <!-- Stats Summary -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6 mb-6 sm:mb-8">
-                <div class="card-responsive bg-blue-100">
-                    <i class="fas fa-tasks text-xl sm:text-2xl text-blue-600 mb-2"></i>
-                    <div class="text-xs sm:text-sm text-gray-500">Assigned Orders</div>
-                    <div class="text-xl sm:text-2xl font-bold text-blue-800">{{ totalAssigned }}</div>
-                </div>
-                <div class="card-responsive bg-yellow-100">
-                    <i class="fas fa-inbox text-xl sm:text-2xl text-yellow-600 mb-2"></i>
-                    <div class="text-xs sm:text-sm text-gray-500">Unassigned Orders</div>
-                    <div class="text-xl sm:text-2xl font-bold text-yellow-800">{{ totalUnassigned }}</div>
-                </div>
-                <div class="card-responsive bg-green-100">
-                    <i class="fas fa-check-circle text-xl sm:text-2xl text-green-600 mb-2"></i>
-                    <div class="text-xs sm:text-sm text-gray-500">Delivered Orders</div>
-                    <div class="text-xl sm:text-2xl font-bold text-green-800">{{ totalDelivered }}</div>
-                </div>
-                <div class="card-responsive bg-red-100">
-                    <i class="fas fa-ban text-xl sm:text-2xl text-red-600 mb-2"></i>
-                    <div class="text-xs sm:text-sm text-gray-500">Orders Cancelled by Me</div>
-                    <div class="text-xl sm:text-2xl font-bold text-red-800">{{ totalCancelledByMe }}</div>
-                </div>
-                <div class="card-responsive bg-yellow-100 relative">
-                    <i class="fas fa-ban text-xl sm:text-2xl text-yellow-600 mb-2"></i>
-                    <div class="text-xs sm:text-sm text-gray-500">Pending Cancellation Requests</div>
-                    <div class="text-xl sm:text-2xl font-bold text-yellow-800">{{ myPendingCancellationRequests.length }}</div>
-                    <span v-if="unseenCancellationCount > 0"
-                          class="absolute top-2 right-2 sm:right-4 bg-red-600 text-white text-xs font-bold rounded-full px-2 py-0.5">
-                      {{ unseenCancellationCount }}
-                    </span>
-                </div>
+                <MetricCard
+                    title="Assigned Orders"
+                    :value="totalAssigned"
+                    subtitle="Orders assigned to you"
+                    icon="fas fa-tasks"
+                    variant="info"
+                />
+                <MetricCard
+                    title="Unassigned Orders"
+                    :value="totalUnassigned"
+                    subtitle="Available for claiming"
+                    icon="fas fa-inbox"
+                    variant="warning"
+                />
+                <MetricCard
+                    title="Delivered Orders"
+                    :value="totalDelivered"
+                    subtitle="Successfully completed"
+                    icon="fas fa-check-circle"
+                    variant="success"
+                />
+                <MetricCard
+                    title="Orders Cancelled by Me"
+                    :value="totalCancelledByMe"
+                    subtitle="Cancelled by staff"
+                    icon="fas fa-ban"
+                    variant="danger"
+                />
+                <MetricCard
+                    title="Pending Cancellation Requests"
+                    :value="myPendingCancellationRequests.length"
+                    subtitle="Awaiting review"
+                    icon="fas fa-ban"
+                    variant="warning"
+                >
+                    <template #badge>
+                        <span v-if="unseenCancellationCount > 0"
+                              class="bg-red-600 text-white text-xs font-bold rounded-full px-2 py-0.5">
+                          {{ unseenCancellationCount }}
+                        </span>
+                    </template>
+                </MetricCard>
             </div>
 
             <!-- My Orders Section -->
@@ -100,7 +116,11 @@ function scrollToCancellationRequests() {
                                 <div class="flex flex-col sm:flex-row sm:items-center gap-2">
                                     <span class="font-medium">Order #{{ order.id }}</span>
                                     <span class="text-xs sm:text-sm text-gray-500">{{ order.created_at }}</span>
-                                    <span class="px-2 sm:px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">{{ order.status }}</span>
+                                    <StatusBadge
+                                :status="order.status"
+                                variant="auto"
+                                size="sm"
+                            />
                                 </div>
                                 <button @click="updateOrderStatus(order.id, 'preparing')" class="btn-responsive bg-yellow-500 text-white rounded hover:bg-yellow-600 transition">Start Preparing</button>
                             </div>
@@ -127,7 +147,14 @@ function scrollToCancellationRequests() {
   {{ order.status === 'preparing' && order.cancellation_requested ? 'Preparing (Cancellation Requested)' : order.status.charAt(0).toUpperCase() + order.status.slice(1) }}
 </span>
                                 </div>
-                                <button @click="updateOrderStatus(order.id, 'delivered')" class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition">Mark as Delivered</button>
+                                <PrimaryButton
+                                    @click="updateOrderStatus(order.id, 'delivered')"
+                                    variant="success"
+                                    size="sm"
+                                    icon="fas fa-check"
+                                >
+                                    Mark as Delivered
+                                </PrimaryButton>
                             </div>
                         </div>
                     </div>
@@ -161,9 +188,20 @@ function scrollToCancellationRequests() {
                         <div class="flex flex-col sm:flex-row sm:items-center gap-2">
                             <span class="font-medium">Order #{{ order.id }}</span>
                             <span class="text-xs sm:text-sm text-gray-500">{{ order.created_at }}</span>
-                            <span class="px-2 sm:px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">{{ order.status }}</span>
+                            <StatusBadge
+                                :status="order.status"
+                                variant="auto"
+                                size="sm"
+                            />
                         </div>
-                        <button @click="claimOrder(order.id)" class="btn-responsive bg-blue-600 text-white rounded hover:bg-blue-700 transition">Claim</button>
+                        <PrimaryButton
+                            @click="claimOrder(order.id)"
+                            variant="info"
+                            size="sm"
+                            icon="fas fa-hand-paper"
+                        >
+                            Claim
+                        </PrimaryButton>
                     </div>
                 </div>
             </div>
@@ -179,11 +217,22 @@ function scrollToCancellationRequests() {
                         <div class="flex flex-col sm:flex-row sm:items-center gap-2">
                             <span class="font-medium">Order #{{ order.id }}</span>
                             <span class="text-xs sm:text-sm text-gray-500">{{ order.created_at }}</span>
-                            <span class="px-2 sm:px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">{{ order.status }}</span>
+                            <StatusBadge
+                                :status="order.status"
+                                variant="auto"
+                                size="sm"
+                            />
                             <span class="text-xs text-gray-700">Reason: {{ order.cancellation_reason }}</span>
                         </div>
                         <div class="flex gap-2">
-                            <button @click="() => {}" class="btn-responsive bg-blue-500 text-white rounded hover:bg-blue-600">View</button>
+                            <PrimaryButton
+                                @click="() => {}"
+                                variant="info"
+                                size="sm"
+                                icon="fas fa-eye"
+                            >
+                                View
+                            </PrimaryButton>
                         </div>
                     </div>
                 </div>

@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import { router, usePage } from '@inertiajs/vue3';
 import StaffLayout from './Layout.vue';
 import axios from 'axios';
+import FlashMessage from '@/Components/UI/FlashMessage.vue';
 
 const page = usePage();
 const user = page.props.user;
@@ -44,15 +45,15 @@ function submit() {
             <input type="hidden" v-model="form.email" />
             <div>
                 <label class="block font-medium text-sm sm:text-base">Subject</label>
-                <input v-model="form.subject" type="text" class="w-full border px-3 py-2 rounded text-sm sm:text-base" />
+                <input v-model="form.subject" type="text" class="w-full border border-gray-300 px-3 py-2 sm:px-4 sm:py-3 rounded-md text-sm sm:text-base focus:ring-2 focus:ring-green-500 focus:border-green-500" />
                 <div v-if="errors.subject" class="text-red-600 text-xs sm:text-sm">{{ errors.subject }}</div>
             </div>
             <div>
                 <label class="block font-medium text-sm sm:text-base">Message</label>
-                <textarea v-model="form.message" class="w-full border px-3 py-2 rounded text-sm sm:text-base" rows="5"></textarea>
+                <textarea v-model="form.message" class="w-full border border-gray-300 px-3 py-2 sm:px-4 sm:py-3 rounded-md text-sm sm:text-base focus:ring-2 focus:ring-green-500 focus:border-green-500" rows="5"></textarea>
                 <div v-if="errors.message" class="text-red-600 text-xs sm:text-sm">{{ errors.message }}</div>
             </div>
-            <button type="submit" class="btn-responsive bg-green-600 hover:bg-green-700 text-white rounded">Send</button>
+            <button type="submit" class="w-full sm:w-auto px-4 py-2 sm:px-6 sm:py-3 bg-green-600 hover:bg-green-700 text-white rounded-md text-sm sm:text-base font-medium transition-colors duration-200">Send</button>
         </form>
         <!-- Previous Reports Section -->
         <div v-if="tickets.length" class="mt-6 sm:mt-8">
@@ -66,9 +67,12 @@ function submit() {
                 </div>
             </div>
         </div>
-        <div v-if="success" class="mt-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded text-sm sm:text-base">
-            {{ success }}
-        </div>
+        <FlashMessage
+            v-if="success"
+            type="success"
+            :message="success"
+            @close="success = null"
+        />
     </div>
 </StaffLayout>
 </template>

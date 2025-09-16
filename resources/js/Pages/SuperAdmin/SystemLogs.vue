@@ -1,5 +1,6 @@
 <script setup>
 import SuperAdminLayout from './Layout.vue';
+import StatusBadge from '@/Components/UI/StatusBadge.vue';
 import { ref, computed } from 'vue';
 
 const props = defineProps({
@@ -24,36 +25,6 @@ const filteredLogs = computed(() => {
 
     return filtered;
 });
-
-const getLevelColor = (level) => {
-    switch (level) {
-        case 'error':
-            return 'bg-red-100 text-red-800';
-        case 'warning':
-            return 'bg-yellow-100 text-yellow-800';
-        case 'info':
-            return 'bg-blue-100 text-blue-800';
-        case 'debug':
-            return 'bg-gray-100 text-gray-800';
-        default:
-            return 'bg-gray-100 text-gray-800';
-    }
-};
-
-const getLevelIcon = (level) => {
-    switch (level) {
-        case 'error':
-            return 'fas fa-exclamation-circle';
-        case 'warning':
-            return 'fas fa-exclamation-triangle';
-        case 'info':
-            return 'fas fa-info-circle';
-        case 'debug':
-            return 'fas fa-bug';
-        default:
-            return 'fas fa-file-alt';
-    }
-};
 </script>
 
 <template>
@@ -183,11 +154,11 @@ const getLevelIcon = (level) => {
                         <tbody class="bg-white divide-y divide-gray-200">
                             <tr v-for="(log, index) in filteredLogs" :key="index" class="hover:bg-gray-50">
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                                          :class="getLevelColor(log.level)">
-                                        <i :class="getLevelIcon(log.level)" class="mr-1"></i>
-                                        {{ log.level.toUpperCase() }}
-                                    </span>
+                                    <StatusBadge
+                                        :status="log.level.toUpperCase()"
+                                        :variant="log.level"
+                                        size="sm"
+                                    />
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="text-sm text-gray-900 max-w-md">

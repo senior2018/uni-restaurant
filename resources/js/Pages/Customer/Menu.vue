@@ -2,16 +2,16 @@
     <CustomerLayout :user="user">
         <div class="min-h-screen p-4 sm:p-6 w-full">
             <div class="max-w-7xl mx-auto">
-                <h1 class="text-4xl font-bold text-gray-800 mb-8 text-center bg-gradient-to-r from-green-600 to-green-800 bg-clip-text text-transparent">
+                <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-6 sm:mb-8 text-center bg-gradient-to-r from-green-600 to-green-800 bg-clip-text text-transparent">
                     Our Delicious Menu
                 </h1>
 
-                <div v-if="meals.length === 0" class="text-center py-16">
-                    <div class="text-gray-300 text-8xl mb-6">
+                <div v-if="meals.length === 0" class="text-center py-12 sm:py-16">
+                    <div class="text-gray-300 text-6xl sm:text-8xl mb-4 sm:mb-6">
                         <i class="fas fa-search"></i>
                     </div>
-                    <h3 class="text-2xl font-semibold text-gray-700 mb-3">No meals available</h3>
-                    <p class="text-gray-500 text-lg">Check back soon for amazing dishes!</p>
+                    <h3 class="text-xl sm:text-2xl font-semibold text-gray-700 mb-2 sm:mb-3">No meals available</h3>
+                    <p class="text-gray-500 text-base sm:text-lg">Check back soon for amazing dishes!</p>
                 </div>
 
                 <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">

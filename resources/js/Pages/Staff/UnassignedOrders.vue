@@ -1,5 +1,8 @@
 <script setup>
 import StaffLayout from './Layout.vue';
+import DataTable from '@/Components/UI/DataTable.vue';
+import StatusBadge from '@/Components/UI/StatusBadge.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { ref, computed } from 'vue';
 import { router } from '@inertiajs/vue3';
 import Modal from '../../Components/Modal.vue';
@@ -19,6 +22,15 @@ const showSimilarModal = ref(false);
 const similarOrders = ref([]);
 const baseOrder = ref(null);
 const similarSort = ref('similarity_desc');
+
+// Table columns configuration
+const columns = [
+    { key: 'id', label: 'Order #', sortable: true },
+    { key: 'customer.name', label: 'Customer', sortable: true },
+    { key: 'total_amount', label: 'Total', type: 'currency', sortable: true },
+    { key: 'created_at', label: 'Date', type: 'date', sortable: true },
+    { key: 'actions', label: 'Actions', slot: 'actions', sortable: false }
+];
 
 const sortedSimilarOrders = computed(() => {
     if (!similarOrders.value) return [];
@@ -113,12 +125,30 @@ function claimOrder(orderId) {
                     <div v-for="order in suggestedOrders" :key="order.id" class="p-4 border-2 border-blue-300 bg-blue-50 rounded-lg flex justify-between items-center hover:bg-blue-100 transition-colors mb-1">
                         <div>
                             <span class="font-medium">Order #{{ order.id }}</span>
-                            <span class="text-sm text-gray-500 ml-2">{{ order.created_at }}</span>
-                            <span class="ml-4 px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">Pending</span>
+                            <span class="text-xs sm:text-sm text-gray-500 ml-2">{{ order.created_at }}</span>
+                            <StatusBadge
+                                status="Pending"
+                                variant="warning"
+                                size="sm"
+                            />
                         </div>
                         <div class="flex gap-2">
-                            <button @click="openModal(order)" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">View Details</button>
-                            <button @click="claimOrder(order.id)" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Claim</button>
+                            <PrimaryButton
+                                @click="openModal(order)"
+                                variant="secondary"
+                                size="sm"
+                                icon="fas fa-eye"
+                            >
+                                View Details
+                            </PrimaryButton>
+                            <PrimaryButton
+                                @click="claimOrder(order.id)"
+                                variant="info"
+                                size="sm"
+                                icon="fas fa-hand-paper"
+                            >
+                                Claim
+                            </PrimaryButton>
                         </div>
                     </div>
                 </div>
@@ -130,23 +160,32 @@ function claimOrder(orderId) {
                     <div>
                         <span class="font-medium">Order #{{ order.id }}</span>
                         <span class="text-sm text-gray-500 ml-2">{{ order.created_at }}</span>
-                        <span class="ml-4 px-3 py-1 rounded-full text-xs font-semibold"
-                              :class="{
-                                'bg-orange-100 text-orange-700': order.status === 'preparing' && order.cancellation_requested,
-                                'bg-yellow-100 text-yellow-700': order.status === 'pending',
-                                'bg-blue-100 text-blue-700': order.status === 'preparing' && !order.cancellation_requested,
-                                'bg-green-100 text-green-700': order.status === 'delivered',
-                                'bg-red-100 text-red-700': order.status === 'cancelled',
-                              }">
-                            {{ order.status === 'preparing' && order.cancellation_requested ? 'Preparing (Cancellation Requested)' : order.status.charAt(0).toUpperCase() + order.status.slice(1) }}
-                        </span>
+                        <StatusBadge
+                            :status="order.status === 'preparing' && order.cancellation_requested ? 'Preparing (Cancellation Requested)' : order.status.charAt(0).toUpperCase() + order.status.slice(1)"
+                            variant="auto"
+                            size="sm"
+                        />
                         <button v-if="order.similar_orders && order.similar_orders.length" @click="openSimilarModal(order)" class="ml-2 px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-200 text-blue-800 hover:bg-blue-300 transition">
                             {{ order.similar_orders.length }} similar order{{ order.similar_orders.length > 1 ? 's' : '' }}
                         </button>
                     </div>
                     <div class="flex gap-2">
-                        <button @click="openModal(order)" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">View Details</button>
-                        <button @click="claimOrder(order.id)" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Claim</button>
+                        <PrimaryButton
+                            @click="openModal(order)"
+                            variant="secondary"
+                            size="sm"
+                            icon="fas fa-eye"
+                        >
+                            View Details
+                        </PrimaryButton>
+                        <PrimaryButton
+                            @click="claimOrder(order.id)"
+                            variant="info"
+                            size="sm"
+                            icon="fas fa-hand-paper"
+                        >
+                            Claim
+                        </PrimaryButton>
                     </div>
                 </div>
                 <!-- Pagination -->
@@ -175,9 +214,9 @@ function claimOrder(orderId) {
                     </div>
                     <div class="mb-4">
                         <div class="font-medium">Customer: <span class="text-gray-700">{{ selectedOrder?.user?.name || 'N/A' }}</span></div>
-                        <div class="text-sm text-gray-500">Delivery: {{ selectedOrder?.delivery_location }}</div>
-                        <div class="text-sm text-gray-500">Payment: {{ selectedOrder?.payment_method }}</div>
-                        <div class="text-sm text-gray-500">Total: {{ selectedOrder?.total_price }}</div>
+                        <div class="text-xs sm:text-sm text-gray-500">Delivery: {{ selectedOrder?.delivery_location }}</div>
+                        <div class="text-xs sm:text-sm text-gray-500">Payment: {{ selectedOrder?.payment_method }}</div>
+                        <div class="text-xs sm:text-sm text-gray-500">Total: {{ selectedOrder?.total_price }}</div>
                     </div>
                     <div class="overflow-x-auto mt-4">
                         <table class="min-w-full text-sm">
@@ -223,7 +262,7 @@ function claimOrder(orderId) {
                             <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-2 gap-2">
                                 <div>
                                     <span class="font-medium">Order #{{ order.id }}</span>
-                                    <span class="text-sm text-gray-500 ml-2">{{ order.created_at }}</span>
+                                    <span class="text-xs sm:text-sm text-gray-500 ml-2">{{ order.created_at }}</span>
                                     <span class="ml-2 px-2 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">Pending</span>
                                     <span class="ml-2 px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-200 text-blue-800">{{ order.similarity_score }} similar meal{{ order.similarity_score > 1 ? 's' : '' }}</span>
                                 </div>

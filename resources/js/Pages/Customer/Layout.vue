@@ -3,6 +3,8 @@ import BaseLayout from '../Shared/BaseLayout.vue';
 import { Link, usePage, router } from '@inertiajs/vue3';
 import { ref, computed, watchEffect } from 'vue';
 import TopNavBar from '@/Components/TopNavBar.vue';
+import FlashMessage from '@/Components/UI/FlashMessage.vue';
+import PageContainer from '@/Components/UI/PageContainer.vue';
 
 const props = defineProps({
     user: Object,
@@ -45,26 +47,23 @@ watchEffect(() => {
         <TopNavBar :links="navLinks" :user="user" role="customer" brand="Our Restaurant" />
 
         <!-- Flash Messages -->
-        <div v-if="page.props.flash?.success" class="w-full px-responsive mt-4 relative z-10">
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 flex items-center justify-between shadow">
-                <span><i class="fas fa-check-circle mr-2"></i>{{ page.props.flash.success }}</span>
-                <button @click="page.props.flash.success = null" class="text-green-700 hover:text-green-900">&times;</button>
-            </div>
-        </div>
-
-        <div v-if="page.props.flash?.error" class="w-full px-responsive mt-4 relative z-10">
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 flex items-center justify-between shadow">
-                <span><i class="fas fa-exclamation-circle mr-2"></i>{{ page.props.flash.error }}</span>
-                <button @click="page.props.flash.error = null" class="text-red-700 hover:text-red-900">&times;</button>
-            </div>
-        </div>
+        <FlashMessage
+            v-if="page.props.flash?.success"
+            type="success"
+            :message="page.props.flash.success"
+            @close="page.props.flash.success = null"
+        />
+        <FlashMessage
+            v-if="page.props.flash?.error"
+            type="error"
+            :message="page.props.flash.error"
+            @close="page.props.flash.error = null"
+        />
 
         <!-- Main Content -->
-        <main class="py-responsive bg-gray-50 min-h-screen w-full">
-            <div class="container-responsive">
-                <slot />
-            </div>
-        </main>
+        <PageContainer background="gray" padding="responsive">
+            <slot />
+        </PageContainer>
     </BaseLayout>
 </template>
 

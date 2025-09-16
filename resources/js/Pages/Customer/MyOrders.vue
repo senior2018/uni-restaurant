@@ -1,5 +1,9 @@
 <script setup>
 import CustomerLayout from './Layout.vue';
+import DataTable from '@/Components/UI/DataTable.vue';
+import StatusBadge from '@/Components/UI/StatusBadge.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import FlashMessage from '@/Components/UI/FlashMessage.vue';
 import { ref, computed, reactive } from 'vue';
 import { router, usePage } from '@inertiajs/vue3';
 import Modal from '../../Components/Modal.vue';
@@ -25,6 +29,15 @@ const statusOptions = [
     { value: 'processing', label: 'Processing' },
     { value: 'completed', label: 'Completed' },
     { value: 'cancelled', label: 'Cancelled' },
+];
+
+// Table columns configuration
+const columns = [
+    { key: 'id', label: 'Order #', sortable: true },
+    { key: 'status', label: 'Status', type: 'status', sortable: true },
+    { key: 'total_amount', label: 'Total', type: 'currency', sortable: true },
+    { key: 'created_at', label: 'Date', type: 'date', sortable: true },
+    { key: 'actions', label: 'Actions', slot: 'actions', sortable: false }
 ];
 
 const filteredOrders = computed(() => {
@@ -200,15 +213,19 @@ async function submitAlert() {
 <template>
     <CustomerLayout :user="user">
         <!-- Flash Messages -->
-        <div v-if="page.props.flash?.success" class="max-w-2xl mx-auto mt-4">
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 flex items-center justify-between">
-                <span><i class="fas fa-check-circle mr-2"></i>{{ page.props.flash.success }}</span>
-            </div>
-        </div>
-        <div v-if="page.props.flash?.error" class="max-w-2xl mx-auto mt-4">
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 flex items-center justify-between">
-                <span><i class="fas fa-exclamation-circle mr-2"></i>{{ page.props.flash.error }}</span>
-            </div>
+        <div class="max-w-2xl mx-auto mt-4">
+            <FlashMessage
+                v-if="page.props.flash?.success"
+                type="success"
+                :message="page.props.flash.success"
+                @close="page.props.flash.success = null"
+            />
+            <FlashMessage
+                v-if="page.props.flash?.error"
+                type="error"
+                :message="page.props.flash.error"
+                @close="page.props.flash.error = null"
+            />
         </div>
         <div class="space-y-6 sm:space-y-8">
             <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-6 text-center">My Orders</h1>
@@ -228,9 +245,14 @@ async function submitAlert() {
                     <i class="fas fa-box-open"></i>
                 </div>
                 <h3 class="text-base sm:text-lg font-medium text-gray-900 mb-2">No orders found for this filter</h3>
-                <button @click="$inertia.visit(route('menu.public'))" class="mt-4 btn-responsive bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 transition-colors">
+                <PrimaryButton
+                    @click="$inertia.visit(route('menu.public'))"
+                    variant="primary"
+                    size="md"
+                    icon="fas fa-utensils"
+                >
                     Go to Menu
-                </button>
+                </PrimaryButton>
             </div>
             <div v-else class="space-y-6 sm:space-y-8">
                 <div v-for="order in filteredOrders" :key="order.id" class="bg-white rounded-xl shadow p-4 sm:p-6">
@@ -241,17 +263,11 @@ async function submitAlert() {
                             <span class="text-xs sm:text-sm text-gray-500">{{ formatDate(order.created_at) }}</span>
                         </div>
                         <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-                            <span class="px-2 sm:px-3 py-1 rounded-full text-xs font-semibold"
-                                  :class="{
-                                    'bg-orange-100 text-orange-700': order.status === 'preparing' && order.cancellation_requested,
-                                    'bg-yellow-100 text-yellow-700': order.status === 'pending',
-                                    'bg-blue-100 text-blue-700': order.status === 'preparing' && !order.cancellation_requested,
-                                    'bg-green-100 text-green-700': order.status === 'completed',
-                                    'bg-red-100 text-red-700': order.status === 'cancelled',
-                                    'bg-gray-100 text-gray-700': !['pending','preparing','completed','cancelled'].includes(order.status),
-                                  }">
-                                {{ order.status === 'preparing' && order.cancellation_requested ? 'Preparing (Cancellation Requested)' : order.status.charAt(0).toUpperCase() + order.status.slice(1) }}
-                            </span>
+                            <StatusBadge
+                                :status="order.status === 'preparing' && order.cancellation_requested ? 'Preparing (Cancellation Requested)' : order.status.charAt(0).toUpperCase() + order.status.slice(1)"
+                                variant="auto"
+                                size="sm"
+                            />
                             <span class="font-bold text-green-700 text-sm sm:text-base">{{ formatPrice(order.total_price) }}</span>
                             <button @click="toggleOrder(order.id)" class="text-green-600 hover:underline text-xs sm:text-sm">
                                 {{ expandedOrders.includes(order.id) ? 'Hide Details' : 'Show Details' }}
@@ -285,16 +301,34 @@ async function submitAlert() {
                                     <span class="mr-4">Payment: <span class="font-medium text-gray-800">{{ order.payment_method.replace('_', ' ').toUpperCase() }}</span></span>
                                 </div>
                                 <div v-if="order.status === 'pending' || order.status === 'preparing'" class="mt-4 flex gap-4 flex-wrap">
-                                    <button v-if="order.status === 'pending'" @click="startEdit(order)" class="px-4 py-2 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors">
+                                    <PrimaryButton
+                                        v-if="order.status === 'pending'"
+                                        @click="startEdit(order)"
+                                        variant="info"
+                                        size="sm"
+                                        icon="fas fa-edit"
+                                    >
                                         Edit
-                                    </button>
-                                    <button v-if="order.status === 'pending'" @click="openCancelModal(order)" class="px-4 py-2 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition-colors">
+                                    </PrimaryButton>
+                                    <PrimaryButton
+                                        v-if="order.status === 'pending'"
+                                        @click="openCancelModal(order)"
+                                        variant="danger"
+                                        size="sm"
+                                        icon="fas fa-times"
+                                    >
                                         Cancel Order
-                                    </button>
+                                    </PrimaryButton>
                                     <template v-if="order.status === 'preparing'">
-                                        <button v-if="!order.cancellation_requested" @click="openCancelModal(order)" class="px-4 py-2 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition-colors">
+                                        <PrimaryButton
+                                            v-if="!order.cancellation_requested"
+                                            @click="openCancelModal(order)"
+                                            variant="danger"
+                                            size="sm"
+                                            icon="fas fa-ban"
+                                        >
                                             Request Cancellation
-                                        </button>
+                                        </PrimaryButton>
                                         <div v-else class="flex items-center gap-2">
                                             <button disabled class="px-4 py-2 bg-yellow-400 text-white rounded-lg font-semibold">Request Submitted</button>
                                             <button @click="cancelCancellationRequest(order.id)" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg font-semibold hover:bg-gray-400">Cancel Request</button>
@@ -356,7 +390,14 @@ async function submitAlert() {
                                         </div>
                                     </div>
                                     <div class="flex gap-2">
-                                        <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 transition-colors">Save</button>
+                                        <PrimaryButton
+                                            type="submit"
+                                            variant="success"
+                                            size="sm"
+                                            icon="fas fa-save"
+                                        >
+                                            Save
+                                        </PrimaryButton>
                                         <button type="button" @click="cancelEdit" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg font-semibold hover:bg-gray-400 transition-colors">Cancel</button>
                                     </div>
                                 </form>

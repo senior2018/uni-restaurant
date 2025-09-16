@@ -3,6 +3,8 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import Input from '@/Components/UI/Input.vue';
+import FormContainer from '@/Components/UI/FormContainer.vue';
 import ResponsiveNavbar from '@/Components/ResponsiveNavbar.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
@@ -56,8 +58,7 @@ const redirectToGoogle = () => {
 <template>
     <Head title="Create Account" />
     <ResponsiveNavbar :can-login="canLogin" :can-register="false" />
-    <div class="flex justify-center pt-32 pb-12 px-4 sm:px-6 lg:px-8" style="background-color: #ECFDF5; min-height: 100vh;">
-        <div class="w-full max-w-[56rem] bg-white p-10 rounded-2xl shadow-lg border border-green-100 space-y-8">
+    <FormContainer size="xl" background="primary">
         <!-- Logo and Title Section -->
         <div class="text-center space-y-4">
             <div class="flex items-center justify-center">
@@ -236,6 +237,5 @@ const redirectToGoogle = () => {
                     </PrimaryButton>
                 </div>
             </form>
-        </div>
-    </div>
+    </FormContainer>
 </template>

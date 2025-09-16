@@ -1,5 +1,8 @@
 <script setup>
 import SuperAdminLayout from './Layout.vue';
+import DataTable from '@/Components/UI/DataTable.vue';
+import StatusBadge from '@/Components/UI/StatusBadge.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
@@ -12,6 +15,15 @@ const deleteAdmin = (admin) => {
         router.delete(route('superadmin.admins.destroy', admin.id));
     }
 };
+
+// Table columns configuration
+const columns = [
+    { key: 'name', label: 'Name', sortable: true },
+    { key: 'email', label: 'Email', sortable: true },
+    { key: 'role', label: 'Role', type: 'status', sortable: true },
+    { key: 'created_at', label: 'Created', type: 'date', sortable: true },
+    { key: 'actions', label: 'Actions', slot: 'actions', sortable: false }
+];
 </script>
 
 <template>
@@ -33,76 +45,37 @@ const deleteAdmin = (admin) => {
                     <p class="text-sm text-gray-600 mt-1">Manage all admin users in the system</p>
                 </div>
 
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Admin
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Contact
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Location
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Activity
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Joined
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            <tr v-for="admin in (props.admins?.data || [])" :key="admin.id" class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-10 w-10">
-                                            <div class="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center">
-                                                <i class="fas fa-user-shield text-purple-600"></i>
-                                            </div>
-                                        </div>
-                                        <div class="ml-4">
-                                            <div class="text-sm font-medium text-gray-900">{{ admin.name }}</div>
-                                            <div class="text-sm text-gray-500">{{ admin.email }}</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">{{ admin.phone || 'Not provided' }}</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">{{ admin.permanent_location || 'Not provided' }}</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">
-                                        <div>{{ admin.orders_count }} orders</div>
-                                        <div>{{ admin.alerts_count }} alerts</div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ new Date(admin.created_at).toLocaleDateString() }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <div class="flex space-x-2">
-                                        <Link :href="route('superadmin.admins.edit', admin.id)"
-                                              class="text-blue-600 hover:text-blue-900">
-                                            <i class="fas fa-edit"></i>
-                                        </Link>
-                                        <button @click="deleteAdmin(admin)"
-                                                class="text-red-600 hover:text-red-900">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <DataTable
+                    :data="props.admins?.data || []"
+                    :columns="columns"
+                    :pagination="props.admins"
+                    searchable
+                    sortable
+                    default-sort="created_at"
+                    default-sort-direction="desc"
+                >
+                    <template #actions="{ item: admin }">
+                        <div class="flex space-x-2">
+                            <Link :href="route('superadmin.admins.edit', admin.id)">
+                                <PrimaryButton
+                                    variant="info"
+                                    size="xs"
+                                    icon="fas fa-edit"
+                                >
+                                    Edit
+                                </PrimaryButton>
+                            </Link>
+                            <PrimaryButton
+                                @click="deleteAdmin(admin)"
+                                variant="danger"
+                                size="xs"
+                                icon="fas fa-trash"
+                            >
+                                Delete
+                            </PrimaryButton>
+                        </div>
+                    </template>
+                </DataTable>
 
                 <!-- Pagination -->
                 <div v-if="props.admins?.links" class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">

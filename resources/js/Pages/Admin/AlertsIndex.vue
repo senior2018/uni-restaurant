@@ -3,6 +3,7 @@ import AdminLayout from './Layout.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref, nextTick } from 'vue';
 import { router, usePage } from '@inertiajs/vue3';
+import LoadingSpinner from '@/Components/UI/LoadingSpinner.vue';
 
 const props = defineProps({
     alerts: Object, // paginated
@@ -125,14 +126,14 @@ async function deleteSelectedAlerts() {
                     <button v-if="!bulkMode" @click="toggleBulkMode" class="btn-responsive bg-red-600 text-white rounded hover:bg-red-700">Clear</button>
                     <div v-else class="flex flex-col sm:flex-row items-center gap-2">
                         <div class="flex gap-2">
-                            <button @click="selectAllAlerts" class="px-2 py-1 bg-gray-200 rounded text-sm">Select All</button>
-                            <button @click="deselectAllAlerts" class="px-2 py-1 bg-gray-200 rounded text-sm">Deselect All</button>
+                            <button @click="selectAllAlerts" class="px-2 py-1 sm:px-3 sm:py-2 bg-gray-200 rounded text-xs sm:text-sm">Select All</button>
+                            <button @click="deselectAllAlerts" class="px-2 py-1 sm:px-3 sm:py-2 bg-gray-200 rounded text-xs sm:text-sm">Deselect All</button>
                         </div>
-                        <button :disabled="selectedAlerts.length === 0 || deleting" @click="deleteSelectedAlerts" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 flex items-center gap-2 text-sm">
-                            <span v-if="deleting" class="loader border-white border-2 border-t-transparent rounded-full w-4 h-4 animate-spin"></span>
+                        <button :disabled="selectedAlerts.length === 0 || deleting" @click="deleteSelectedAlerts" class="px-3 py-2 sm:px-4 sm:py-2 bg-red-600 text-white rounded hover:bg-red-700 flex items-center gap-2 text-xs sm:text-sm">
+                            <LoadingSpinner v-if="deleting" size="sm" color="white" />
                             Delete Selected
                         </button>
-                        <button @click="toggleBulkMode" class="px-2 py-1 bg-gray-200 rounded text-sm">Cancel</button>
+                        <button @click="toggleBulkMode" class="px-2 py-1 sm:px-3 sm:py-2 bg-gray-200 rounded text-xs sm:text-sm">Cancel</button>
                     </div>
                 </div>
             </div>
